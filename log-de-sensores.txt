@@ -1,0 +1,45 @@
+-*- org -*-
+
+* Formato del log
+
+timestamp temp-uuid    valor
+timestamp pH-uuid      valor
+timestamp conduct-uuid valor
+timestamp rgb-uuid     valor
+
+4         4+16         4      = 28
+
+
+* Estados del sensor:
+
+** Muestreo
+
+** Calibracion
+
+
+enum SensorState {
+    Sampling
+    Calibration
+}
+
+
+* Programa del Arduino:
+
+** Coordinar pedirle temp a un sensor, y luego pedirle muestra al pH basado en la temp
+
+** Muestrear periodicamente
+
+** Cambiar tiempo de muestreo
+
+** Aceptar comando para detener los sensores y ponerlos para calibrar
+
+** Cosillas de Arudino: estado de la bateria, estado del reloj
+
+** Arduino necesita solicitar la hora para ajustar su reloj, que se desfasa.
+
+** Mandar datos muestreados al servidor; hay que buscar al servidor.
+
+*** Mandar cada registro inmediatemente despues de ser muestreado, o mandar grupos cuando haya conectividad.
+
+** Configurar el IP del servidor, y configuraciones similares.
+
