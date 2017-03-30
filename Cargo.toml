@@ -1,0 +1,6 @@
+[package]
+name = "benita"
+version = "0.1.0"
+authors = ["rusty"]
+
+[dependencies]
