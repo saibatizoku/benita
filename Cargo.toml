@@ -4,3 +4,5 @@ version = "0.1.0"
 authors = ["rusty"]
 
 [dependencies]
+i2cdev = "0.3.1"
+sysfs_gpio = "0.5"
