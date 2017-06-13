@@ -2,18 +2,18 @@
 /// This chip is used for temperature measurement. It features
 /// calibration, sleep mode, scale, etc.
 enum RtdEzoCommands {
-    Baud,
-    CalibrationTemperature,
+    Baud(u16),
+    CalibrationTemperature(f64),
     CalibrationClear,
     CalibrationState,
-    DataloggerPeriod,
+    DataloggerPeriod(u8),
     DataloggerDisable,
     DataloggerInterval,
-    DeviceAddress,
+    DeviceAddress(u8),
     DeviceInformation,
     Export,
     ExportInfo,
-    Import,
+    Import(String),
     Factory,
     Find,
     LedOn,
@@ -32,6 +32,42 @@ enum RtdEzoCommands {
     ScaleStatus,
     Sleep,
     Status
+}
+
+fn temperature_command(cmd: RtdEzoCommands) -> String {
+    use RtdEzoCommands::*;
+    match cmd {
+        Baud(baud) => { format!("Baud,{}", baud) },
+        CalibrationTemperature(temp) => { format!("Cal,{:.*}", 2, temp) },
+        CalibrationClear => { String::from("Cal,clear") },
+        CalibrationState => { String::from("Cal,?") },
+        DataloggerPeriod(n) => { format!("D,{}", n) },
+        DataloggerDisable => { String::from("D,0") },
+        DataloggerInterval => { String::from("D,?") },
+        DeviceAddress(addr) => { format!("I2C,{}", addr) },
+        DeviceInformation => { String::from("I") },
+        Export => { String::from("Export") },
+        ExportInfo => { String::from("Export,?") },
+        Import(calib) => { format!("Import,{}", calib) },
+        Factory => { String::from("Factory") },
+        Find => { String::from("F") },
+        LedOn => { String::from("L,1") },
+        LedOff => { String::from("L,0") },
+        LedState => { String::from("L,?") },
+        MemoryClear => { String::from("M,clear") },
+        MemoryRecall => { String::from("M") },
+        MemoryRecallLastLocation => { String::from("M,?") },
+        ProtocolLockEnable => { String::from("Plock,1") },
+        ProtocolLockDisable => { String::from("Plock,0") },
+        ProtocolLockStatus => { String::from("Plock,?") },
+        Reading => { String::from("R") },
+        ScaleCelsius => { String::from("S,c") },
+        ScaleKelvin => { String::from("S,k") },
+        ScaleFahrenheit => { String::from("S,f") },
+        ScaleStatus => { String::from("S,?") },
+        Sleep => { String::from("Sleep") },
+        Status => { String::from("Status") },
+    }
 }
 
 #[cfg(test)]
