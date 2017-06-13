@@ -1,5 +1,7 @@
 /// Commands for RTD EZO Chip, taken from their Datasheet.
-enum RTD_EZO_COMMANDS {
+/// This chip is used for temperature measurement. It features
+/// calibration, sleep mode, scale, etc.
+enum RtdEzoCommands {
     Baud,
     CalibrationTemperature,
     CalibrationClear,
@@ -14,9 +16,9 @@ enum RTD_EZO_COMMANDS {
     Import,
     Factory,
     Find,
-    Lon,
-    Loff,
-    Lstate,
+    LedOn,
+    LedOff,
+    LedState,
     MemoryClear,
     MemoryRecall,
     MemoryRecallLastLocation,
