@@ -40,5 +40,5 @@ fn main() {
         _ => { ArduinoCommand::BlinkerOff },
     };
     i2c_master_send(i2c_cmd).unwrap();
-    ::std::process::exit(1);
+    ::std::process::exit(0);
 }

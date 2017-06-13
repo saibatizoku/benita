@@ -23,5 +23,5 @@ fn main() {
     }).expect("Could not export GPIO Pin");
 
     // Be a good command-line citizen.
-    ::std::process::exit(1);
+    ::std::process::exit(0);
 }
