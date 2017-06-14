@@ -1,7 +1,7 @@
 /// I2C Commands for pH EZO Chip, taken from their Datasheet.
 /// This chip is used for pH measurement. It features calibration, sleep mode,
 /// scale, etc.
-enum PhEzoCommands {
+enum PhEzoCommand {
     Baud(u16),
     CalibrationClear,
     CalibrationSingleMidPoint(f64),

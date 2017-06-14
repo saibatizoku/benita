@@ -1,7 +1,7 @@
 /// I2C Commands for EC EZO Chip, taken from their Datasheet.
 /// This chip is used for electrical conductivity measurement. It features
 /// calibration, sleep mode, scale, etc.
-enum EcEzoCommands {
+enum EcEzoCommand {
     Baud(u16),
     CalibrationDry,
     CalibrationSinglePoint(f64),

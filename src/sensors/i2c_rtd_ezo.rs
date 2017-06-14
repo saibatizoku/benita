@@ -1,7 +1,7 @@
 /// I2C Commands for RTD EZO Chip, taken from their Datasheet.
 /// This chip is used for temperature measurement. It features
 /// calibration, sleep mode, scale, etc.
-enum RtdEzoCommands {
+enum RtdEzoCommand {
     Baud(u16),
     CalibrationTemperature(f64),
     CalibrationClear,
@@ -34,8 +34,8 @@ enum RtdEzoCommands {
     Status
 }
 
-fn temperature_command(cmd: RtdEzoCommands) -> String {
-    use self::RtdEzoCommands::*;
+fn temperature_command(cmd: RtdEzoCommand) -> String {
+    use self::RtdEzoCommand::*;
     match cmd {
         Baud(baud) => { format!("Baud,{}", baud) },
         CalibrationTemperature(temp) => { format!("Cal,{:.*}", 2, temp) },
@@ -73,7 +73,7 @@ fn temperature_command(cmd: RtdEzoCommands) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use super::RtdEzoCommands::*;
+    use super::RtdEzoCommand::*;
 
     #[test]
     fn temperature_command_uart_mode() {
