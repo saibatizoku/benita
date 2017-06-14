@@ -6,3 +6,6 @@ authors = ["Joaquín R <globojorro@gmail.com>"]
 [dependencies]
 i2cdev = "0.3.1"
 sysfs_gpio = "0.5"
+
+[profile.release]
+lto = true
