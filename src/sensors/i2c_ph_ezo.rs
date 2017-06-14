@@ -25,4 +25,5 @@ enum PhEzoCommands {
     Slope,
     Status,
     TemperatureCompensation,
+    TemperatureCompensatedValue,
 }

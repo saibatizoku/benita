@@ -42,4 +42,5 @@ enum EcEzoCommands {
     Sleep,
     Status,
     TemperatureCompensation,
+    TemperatureCompensatedValue,
 }
