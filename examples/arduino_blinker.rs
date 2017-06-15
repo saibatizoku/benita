@@ -12,14 +12,18 @@ enum ArduinoCommand {
     BlinkerOff,
 }
 
-impl ArduinoCommand {
+trait I2cSlave {
+    fn parse(&self) -> u8;
+    fn send(&self) -> Result<(), LinuxI2CError>;
+}
+
+impl I2cSlave for ArduinoCommand {
     fn parse(&self) -> u8 {
         match self {
             &ArduinoCommand::BlinkerOn => 0x01,
             &ArduinoCommand::BlinkerOff => 0x00,
         }
     }
-
     fn send(&self) -> Result<(), LinuxI2CError> {
         let i2cbus = format!("/dev/i2c-{}", 1);
         let mut dev = try!(LinuxI2CDevice::new(i2cbus, ARDUINO_SLAVE_ADDR));
@@ -46,7 +50,6 @@ fn main() {
     let command = &args[1];
     match &command[..] {
         "on" => blinker_on(),
-        "off" => blinker_off(),
         _ => blinker_off(),
     };
     ::std::process::exit(0);
