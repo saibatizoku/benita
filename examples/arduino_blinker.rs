@@ -24,7 +24,7 @@ impl I2cCommand for SlaveCommand {
 }
 
 struct BlinkerService {
-    device: SlaveDevice
+    device: SlaveDevice,
 }
 
 impl BlinkerService {
@@ -35,7 +35,7 @@ impl BlinkerService {
         println!("Sending: Blink on");
         self.device.send(SlaveCommand::BlinkerOn)
     }
-    fn off(&self) -> Result<(), LinuxI2CError>{
+    fn off(&self) -> Result<(), LinuxI2CError> {
         println!("Sending: Blink off");
         self.device.send(SlaveCommand::BlinkerOff)
     }
