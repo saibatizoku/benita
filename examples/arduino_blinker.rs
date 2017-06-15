@@ -48,7 +48,7 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let command = &args[1];
     let arduino = SlaveDevice::new(I2CBUS_ID, ARDUINO_SLAVE_ADDR);
-    let blinker = BlinkerService::new(arduino);
+    let blinker = BlinkerService::new(arduino.clone());
     match &command[..] {
         "on" => blinker.on().unwrap(),
         "off" | _ => blinker.off().unwrap(),

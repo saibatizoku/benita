@@ -15,6 +15,7 @@ mod sensors;
 use i2cdev::core::I2CDevice;
 use i2cdev::linux::{LinuxI2CDevice, LinuxI2CError};
 
+#[derive(Clone)]
 pub struct SlaveDevice {
     bus: u8,
     address: u16,
