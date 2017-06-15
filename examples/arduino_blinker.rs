@@ -12,20 +12,30 @@ enum ArduinoCommand {
     BlinkerOff,
 }
 
-fn i2c_master_send(command: ArduinoCommand) -> Result<(), LinuxI2CError> {
-    let cmd: u8 = match command {
-        ArduinoCommand::BlinkerOn => {
-            println!("Sending: Blink on");
-            0x01
-        },
-        ArduinoCommand::BlinkerOff => {
-            println!("Sending: Blink off");
-            0x00
-        },
-    };
-    let mut dev = try!(LinuxI2CDevice::new("/dev/i2c-1", ARDUINO_SLAVE_ADDR));
-    dev.smbus_write_byte(cmd).unwrap();
-    Ok(())
+impl ArduinoCommand {
+    fn parse(&self) -> u8 {
+        match self {
+            &ArduinoCommand::BlinkerOn => 0x01,
+            &ArduinoCommand::BlinkerOff => 0x00,
+        }
+    }
+
+    fn send(&self) -> Result<(), LinuxI2CError> {
+        let i2cbus = format!("/dev/i2c-{}", 1);
+        let mut dev = try!(LinuxI2CDevice::new(i2cbus, ARDUINO_SLAVE_ADDR));
+        dev.smbus_write_byte(self.parse())
+    }
+}
+
+fn blinker_on() {
+    println!("Sending: Blink on");
+    ArduinoCommand::BlinkerOn.send().unwrap();
+}
+
+
+fn blinker_off() {
+    println!("Sending: Blink off");
+    ArduinoCommand::BlinkerOff.send().unwrap();
 }
 
 /// This is the main program. It takes one argument: if it is 'on', the I2C
@@ -34,11 +44,10 @@ fn i2c_master_send(command: ArduinoCommand) -> Result<(), LinuxI2CError> {
 fn main() {
     let args: Vec<String> = env::args().collect();
     let command = &args[1];
-    let i2c_cmd = match &command[..] {
-        "on" => { ArduinoCommand::BlinkerOn },
-        "off" => { ArduinoCommand::BlinkerOff },
-        _ => { ArduinoCommand::BlinkerOff },
+    match &command[..] {
+        "on" => blinker_on(),
+        "off" => blinker_off(),
+        _ => blinker_off(),
     };
-    i2c_master_send(i2c_cmd).unwrap();
     ::std::process::exit(0);
 }
