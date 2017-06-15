@@ -1,54 +1,44 @@
 extern crate benita;
 extern crate i2cdev;
 
-use benita::I2cCommand;
-use i2cdev::core::*;
-use i2cdev::linux::{LinuxI2CDevice, LinuxI2CError};
+use benita::{I2cCommand, I2cSlave, SlaveDevice};
+use i2cdev::linux::LinuxI2CError;
 
 use std::env;
 
 const ARDUINO_SLAVE_ADDR: u16 = 0x08;
 const I2CBUS_ID: u8 = 1;
 
-enum ArduinoCommand {
+enum SlaveCommand {
     BlinkerOn,
     BlinkerOff,
 }
 
-struct ArduinoDevice {
-    bus: u8,
-    address: u16,
-}
-
-impl ArduinoDevice {
-    pub fn new(bus: u8, address: u16) -> ArduinoDevice {
-        ArduinoDevice { bus, address }
-    }
-    pub fn send(&self, cmd: ArduinoCommand) -> Result<(), LinuxI2CError> {
-        let bus = format!("/dev/i2c-{}", self.bus);
-        let mut dev = try!(LinuxI2CDevice::new(bus, self.address));
-        dev.smbus_write_byte(cmd.parse())
-    }
-}
-
-impl I2cCommand for ArduinoCommand {
-    fn parse(&self) -> u8 {
+impl I2cCommand for SlaveCommand {
+    fn parse(&self) -> Vec<u8> {
         match self {
-            &ArduinoCommand::BlinkerOn => 0x01,
-            &ArduinoCommand::BlinkerOff => 0x00,
+            &SlaveCommand::BlinkerOn => vec![0x01],
+            &SlaveCommand::BlinkerOff => vec![0x00],
         }
     }
 }
 
-fn blinker_on(dev: &ArduinoDevice) {
-    println!("Sending: Blink on");
-    dev.send(ArduinoCommand::BlinkerOn).unwrap();
+struct BlinkerService {
+    device: SlaveDevice
 }
 
-
-fn blinker_off(dev: &ArduinoDevice) {
-    println!("Sending: Blink off");
-    dev.send(ArduinoCommand::BlinkerOff).unwrap();
+impl BlinkerService {
+    fn new(device: SlaveDevice) -> Self {
+        BlinkerService { device }
+    }
+    fn on(&self) -> Result<(), LinuxI2CError> {
+        println!("Sending: Blink on");
+        self.device.send(SlaveCommand::BlinkerOn)
+    }
+    fn off(&self) -> Result<(), LinuxI2CError>{
+        println!("Sending: Blink off");
+        self.device.send(SlaveCommand::BlinkerOff)
+    }
 }
 
 /// This is the main program. It takes one argument: if it is 'on', the I2C
@@ -57,10 +47,11 @@ fn blinker_off(dev: &ArduinoDevice) {
 fn main() {
     let args: Vec<String> = env::args().collect();
     let command = &args[1];
-    let device = ArduinoDevice::new(I2CBUS_ID, ARDUINO_SLAVE_ADDR);
+    let arduino = SlaveDevice::new(I2CBUS_ID, ARDUINO_SLAVE_ADDR);
+    let blinker = BlinkerService::new(arduino);
     match &command[..] {
-        "on" => blinker_on(&device),
-        _ => blinker_off(&device),
+        "on" => blinker.on().unwrap(),
+        "off" | _ => blinker.off().unwrap(),
     };
     ::std::process::exit(0);
 }
