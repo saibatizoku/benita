@@ -1,6 +1,9 @@
 /// I2C Commands for RTD EZO Chip, taken from their Datasheet.
 /// This chip is used for temperature measurement. It features
 /// calibration, sleep mode, scale, etc.
+
+use I2cCommand;
+
 pub enum RtdEzoCommand {
     Baud(u32),
     CalibrationTemperature(f64),
@@ -34,40 +37,45 @@ pub enum RtdEzoCommand {
     Status,
 }
 
-fn temperature_command(cmd: RtdEzoCommand) -> String {
-    use self::RtdEzoCommand::*;
-    match cmd {
-        Baud(baud) => format!("Baud,{}", baud),
-        CalibrationTemperature(temp) => format!("Cal,{:.*}", 2, temp),
-        CalibrationClear => String::from("Cal,clear"),
-        CalibrationState => String::from("Cal,?"),
-        DataloggerPeriod(n) => format!("D,{}", n),
-        DataloggerDisable => String::from("D,0"),
-        DataloggerInterval => String::from("D,?"),
-        DeviceAddress(addr) => format!("I2C,{}", addr),
-        DeviceInformation => String::from("I"),
-        Export => String::from("Export"),
-        ExportInfo => String::from("Export,?"),
-        Import(calib) => format!("Import,{}", calib),
-        Factory => String::from("Factory"),
-        Find => String::from("F"),
-        LedOn => String::from("L,1"),
-        LedOff => String::from("L,0"),
-        LedState => String::from("L,?"),
-        MemoryClear => String::from("M,clear"),
-        MemoryRecall => String::from("M"),
-        MemoryRecallLastLocation => String::from("M,?"),
-        ProtocolLockEnable => String::from("Plock,1"),
-        ProtocolLockDisable => String::from("Plock,0"),
-        ProtocolLockStatus => String::from("Plock,?"),
-        Reading => String::from("R"),
-        ScaleCelsius => String::from("S,c"),
-        ScaleKelvin => String::from("S,k"),
-        ScaleFahrenheit => String::from("S,f"),
-        ScaleStatus => String::from("S,?"),
-        Sleep => String::from("Sleep"),
-        Status => String::from("Status"),
+impl I2cCommand for RtdEzoCommand {
+    fn parse(&self) -> String {
+        use self::RtdEzoCommand::*;
+        match *self {
+            Baud(ref baud) => format!("Baud,{}\0", baud),
+            CalibrationTemperature(temp) => format!("Cal,{:.*}\0", 2, temp),
+            CalibrationClear => String::from("Cal,clear\0"),
+            CalibrationState => String::from("Cal,?\0"),
+            DataloggerPeriod(n) => format!("D,{}\0", n),
+            DataloggerDisable => String::from("D,0\0"),
+            DataloggerInterval => String::from("D,?\0"),
+            DeviceAddress(addr) => format!("I2C,{}\0", addr),
+            DeviceInformation => String::from("I\0"),
+            Export => String::from("Export\0"),
+            ExportInfo => String::from("Export,?\0"),
+            Import(ref calib) => format!("Import,{}\0", calib),
+            Factory => String::from("Factory\0"),
+            Find => String::from("F\0"),
+            LedOn => String::from("L,1\0"),
+            LedOff => String::from("L,0\0"),
+            LedState => String::from("L,?\0"),
+            MemoryClear => String::from("M,clear\0"),
+            MemoryRecall => String::from("M\0"),
+            MemoryRecallLastLocation => String::from("M,?\0"),
+            ProtocolLockEnable => String::from("Plock,1\0"),
+            ProtocolLockDisable => String::from("Plock,0\0"),
+            ProtocolLockStatus => String::from("Plock,?\0"),
+            Reading => String::from("R\0"),
+            ScaleCelsius => String::from("S,c\0"),
+            ScaleKelvin => String::from("S,k\0"),
+            ScaleFahrenheit => String::from("S,f\0"),
+            ScaleStatus => String::from("S,?\0"),
+            Sleep => String::from("Sleep\0"),
+            Status => String::from("Status\0"),
+        }
     }
+}
+fn temperature_command(cmd: RtdEzoCommand) -> String {
+    cmd.parse()
 }
 
 #[cfg(test)]
