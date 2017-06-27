@@ -1,15 +1,15 @@
 /// I2C Commands for RTD EZO Chip, taken from their Datasheet.
 /// This chip is used for temperature measurement. It features
 /// calibration, sleep mode, scale, etc.
-enum RtdEzoCommand {
-    Baud(u16),
+pub enum RtdEzoCommand {
+    Baud(u32),
     CalibrationTemperature(f64),
     CalibrationClear,
     CalibrationState,
-    DataloggerPeriod(u8),
+    DataloggerPeriod(u16),
     DataloggerDisable,
     DataloggerInterval,
-    DeviceAddress(u8),
+    DeviceAddress(u16),
     DeviceInformation,
     Export,
     ExportInfo,
