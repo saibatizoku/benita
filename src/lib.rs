@@ -18,7 +18,7 @@ mod sensors;
 
 use errors::*;
 use i2cdev::core::I2CDevice;
-use i2cdev::linux::{LinuxI2CDevice, LinuxI2CError};
+use i2cdev::linux::LinuxI2CDevice;
 
 #[derive(Clone)]
 pub struct SlaveDevice {
