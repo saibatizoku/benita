@@ -45,7 +45,7 @@ impl I2cCommand for RtdEzoCommand {
     fn to_string(&self) -> String {
         use self::RtdEzoCommand::*;
         match *self {
-            Baud(ref baud) => format!("Baud,{}\0", baud),
+            Baud(baud) => format!("Baud,{}\0", baud),
             CalibrationTemperature(temp) => format!("Cal,{:.*}\0", 2, temp),
             CalibrationClear => "Cal,clear\0".to_string(),
             CalibrationState => "Cal,?\0".to_string(),
