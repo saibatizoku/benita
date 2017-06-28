@@ -4,7 +4,6 @@ extern crate i2cdev;
 
 use benita::{I2cCommand, I2cSlave, SlaveDevice};
 use benita::errors::*;
-use i2cdev::linux::LinuxI2CError;
 
 use std::env;
 
@@ -46,13 +45,31 @@ impl BlinkerService {
     }
 }
 
-/// This is the main program. It takes one argument: if it is 'on', the I2C
+/// This is the main program, it executes `run_service` with error-chain.
+fn main() {
+    if let Err(ref e) = run_service() {
+        println!("error: {}", e);
+
+        for e in e.iter().skip(1) {
+            println!("caused by: {}", e);
+        }
+
+        // The backtrace is not always generated. Try to run this example
+        // with `RUST_BACKTRACE=1`.
+        if let Some(backtrace) = e.backtrace() {
+            println!("backtrace: {:?}", backtrace);
+        }
+        ::std::process::exit(1);
+    }
+}
+
+/// This is the main service. It takes one argument: if it is 'on', the I2C
 /// slave will be commanded to turn on blinking on the LED. 'off' will turn
 /// the blinking off.
 ///
 /// Anything else will exit normally, printing a message.
 ///
-fn main() {
+fn run_service() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     let command = &args[1];
     let arduino = SlaveDevice::new(I2CBUS_ID, ARDUINO_SLAVE_ADDR);
@@ -62,5 +79,5 @@ fn main() {
         "off" => blinker.off().unwrap(),
         _     => println!("'{}' doesn't exist. Use 'on' or 'off'.", command),
     };
-    ::std::process::exit(0);
+    Ok(())
 }
