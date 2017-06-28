@@ -4,6 +4,7 @@ version = "0.0.1"
 authors = ["Joaquín R <globojorro@gmail.com>"]
 
 [dependencies]
+error-chain = "~0.10.0"
 i2cdev = "0.3.1"
 sysfs_gpio = "0.5"
 
