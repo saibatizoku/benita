@@ -38,7 +38,11 @@ pub enum RtdEzoCommand {
 }
 
 impl I2cCommand for RtdEzoCommand {
-    fn parse(&self) -> String {
+    fn to_bytes(&self) -> Vec<u8> {
+        self.to_string().into_bytes()
+    }
+
+    fn to_string(&self) -> String {
         use self::RtdEzoCommand::*;
         match *self {
             Baud(ref baud) => format!("Baud,{}\0", baud),
@@ -74,8 +78,9 @@ impl I2cCommand for RtdEzoCommand {
         }
     }
 }
+
 fn temperature_command(cmd: RtdEzoCommand) -> String {
-    cmd.parse()
+    cmd.to_string()
 }
 
 #[cfg(test)]

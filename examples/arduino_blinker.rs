@@ -15,11 +15,14 @@ enum BlinkerCommand {
 }
 
 impl I2cCommand for BlinkerCommand {
-    fn parse(&self) -> Vec<u8> {
+    fn to_bytes(&self) -> Vec<u8> {
         match self {
             &BlinkerCommand::On => vec![0x01],
             &BlinkerCommand::Off => vec![0x00],
         }
+    }
+    fn to_string(&self) -> String {
+        format!("{:?}", self.to_bytes())
     }
 }
 

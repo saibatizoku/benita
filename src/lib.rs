@@ -22,7 +22,8 @@ pub struct SlaveDevice {
 }
 
 pub trait I2cCommand {
-    fn parse(&self) -> String;
+    fn to_bytes(&self) -> Vec<u8>;
+    fn to_string(&self) -> String;
 }
 
 pub trait I2cSlave {
@@ -37,6 +38,6 @@ impl I2cSlave for SlaveDevice {
     fn send<T: I2cCommand>(&self, cmd: T) -> Result<(), LinuxI2CError> {
         let bus = format!("/dev/i2c-{}", self.bus);
         let mut dev = try!(LinuxI2CDevice::new(bus, self.address));
-        dev.write(&cmd.parse().as_bytes())
+        dev.write(&cmd.to_bytes())
     }
 }
