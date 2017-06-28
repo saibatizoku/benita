@@ -1,7 +1,9 @@
+#![recursion_limit = "1024"]
 extern crate benita;
 extern crate i2cdev;
 
 use benita::{I2cCommand, I2cSlave, SlaveDevice};
+use benita::errors::*;
 use i2cdev::linux::LinuxI2CError;
 
 use std::env;
@@ -34,11 +36,11 @@ impl BlinkerService {
     fn new(device: SlaveDevice) -> Self {
         BlinkerService { device }
     }
-    fn on(&self) -> Result<(), LinuxI2CError> {
+    fn on(&self) -> Result<()> {
         println!("Sending: Blink on");
         self.device.send(BlinkerCommand::On)
     }
-    fn off(&self) -> Result<(), LinuxI2CError> {
+    fn off(&self) -> Result<()> {
         println!("Sending: Blink off");
         self.device.send(BlinkerCommand::Off)
     }

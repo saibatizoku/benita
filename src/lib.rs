@@ -8,10 +8,15 @@
 //! * pH
 //! * Electrical Conductivity
 //! * Temperature
+#![recursion_limit = "1024"]
+#[macro_use]
+extern crate error_chain;
 extern crate i2cdev;
 
+pub mod errors;
 mod sensors;
 
+use errors::*;
 use i2cdev::core::I2CDevice;
 use i2cdev::linux::{LinuxI2CDevice, LinuxI2CError};
 
@@ -28,16 +33,17 @@ pub trait I2cCommand {
 
 pub trait I2cSlave {
     fn new(bus: u8, address: u16) -> Self;
-    fn send<T: I2cCommand>(&self, cmd: T) -> Result<(), LinuxI2CError>;
+    fn send<T: I2cCommand>(&self, cmd: T) -> Result<()>;
 }
 
 impl I2cSlave for SlaveDevice {
     fn new(bus: u8, address: u16) -> SlaveDevice {
         SlaveDevice { bus, address }
     }
-    fn send<T: I2cCommand>(&self, cmd: T) -> Result<(), LinuxI2CError> {
+    fn send<T: I2cCommand>(&self, cmd: T) -> Result<()> {
         let bus = format!("/dev/i2c-{}", self.bus);
-        let mut dev = try!(LinuxI2CDevice::new(bus, self.address));
-        dev.write(&cmd.to_bytes())
+        let mut dev = LinuxI2CDevice::new(bus, self.address)
+                       .chain_err(|| "Could not open I2C device")?;
+        dev.write(&cmd.to_bytes()).chain_err(|| "Could not send command")
     }
 }
