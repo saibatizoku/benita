@@ -5,7 +5,6 @@
 use I2cCommand;
 
 pub enum RtdEzoCommand {
-    Baud(u32),
     CalibrationTemperature(f64),
     CalibrationClear,
     CalibrationState,
@@ -33,8 +32,20 @@ pub enum RtdEzoCommand {
     ScaleKelvin,
     ScaleFahrenheit,
     ScaleStatus,
+    SetUart(Bauds),
     Sleep,
     Status,
+}
+
+pub enum Bauds {
+    Bps300,
+    Bps1200,
+    Bps2400,
+    Bps9600,
+    Bps19200,
+    Bps38400,
+    Bps57600,
+    Bps115200,
 }
 
 impl I2cCommand for RtdEzoCommand {
@@ -45,7 +56,6 @@ impl I2cCommand for RtdEzoCommand {
     fn to_string(&self) -> String {
         use self::RtdEzoCommand::*;
         match *self {
-            Baud(baud) => format!("Baud,{}\0", baud),
             CalibrationTemperature(temp) => format!("Cal,{:.*}\0", 2, temp),
             CalibrationClear => "Cal,clear\0".to_string(),
             CalibrationState => "Cal,?\0".to_string(),
@@ -73,6 +83,19 @@ impl I2cCommand for RtdEzoCommand {
             ScaleKelvin => "S,k\0".to_string(),
             ScaleFahrenheit => "S,f\0".to_string(),
             ScaleStatus => "S,?\0".to_string(),
+            SetUart(ref baud) => {
+                let rate = match *baud {
+                    Bauds::Bps300 => 300,
+                    Bauds::Bps1200 => 1200,
+                    Bauds::Bps2400 => 2400,
+                    Bauds::Bps9600 => 9600,
+                    Bauds::Bps19200 => 19200,
+                    Bauds::Bps38400 => 38400,
+                    Bauds::Bps57600 => 57600,
+                    Bauds::Bps115200 => 115200,
+                };
+                format!("Baud,{}\0", rate)
+            },
             Sleep => "Sleep\0".to_string(),
             Status => "Status\0".to_string(),
         }
@@ -90,7 +113,7 @@ mod tests {
 
     #[test]
     fn temperature_command_uart_mode() {
-        let cmd = temperature_command(Baud(9600));
+        let cmd = temperature_command(SetUart(Bauds::Bps9600));
         assert_eq!(cmd, "Baud,9600\0");
     }
 
