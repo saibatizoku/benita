@@ -1,9 +1,9 @@
-b.e.n.i.t.a.
-============
+benita
+======
 
 Utilería de software, escrita en Rust, para la gestión de cultivos acuáticos de pequeña escala.
 
-La compilación para Raspberry Pi, se realiza con [rust-on-raspberry-docker](https://github.com/Ragnaroek/rust-on-raspberry-docker), siguiendo los pasos ahí establecidos.
+La compilación para Raspberry Pi 3 (arquitectura ARM 64-bits), se realiza con instalando [con rustup](https://www.rust-lang.org/es-ES/install.html) normalmente desde el dispositivo. También es posible usar [rust-on-raspberry-docker](https://github.com/Ragnaroek/rust-on-raspberry-docker), siguiendo los pasos ahí establecidos desde otro equipo para compilación cruzada.
 
 Para el funcionamiento correcto del software, es necesario que I2C esté habilitado en el dispositivo que lo ejecutará.
 
@@ -28,4 +28,3 @@ Para el funcionamiento correcto del software, es necesario que I2C esté habilit
 * Barómetro - I2C
 * Temperatura - I2C
 * Humedad relativa - I2C
-* Compás - I2C
