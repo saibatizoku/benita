@@ -4,6 +4,17 @@
 
 use I2cCommand;
 
+pub enum Bauds {
+    Bps300 = 300,
+    Bps1200 = 1200,
+    Bps2400 = 2400,
+    Bps9600 = 9600,
+    Bps19200 = 19200,
+    Bps38400 = 38400,
+    Bps57600 = 57600,
+    Bps115200 = 115200,
+}
+
 pub enum RtdEzoCommand {
     CalibrationTemperature(f64),
     CalibrationClear,
@@ -35,17 +46,6 @@ pub enum RtdEzoCommand {
     SetUart(Bauds),
     Sleep,
     Status,
-}
-
-pub enum Bauds {
-    Bps300 = 300,
-    Bps1200 = 1200,
-    Bps2400 = 2400,
-    Bps9600 = 9600,
-    Bps19200 = 19200,
-    Bps38400 = 38400,
-    Bps57600 = 57600,
-    Bps115200 = 115200,
 }
 
 fn command_string(cmd: &RtdEzoCommand) -> String {
