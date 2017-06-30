@@ -1,7 +1,7 @@
 benita
 ======
 
-> "Chapopote para redes"
+> "Chapopote para redes sensoriales"
 
 
 Utilería de software, escrita en Rust, para la gestión de cultivos acuáticos de pequeña escala.
