@@ -100,16 +100,17 @@ impl I2cCommand for RtdEzoCommand {
             Status => "Status\0".to_string(),
         }
     }
-}
 
-fn temperature_command(cmd: RtdEzoCommand) -> String {
-    cmd.to_string()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use super::RtdEzoCommand::*;
+
+    fn temperature_command(cmd: RtdEzoCommand) -> String {
+        cmd.to_string()
+    }
 
     #[test]
     fn temperature_command_uart_mode() {
