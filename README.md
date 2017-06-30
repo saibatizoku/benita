@@ -12,8 +12,11 @@ Para el funcionamiento correcto del software, es necesario que I2C esté habilit
 
 ## Dependencias
 
+*   [error-chain](https://github.com/brson/error-chain)
+*   [ezo-rtd-rs](https://github.com/saibatizoku/ezo-rtd-rs)
+*   [neuras](https://github.com/saibatizoku/neuras)
 *   [rust-i2cdev](https://github.com/rust-embedded/rust-i2cdev)
-*   [rust-zmq](https://github.com/erickt/rust-zmq)
+*   [rust-sysfs-gpio](https://github.com/rust-embedded/rust-sysfs-gpio)
 *   [sensehat-rs](https://github.com/thejpster/sensehat-rs)
 
 ## Arquitectura del hardware
