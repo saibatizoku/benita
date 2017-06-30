@@ -13,7 +13,7 @@ pub enum RtdEzoCommand {
     DataloggerInterval,
     DeviceAddress(u16),
     DeviceInformation,
-    Export,
+    Export(String),
     ExportInfo,
     Import(String),
     Factory,
@@ -64,7 +64,7 @@ impl I2cCommand for RtdEzoCommand {
             DataloggerInterval => "D,?\0".to_string(),
             DeviceAddress(addr) => format!("I2C,{}\0", addr),
             DeviceInformation => "I\0".to_string(),
-            Export => "Export\0".to_string(),
+            Export(ref calib) => format!("Export,{}\0", calib),
             ExportInfo => "Export,?\0".to_string(),
             Import(ref calib) => format!("Import,{}\0", calib),
             Factory => "Factory\0".to_string(),
@@ -167,8 +167,9 @@ mod tests {
 
     #[test]
     fn temperature_command_export() {
-        let cmd = temperature_command(Export);
-        assert_eq!(cmd, "Export\0");
+        let calibration_string = "ABCDEFGHIJKLMNO".to_string();
+        let cmd = temperature_command(Export(calibration_string));
+        assert_eq!(cmd, "Export,ABCDEFGHIJKLMNO\0");
     }
 
     #[test]
@@ -179,8 +180,9 @@ mod tests {
 
     #[test]
     fn temperature_command_import() {
-        let cmd = temperature_command(Import(String::from("abcdef")));
-        assert_eq!(cmd, "Import,abcdef\0");
+        let calibration_string = "ABCDEFGHIJKLMNO".to_string();
+        let cmd = temperature_command(Import(calibration_string));
+        assert_eq!(cmd, "Import,ABCDEFGHIJKLMNO\0");
     }
 
     #[test]
