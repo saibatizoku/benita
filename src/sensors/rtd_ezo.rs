@@ -48,57 +48,119 @@ pub enum Bauds {
     Bps115200 = 115200,
 }
 
+fn command_string(cmd: &RtdEzoCommand) -> String {
+    use self::RtdEzoCommand::*;
+    match *cmd {
+        CalibrationTemperature(temp) => {
+            format!("Cal,{:.*}\0", 2, temp)
+        },
+        CalibrationClear => {
+            "Cal,clear\0".to_string()
+        },
+        CalibrationState => {
+            "Cal,?\0".to_string()
+        },
+        DataloggerPeriod(n) => {
+            format!("D,{}\0", n)
+        },
+        DataloggerDisable => {
+            "D,0\0".to_string()
+        },
+        DataloggerInterval => {
+            "D,?\0".to_string()
+        },
+        DeviceAddress(addr) => {
+            format!("I2C,{}\0", addr)
+        },
+        DeviceInformation => {
+            "I\0".to_string()
+        },
+        Export(ref calib) => {
+            format!("Export,{}\0", calib)
+        },
+        ExportInfo => {
+            "Export,?\0".to_string()
+        },
+        Import(ref calib) => {
+            format!("Import,{}\0", calib)
+        },
+        Factory => {
+            "Factory\0".to_string()
+        },
+        Find => {
+            "F\0".to_string()
+        },
+        LedOn => {
+            "L,1\0".to_string()
+        },
+        LedOff => {
+            "L,0\0".to_string()
+        },
+        LedState => {
+            "L,?\0".to_string()
+        },
+        MemoryClear => {
+            "M,clear\0".to_string()
+        },
+        MemoryRecall => {
+            "M\0".to_string()
+        },
+        MemoryRecallLastLocation => {
+            "M,?\0".to_string()
+        },
+        ProtocolLockEnable => {
+            "Plock,1\0".to_string()
+        },
+        ProtocolLockDisable => {
+            "Plock,0\0".to_string()
+        },
+        ProtocolLockStatus => {
+            "Plock,?\0".to_string()
+        },
+        Reading => {
+            "R\0".to_string()
+        },
+        ScaleCelsius => {
+            "S,c\0".to_string()
+        },
+        ScaleKelvin => {
+            "S,k\0".to_string()
+        },
+        ScaleFahrenheit => {
+            "S,f\0".to_string()
+        },
+        ScaleStatus => {
+            "S,?\0".to_string()
+        },
+        SetUart(ref baud) => {
+            let rate = match *baud {
+                Bauds::Bps300 => Bauds::Bps300 as u32,
+                Bauds::Bps1200 => Bauds::Bps1200 as u32,
+                Bauds::Bps2400 => Bauds::Bps2400 as u32,
+                Bauds::Bps9600 => Bauds::Bps9600 as u32,
+                Bauds::Bps19200 => Bauds::Bps19200 as u32,
+                Bauds::Bps38400 => Bauds::Bps38400 as u32,
+                Bauds::Bps57600 => Bauds::Bps57600 as u32,
+                Bauds::Bps115200 => Bauds::Bps115200 as u32,
+            };
+            format!("Baud,{}\0", rate)
+        },
+        Sleep => {
+            "Sleep\0".to_string()
+        },
+        Status => {
+            "Status\0".to_string()
+        },
+    }
+}
+
 impl I2cCommand for RtdEzoCommand {
     fn to_bytes(&self) -> Vec<u8> {
         self.to_string().into_bytes()
     }
 
     fn to_string(&self) -> String {
-        use self::RtdEzoCommand::*;
-        match *self {
-            CalibrationTemperature(temp) => format!("Cal,{:.*}\0", 2, temp),
-            CalibrationClear => "Cal,clear\0".to_string(),
-            CalibrationState => "Cal,?\0".to_string(),
-            DataloggerPeriod(n) => format!("D,{}\0", n),
-            DataloggerDisable => "D,0\0".to_string(),
-            DataloggerInterval => "D,?\0".to_string(),
-            DeviceAddress(addr) => format!("I2C,{}\0", addr),
-            DeviceInformation => "I\0".to_string(),
-            Export(ref calib) => format!("Export,{}\0", calib),
-            ExportInfo => "Export,?\0".to_string(),
-            Import(ref calib) => format!("Import,{}\0", calib),
-            Factory => "Factory\0".to_string(),
-            Find => "F\0".to_string(),
-            LedOn => "L,1\0".to_string(),
-            LedOff => "L,0\0".to_string(),
-            LedState => "L,?\0".to_string(),
-            MemoryClear => "M,clear\0".to_string(),
-            MemoryRecall => "M\0".to_string(),
-            MemoryRecallLastLocation => "M,?\0".to_string(),
-            ProtocolLockEnable => "Plock,1\0".to_string(),
-            ProtocolLockDisable => "Plock,0\0".to_string(),
-            ProtocolLockStatus => "Plock,?\0".to_string(),
-            Reading => "R\0".to_string(),
-            ScaleCelsius => "S,c\0".to_string(),
-            ScaleKelvin => "S,k\0".to_string(),
-            ScaleFahrenheit => "S,f\0".to_string(),
-            ScaleStatus => "S,?\0".to_string(),
-            SetUart(ref baud) => {
-                let rate = match *baud {
-                    Bauds::Bps300 => Bauds::Bps300 as u32,
-                    Bauds::Bps1200 => Bauds::Bps1200 as u32,
-                    Bauds::Bps2400 => Bauds::Bps2400 as u32,
-                    Bauds::Bps9600 => Bauds::Bps9600 as u32,
-                    Bauds::Bps19200 => Bauds::Bps19200 as u32,
-                    Bauds::Bps38400 => Bauds::Bps38400 as u32,
-                    Bauds::Bps57600 => Bauds::Bps57600 as u32,
-                    Bauds::Bps115200 => Bauds::Bps115200 as u32,
-                };
-                format!("Baud,{}\0", rate)
-            },
-            Sleep => "Sleep\0".to_string(),
-            Status => "Status\0".to_string(),
-        }
+        command_string(self)
     }
 
 }
