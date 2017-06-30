@@ -38,14 +38,14 @@ pub enum RtdEzoCommand {
 }
 
 pub enum Bauds {
-    Bps300,
-    Bps1200,
-    Bps2400,
-    Bps9600,
-    Bps19200,
-    Bps38400,
-    Bps57600,
-    Bps115200,
+    Bps300 = 300,
+    Bps1200 = 1200,
+    Bps2400 = 2400,
+    Bps9600 = 9600,
+    Bps19200 = 19200,
+    Bps38400 = 38400,
+    Bps57600 = 57600,
+    Bps115200 = 115200,
 }
 
 impl I2cCommand for RtdEzoCommand {
@@ -85,14 +85,14 @@ impl I2cCommand for RtdEzoCommand {
             ScaleStatus => "S,?\0".to_string(),
             SetUart(ref baud) => {
                 let rate = match *baud {
-                    Bauds::Bps300 => 300,
-                    Bauds::Bps1200 => 1200,
-                    Bauds::Bps2400 => 2400,
-                    Bauds::Bps9600 => 9600,
-                    Bauds::Bps19200 => 19200,
-                    Bauds::Bps38400 => 38400,
-                    Bauds::Bps57600 => 57600,
-                    Bauds::Bps115200 => 115200,
+                    Bauds::Bps300 => Bauds::Bps300 as u32,
+                    Bauds::Bps1200 => Bauds::Bps1200 as u32,
+                    Bauds::Bps2400 => Bauds::Bps2400 as u32,
+                    Bauds::Bps9600 => Bauds::Bps9600 as u32,
+                    Bauds::Bps19200 => Bauds::Bps19200 as u32,
+                    Bauds::Bps38400 => Bauds::Bps38400 as u32,
+                    Bauds::Bps57600 => Bauds::Bps57600 as u32,
+                    Bauds::Bps115200 => Bauds::Bps115200 as u32,
                 };
                 format!("Baud,{}\0", rate)
             },
@@ -113,8 +113,22 @@ mod tests {
 
     #[test]
     fn temperature_command_uart_mode() {
+        let cmd = temperature_command(SetUart(Bauds::Bps300));
+        assert_eq!(cmd, "Baud,300\0");
+        let cmd = temperature_command(SetUart(Bauds::Bps1200));
+        assert_eq!(cmd, "Baud,1200\0");
+        let cmd = temperature_command(SetUart(Bauds::Bps2400));
+        assert_eq!(cmd, "Baud,2400\0");
         let cmd = temperature_command(SetUart(Bauds::Bps9600));
         assert_eq!(cmd, "Baud,9600\0");
+        let cmd = temperature_command(SetUart(Bauds::Bps19200));
+        assert_eq!(cmd, "Baud,19200\0");
+        let cmd = temperature_command(SetUart(Bauds::Bps38400));
+        assert_eq!(cmd, "Baud,38400\0");
+        let cmd = temperature_command(SetUart(Bauds::Bps57600));
+        assert_eq!(cmd, "Baud,57600\0");
+        let cmd = temperature_command(SetUart(Bauds::Bps115200));
+        assert_eq!(cmd, "Baud,115200\0");
     }
 
     #[test]
