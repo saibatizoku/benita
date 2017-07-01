@@ -14,7 +14,6 @@ extern crate error_chain;
 extern crate i2cdev;
 
 pub mod errors;
-mod sensors;
 
 use errors::*;
 use i2cdev::core::I2CDevice;
