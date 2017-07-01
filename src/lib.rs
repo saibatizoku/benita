@@ -21,7 +21,7 @@ use i2cdev::core::I2CDevice;
 use i2cdev::linux::LinuxI2CDevice;
 
 #[derive(Clone)]
-pub struct SlaveDevice {
+pub struct SensingDevice {
     bus: u8,
     address: u16,
 }
@@ -31,14 +31,14 @@ pub trait I2cCommand {
     fn to_string(&self) -> String;
 }
 
-pub trait I2cSlave {
+pub trait I2cSensing {
     fn new(bus: u8, address: u16) -> Self;
     fn send<T: I2cCommand>(&self, cmd: T) -> Result<()>;
 }
 
-impl I2cSlave for SlaveDevice {
-    fn new(bus: u8, address: u16) -> SlaveDevice {
-        SlaveDevice { bus, address }
+impl I2cSensing for SensingDevice {
+    fn new(bus: u8, address: u16) -> SensingDevice {
+        SensingDevice { bus, address }
     }
     fn send<T: I2cCommand>(&self, cmd: T) -> Result<()> {
         let bus = format!("/dev/i2c-{}", self.bus);

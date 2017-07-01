@@ -11,12 +11,12 @@ use std::thread;
 use std::time::Duration;
 
 const DEVICE_ID: u8 = 1;
-const EZO_SLAVE_ADDR: u16 = 101; // could be specified as 0x65
+const EZO_SENSING_ADDR: u16 = 101; // could be specified as 0x65
 
 // real code should probably not use unwrap()
 fn i2cfun(cmd: &str, delay: u64) -> Result<()> {
     let device_path = format!("/dev/i2c-{}", DEVICE_ID);
-    let mut dev = LinuxI2CDevice::new(&device_path, EZO_SLAVE_ADDR)
+    let mut dev = LinuxI2CDevice::new(&device_path, EZO_SENSING_ADDR)
         .chain_err(|| "Could not open I2C device")?;
     println!("I2C Device opened at {}", &device_path);
 

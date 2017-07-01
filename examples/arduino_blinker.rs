@@ -2,12 +2,12 @@
 extern crate benita;
 extern crate i2cdev;
 
-use benita::{I2cCommand, I2cSlave, SlaveDevice};
+use benita::{I2cCommand, I2cSensing, SensingDevice};
 use benita::errors::*;
 
 use std::env;
 
-const ARDUINO_SLAVE_ADDR: u16 = 0x08;
+const ARDUINO_SENSING_ADDR: u16 = 0x08;
 const I2CBUS_ID: u8 = 1;
 
 enum BlinkerCommand {
@@ -28,11 +28,11 @@ impl I2cCommand for BlinkerCommand {
 }
 
 struct BlinkerService {
-    device: SlaveDevice,
+    device: SensingDevice,
 }
 
 impl BlinkerService {
-    fn new(device: SlaveDevice) -> Self {
+    fn new(device: SensingDevice) -> Self {
         BlinkerService { device }
     }
     fn on(&self) -> Result<()> {
@@ -64,15 +64,15 @@ fn main() {
 }
 
 /// This is the main service. It takes one argument: if it is 'on', the I2C
-/// slave will be commanded to turn on blinking on the LED. 'off' will turn
-/// the blinking off.
+/// sensing device will be commanded to turn on blinking on the LED. 'off' will
+/// turn the blinking off.
 ///
 /// Anything else will exit normally, printing a message.
 ///
 fn run_service() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     let command = &args[1];
-    let arduino = SlaveDevice::new(I2CBUS_ID, ARDUINO_SLAVE_ADDR);
+    let arduino = SensingDevice::new(I2CBUS_ID, ARDUINO_SENSING_ADDR);
     let blinker = BlinkerService::new(arduino.clone());
     match &command[..] {
         "on"  => blinker.on().unwrap(),
