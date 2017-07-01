@@ -7,7 +7,7 @@ authors = ["Joaquín R <globojorro@gmail.com>"]
 error-chain = "~0.10.0"
 ezo-rtd = { git = "https://github.com/saibatizoku/ezo-rtd-rs.git", branch = "master" }
 i2cdev = "0.3.1"
-sensehat = { git = "https://github.com/thejpster/sensehat-rs.git", branch = "master" }
+sensehat = { git = "https://github.com/shaunmulligan/sensehat-rs.git", branch = "master" }
 sysfs_gpio = "0.5"
 zmq = "0.8"
 

@@ -17,7 +17,7 @@ Para el funcionamiento correcto del software, es necesario que I2C esté habilit
 *   [neuras](https://github.com/saibatizoku/neuras)
 *   [rust-i2cdev](https://github.com/rust-embedded/rust-i2cdev)
 *   [rust-sysfs-gpio](https://github.com/rust-embedded/rust-sysfs-gpio)
-*   [sensehat-rs](https://github.com/thejpster/sensehat-rs)
+*   [sensehat-rs](https://github.com/shaunmulligan/sensehat-rs.git)
 
 ## Arquitectura del hardware
 
