@@ -8,7 +8,7 @@ extern crate zmq;
 use chrono::{DateTime, Local};
 use benita::errors::*;
 
-fn atoi(s: &str) -> i64 {
+fn atof(s: &str) -> f64 {
     s.parse().unwrap()
 }
 
@@ -22,19 +22,20 @@ fn run() -> Result<()> {
     let filter = "temp_uuid";
     assert!(subscriber.set_subscribe(filter.as_bytes()).is_ok());
 
-    let mut total_temp = 0;
+    let mut total_temp = 0f64;
 
     loop {
         for _ in 0 .. 6 {
             let string = subscriber.recv_string(0).unwrap().unwrap();
             let chks: Vec<&str> = string.split(' ').collect();
-            let (_uuid, datetime, temperature) = (chks[0], chks[1], atoi(&chks[2]));
-            let dt = datetime.parse::<DateTime<Local>>();
+            let (_uuid, datetime, temperature) = (chks[0], chks[1], atof(&chks[2]));
+            let dt = datetime.parse::<DateTime<Local>>().unwrap();
             println!("{:?} {}", dt, temperature);
             total_temp += temperature;
         }
 
-        println!("Average temperature for '{}' was {}°C", "temp_uuid", (total_temp / 6));
+        println!("Average temperature for '{}' was {}°C", "temp_uuid", (total_temp / 6.0));
+        total_temp = 0f64;
     }
 }
 
