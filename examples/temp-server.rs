@@ -46,7 +46,7 @@ fn run() -> Result<()> {
 
         // We print out the result
         let dt: DateTime<Utc> = Utc::now();
-        let update = format!("{} {:?} {:.*}, {}", PUB_CHANNEL, dt, 2, temp_float, temp_scale);
+        let update = format!("{} {:?} {:.*} {}", PUB_CHANNEL, dt, 3, temp_float, temp_scale);
         publisher.send(&update.as_bytes(), 0).unwrap();
         println!("{}", &update);
 

@@ -35,7 +35,7 @@ fn run() -> Result<()> {
             total_temp += temperature;
         }
 
-        println!("Average temperature for '{}' was {}", "temp_uuid", (total_temp / 6.0));
+        println!("Average temperature for '{}' was {:.*}", SUB_CHANNEL, 3, (total_temp / 6.0));
         total_temp = 0f64;
     }
 }
