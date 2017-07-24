@@ -6,15 +6,21 @@ extern crate ezo_rtd;
 extern crate i2cdev;
 extern crate zmq;
 
-use chrono::{DateTime, Utc};
-use ezo_rtd::errors::*;
-use ezo_rtd::{CommandBuilder, I2cCommand, TemperatureCommand};
-use i2cdev::linux::LinuxI2CDevice;
 use std::thread;
 use std::time::Duration;
 
+use ezo_rtd::errors::*;
+use ezo_rtd::command as rtd_command;
+use ezo_rtd::response as rtd_response;
+use rtd_command::Command;
+use rtd_response::Temperature;
+
+use chrono::{DateTime, Utc};
+use i2cdev::linux::LinuxI2CDevice;
+
 const I2C_BUS_ID: u8 = 1;
 const EZO_SENSOR_ADDR: u16 = 101; // could be specified as 0x65
+const PUB_CHANNEL: &'static str = "temperature-0123456789abcdef";
 
 fn run() -> Result<()> {
     let device_path = format!("/dev/i2c-{}", I2C_BUS_ID);
@@ -27,16 +33,26 @@ fn run() -> Result<()> {
     assert!(publisher.bind("ipc://weather.ipc").is_ok());
 
     loop {
-        let mut builder = TemperatureCommand::Reading.build();
-        builder.run(&mut dev)?;
-        let response = builder.parse_response()?;
-        let temperature = response.parse::<f64>().chain_err(|| "unparsable temperature")?;
-        TemperatureCommand::Sleep.build().run(&mut dev)?;
+        // We take a temperature reading (around 900ms).
+        let temperature = rtd_command::ReadingWithScale.run(&mut dev)?;
+        let (temp_float, temp_scale) = match temperature {
+            Temperature::Celsius(t) => (t, "Celsius"),
+            Temperature::Kelvin(t) => (t, "Kelvin"),
+            Temperature::Fahrenheit(t) => (t, "Fahrenheit"),
+        };
+
+        // We immediately put the chip to sleep.
+        let _sleep = rtd_command::Sleep.run(&mut dev)?;
+
+        // We print out the result
         let dt: DateTime<Utc> = Utc::now();
-        let update = format!("temp_uuid {:?} {:.*} °C", dt, 2, temperature);
+        let update = format!("{} {:?} {:.*}, {}", PUB_CHANNEL, dt, 2, temp_float, temp_scale);
         publisher.send(&update.as_bytes(), 0).unwrap();
         println!("{}", &update);
-        thread::sleep(Duration::from_millis(9400));
+
+        // put the thread to sleep for 10_000 - 900 ms = 9_100 ms.
+        // The real delay will depend on your system's characteristics.
+        thread::sleep(Duration::from_millis(9_100));
     }
 }
 

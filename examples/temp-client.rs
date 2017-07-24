@@ -8,6 +8,8 @@ extern crate zmq;
 use chrono::{DateTime, Local};
 use benita::errors::*;
 
+const SUB_CHANNEL: &'static str = "temperature-0123456789abcdef";
+
 fn atof(s: &str) -> f64 {
     s.parse().unwrap()
 }
@@ -17,10 +19,9 @@ fn run() -> Result<()> {
 
     let context = zmq::Context::new();
     let subscriber = context.socket(zmq::SUB).unwrap();
-    assert!(subscriber.connect("tcp://localhost:5556").is_ok());
+    assert!(subscriber.connect("tcp://192.168.16.123:5556").is_ok());
 
-    let filter = "temp_uuid";
-    assert!(subscriber.set_subscribe(filter.as_bytes()).is_ok());
+    assert!(subscriber.set_subscribe(SUB_CHANNEL.as_bytes()).is_ok());
 
     let mut total_temp = 0f64;
 
@@ -28,13 +29,13 @@ fn run() -> Result<()> {
         for _ in 0 .. 6 {
             let string = subscriber.recv_string(0).unwrap().unwrap();
             let chks: Vec<&str> = string.split(' ').collect();
-            let (_uuid, datetime, temperature) = (chks[0], chks[1], atof(&chks[2]));
+            let (_uuid, datetime, temperature, scale) = (chks[0], chks[1], atof(&chks[2]), chks[3]);
             let dt = datetime.parse::<DateTime<Local>>().unwrap();
-            println!("{:?} {}", dt, temperature);
+            println!("{:?} {} {}", dt, temperature, scale);
             total_temp += temperature;
         }
 
-        println!("Average temperature for '{}' was {}°C", "temp_uuid", (total_temp / 6.0));
+        println!("Average temperature for '{}' was {}", "temp_uuid", (total_temp / 6.0));
         total_temp = 0f64;
     }
 }
