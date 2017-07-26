@@ -104,7 +104,7 @@ dependencies = [
 [[package]]
 name = "ezo_ec"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/ezo-ec-rs.git#667864eac242a279dd23254b7aacbf820ca1b1f5"
+source = "git+https://github.com/saibatizoku/ezo-ec-rs.git#b1558bfe08d49706989aa2c8c4a5925dcc895749"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
