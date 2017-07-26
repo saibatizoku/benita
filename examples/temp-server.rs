@@ -1,6 +1,10 @@
-#![recursion_limit = "1024"]
-//! An example that takes readings from the RTD EZO chip in a loop.
+//! Take a reading every 10 seconds from the RTD EZO chip, and publish the
+//! data with a UUID as the topic. This server binds to `tcp://*:5556`.
 //!
+
+// error-chain recurses deeply
+#![recursion_limit = "1024"]
+
 extern crate chrono;
 extern crate ezo_rtd;
 extern crate i2cdev;
@@ -33,20 +37,18 @@ fn run() -> Result<()> {
     assert!(publisher.bind("ipc://weather.ipc").is_ok());
 
     loop {
-        // We take a temperature reading (around 900ms).
-        let temperature = rtd_command::ReadingWithScale.run(&mut dev)?;
-        let (temp_float, temp_scale) = match temperature {
-            Temperature::Celsius(t) => (t, "Celsius"),
-            Temperature::Kelvin(t) => (t, "Kelvin"),
-            Temperature::Fahrenheit(t) => (t, "Fahrenheit"),
-        };
+        // We query the current temperature state of the sensor chip.
+        let scale = rtd_command::ScaleState.run(&mut dev)?;
+
+        // We take a temperature reading (around 600ms).
+        let temperature = rtd_command::Reading.run(&mut dev)?;
 
         // We immediately put the chip to sleep.
         let _sleep = rtd_command::Sleep.run(&mut dev)?;
 
-        // We print out the result
+        // We print out the result with the current ISO datetime.
         let dt: DateTime<Utc> = Utc::now();
-        let update = format!("{} {:?} {:.*} {}", PUB_CHANNEL, dt, 3, temp_float, temp_scale);
+        let update = format!("{} {:?} {:.*} {}", PUB_CHANNEL, dt, 3, temperature, scale);
         publisher.send(&update.as_bytes(), 0).unwrap();
         println!("{}", &update);
 

@@ -19,24 +19,63 @@ fn run() -> Result<()> {
 
     let context = zmq::Context::new();
     let subscriber = context.socket(zmq::SUB).unwrap();
+
     assert!(subscriber.connect("tcp://192.168.16.123:5556").is_ok());
 
     assert!(subscriber.set_subscribe(SUB_CHANNEL.as_bytes()).is_ok());
 
     let mut total_temp = 0f64;
+    let mut cnt = 0;
 
+    // Reactor-type loop, it will run as long as the current program runs.
     loop {
-        for _ in 0 .. 6 {
-            let string = subscriber.recv_string(0).unwrap().unwrap();
-            let chks: Vec<&str> = string.split(' ').collect();
-            let (_uuid, datetime, temperature, scale) = (chks[0], chks[1], atof(&chks[2]), chks[3]);
-            let dt = datetime.parse::<DateTime<Local>>().unwrap();
-            println!("{:?} {} {}", dt, temperature, scale);
-            total_temp += temperature;
-        }
+        let string = subscriber.recv_string(0).unwrap().unwrap();
+        let mut split = string.split(' ');
 
-        println!("Average temperature for '{}' was {:.*}", SUB_CHANNEL, 3, (total_temp / 6.0));
-        total_temp = 0f64;
+        // The first string is the UUID of the message source.
+        let uuid = match split.next() {
+            Some(_uuid) => _uuid,
+            _ => {
+                println!("No valid UUID found");
+                return Err(ErrorKind::ResponseParse.into());
+            }
+        };
+
+        let dt = match split.next() {
+            Some(date_n_time) => date_n_time.parse::<DateTime<Local>>().unwrap(),
+            _ => {
+                println!("NO valid date-time found");
+                return Err(ErrorKind::ResponseParse.into());
+            }
+        };
+
+        let temperature = match split.next() {
+            Some(temp) => atof(&temp),
+            _ => {
+                println!("NO valid date-time found");
+                return Err(ErrorKind::ResponseParse.into());
+            }
+        };
+
+
+        let scale = match split.next() {
+            Some(_scale) => _scale,
+            _ => {
+                println!("NO valid temperature scale found");
+                return Err(ErrorKind::ResponseParse.into());
+            }
+        };
+        println!("{} {} {}", dt.format("%F %T %z").to_string(), temperature, scale);
+
+        if cnt < 5 {
+            total_temp += temperature;
+            cnt += 1;
+        } else {
+            let avg = total_temp / 6.0;
+            println!("UUID: {} AVG: {:.*} {}", uuid, 3, avg, scale);
+            total_temp = 0f64;
+            cnt = 0;
+        }
     }
 }
 
