@@ -17,7 +17,7 @@ use ezo_rtd::errors::*;
 use ezo_rtd::command as rtd_command;
 use ezo_rtd::response as rtd_response;
 use rtd_command::Command;
-use rtd_response::Temperature;
+use rtd_response::SensorReading;
 
 use chrono::{DateTime, Utc};
 use i2cdev::linux::LinuxI2CDevice;
@@ -41,14 +41,14 @@ fn run() -> Result<()> {
         let scale = rtd_command::ScaleState.run(&mut dev)?;
 
         // We take a temperature reading (around 600ms).
-        let temperature = rtd_command::Reading.run(&mut dev)?;
+        let SensorReading(temperature) = rtd_command::Reading.run(&mut dev)?;
 
         // We immediately put the chip to sleep.
         let _sleep = rtd_command::Sleep.run(&mut dev)?;
 
         // We print out the result with the current ISO datetime.
         let dt: DateTime<Utc> = Utc::now();
-        let update = format!("{} {:?} {:.*} {}", PUB_CHANNEL, dt, 3, temperature, scale);
+        let update = format!("{} {:?} {:.*} {:?}", PUB_CHANNEL, dt, 3, temperature, scale);
         publisher.send(&update.as_bytes(), 0).unwrap();
         println!("{}", &update);
 

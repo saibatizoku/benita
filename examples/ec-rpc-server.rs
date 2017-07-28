@@ -11,11 +11,12 @@ extern crate ezo_ec;
 extern crate i2cdev;
 extern crate zmq;
 
+use std::thread;
+use std::time::Duration;
+
 use ezo_ec::errors::*;
 use ezo_ec::command as ec_command;
-use ezo_ec::response as ec_response;
 use ec_command::Command;
-use chrono::{DateTime, Utc};
 use i2cdev::linux::LinuxI2CDevice;
 
 const I2C_BUS_ID: u8 = 1;
@@ -67,7 +68,7 @@ fn run() -> Result<()> {
         let msg_str = msg.as_str().unwrap();
 
         // Parse and process the command.
-        let _command_response = match parse_command(msg_str) {
+        let command_response = match parse_command(msg_str) {
             PossibleCommand::NotRecognized => {
                 "Unknown command".to_string()
             }
@@ -80,12 +81,13 @@ fn run() -> Result<()> {
                 format!("{:?}", sensor_output)
             }
             PossibleCommand::Sleep => {
+                let _sleep = ec_command::Sleep.run(&mut dev)?;
                 "Sleeping".to_string()
             }
         };
 
         // Send response to the client.
-        responder.send(_command_response.as_bytes(), 0).unwrap();
+        responder.send(command_response.as_bytes(), 0).unwrap();
 
         // No work left, so we sleep.
         thread::sleep(Duration::from_millis(1));
