@@ -8,13 +8,14 @@
 extern crate benita;
 extern crate zmq;
 
+use benita::neuras::{zmq_req, connect_client};
 use benita::errors::*;
 
 fn run() -> Result<()> {
     let context = zmq::Context::new();
-    let requester = context.socket(zmq::REQ).unwrap();
+    let requester = zmq_req(&context)?;
 
-    assert!(requester.connect("tcp://192.168.16.123:5557").is_ok());
+    let _connect = connect_client(&requester, "tcp://192.168.16.123:5557")?;
 
     let mut msg = zmq::Message::new().unwrap();
 

@@ -1,3 +1,45 @@
+use std::str::FromStr;
+
+use url::Url;
+use zmq;
+
+use errors::*;
+
+pub fn zmq_xpub (context: &zmq::Context) -> Result<zmq::Socket> {
+    context.socket(zmq::XPUB).chain_err(|| ErrorKind::Neurotic)
+}
+
+pub fn zmq_xsub (context: &zmq::Context) -> Result<zmq::Socket> {
+    context.socket(zmq::XSUB).chain_err(|| ErrorKind::Neurotic)
+}
+
+pub fn zmq_pub (context: &zmq::Context) -> Result<zmq::Socket> {
+    context.socket(zmq::PUB).chain_err(|| ErrorKind::Neurotic)
+}
+
+pub fn zmq_sub (context: &zmq::Context) -> Result<zmq::Socket> {
+    context.socket(zmq::SUB).chain_err(|| ErrorKind::Neurotic)
+}
+
+pub fn zmq_rep (context: &zmq::Context) -> Result<zmq::Socket> {
+    context.socket(zmq::REP).chain_err(|| ErrorKind::Neurotic)
+}
+
+pub fn zmq_req (context: &zmq::Context) -> Result<zmq::Socket> {
+    context.socket(zmq::REQ).chain_err(|| ErrorKind::Neurotic)
+}
+
+pub fn bind_server (server: &zmq::Socket, addr: &str) -> Result<()> {
+    let addr_url: Url = addr.parse().chain_err(|| ErrorKind::AddressParse)?;
+    server.bind(addr_url.as_str()).chain_err(|| ErrorKind::Neurotic)
+}
+
+pub fn connect_client (client: &zmq::Socket, addr: &str) -> Result<()> {
+    match Url::from_str(addr) {
+        Ok(_) => client.connect(addr).chain_err(|| ErrorKind::Neurotic),
+        Err(_) => Err(ErrorKind::AddressParse.into()),
+    }
+}
 
 #[cfg(test)]
 mod tests {

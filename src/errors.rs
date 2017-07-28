@@ -1,6 +1,6 @@
 //! Create the Error, ErrorKind, ResultExt, and Result types.
 use std::io;
-
+use zmq;
 error_chain! {
     errors {
         // The address could not be parsed
@@ -18,5 +18,6 @@ error_chain! {
     }
     foreign_links {
         Io(io::Error);
+        Zmq(zmq::Error);
     }
 }

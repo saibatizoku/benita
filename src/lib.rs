@@ -12,8 +12,11 @@
 #[macro_use]
 extern crate error_chain;
 extern crate i2cdev;
+extern crate url;
+extern crate zmq;
 
 pub mod errors;
+pub mod neuras;
 
 use errors::*;
 use i2cdev::core::I2CDevice;
