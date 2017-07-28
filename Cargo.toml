@@ -13,6 +13,7 @@ i2cdev = "0.3.1"
 neuras = { git = "https://github.com/saibatizoku/neuras.git", branch = "master" }
 sensehat = { git = "https://github.com/shaunmulligan/sensehat-rs.git", branch = "master" }
 sysfs_gpio = "0.5"
+url = "1.5.1"
 zmq = "0.8"
 
 [profile.release]
