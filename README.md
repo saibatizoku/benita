@@ -7,20 +7,16 @@ La compilación para Raspberry Pi 3 (arquitectura ARM 64-bits), se realiza con i
 
 Para el funcionamiento correcto del software, es necesario que I2C esté habilitado en el dispositivo que lo ejecutará.
 
-## Dependencias
+## Uso
 
-*   [ezo-ec-rs](https://github.com/saibatizoku/ezo-ec-rs) - Sensor sumergible de conductividad eléctrica.
-*   [ezo-ph-rs](https://github.com/saibatizoku/ezo-ph-rs) - Sensor sumergible de pH.
-*   [ezo-rtd-rs](https://github.com/saibatizoku/ezo-rtd-rs) - Sensor sumergible de temperatura.
+Ésta versión requiere compilación con _nightly_, puesto que hace uso de `unstable features` de Rust.
 
+La carpeta de ejemplos ilustra cómo utilizar esta librería.
 
-*   [neuras](https://github.com/saibatizoku/neuras) - "Chapopote para redes sensoriales"
+### ADVERTENCIA
 
+> **benita** está aún en desarrollo, el API seguramente variará hasta que esta advertencia desaparezca.
 
-*   [error-chain](https://github.com/brson/error-chain)
-*   [rust-i2cdev](https://github.com/rust-embedded/rust-i2cdev)
-*   [rust-sysfs-gpio](https://github.com/rust-embedded/rust-sysfs-gpio)
-*   [sensehat-rs](https://github.com/shaunmulligan/sensehat-rs.git)
 
 ## Arquitectura del hardware
 

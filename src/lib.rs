@@ -8,7 +8,11 @@
 //! * pH
 //! * Electrical Conductivity
 //! * Temperature
+
 #![recursion_limit = "1024"]
+
+#![feature(str_checked_slicing)]
+
 #[macro_use]
 extern crate error_chain;
 extern crate i2cdev;
