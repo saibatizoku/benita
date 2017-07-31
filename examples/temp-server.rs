@@ -34,7 +34,7 @@ fn run() -> Result<()> {
     let publisher = context.socket(zmq::PUB).unwrap();
 
     assert!(publisher.bind("tcp://*:5556").is_ok());
-    assert!(publisher.bind("ipc://weather.ipc").is_ok());
+    assert!(publisher.bind("inproc://temperature").is_ok());
 
     loop {
         // We query the current temperature state of the sensor chip.
