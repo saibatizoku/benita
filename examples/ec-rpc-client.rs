@@ -8,8 +8,8 @@
 extern crate benita;
 extern crate zmq;
 
-use benita::neuras::{zmq_req, connect_client};
 use benita::errors::*;
+use benita::neuras::{zmq_req, connect_client};
 
 fn run() -> Result<()> {
     let context = zmq::Context::new();

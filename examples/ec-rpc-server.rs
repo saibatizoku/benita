@@ -2,6 +2,8 @@
 //!
 //! This server binds to `tcp://*:5557`.
 
+#![feature(str_checked_slicing)]
+
 // error-chain recurses deeply
 #![recursion_limit = "1024"]
 
@@ -22,8 +24,10 @@ use i2cdev::linux::LinuxI2CDevice;
 const I2C_BUS_ID: u8 = 1;
 const EZO_SENSOR_ADDR: u16 = 100; // could be specified as 0x64
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 enum PossibleCommand {
+    // 'T,n' command, where n is a temperature float/int
+    Calibrate(f64),
     // 'O,?' command
     GetParams,
     // 'R'
@@ -37,6 +41,11 @@ enum PossibleCommand {
 fn parse_command(cmd_str: &str) -> PossibleCommand {
     match cmd_str {
         "read" => PossibleCommand::Read,
+        a if cmd_str.starts_with("calibrate ") => {
+            let rest = a.get(10..).unwrap();
+            let temp = rest.parse().unwrap();
+            PossibleCommand::Calibrate(temp)
+        }
         "get_params" => PossibleCommand::GetParams,
         "sleep" => PossibleCommand::Sleep,
         _ => PossibleCommand::NotRecognized,
@@ -69,6 +78,10 @@ fn run() -> Result<()> {
 
         // Parse and process the command.
         let command_response = match parse_command(msg_str) {
+            PossibleCommand::Calibrate(temp) => {
+                let _calibrate = ec_command::TemperatureCompensation(temp).run(&mut dev)?;
+                format!("Compensated Temperature: {}", temp)
+            }
             PossibleCommand::NotRecognized => {
                 "Unknown command".to_string()
             }
