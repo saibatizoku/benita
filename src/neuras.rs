@@ -5,6 +5,17 @@ use zmq;
 
 use errors::*;
 
+pub fn zmq_xpub_xsub_proxy(context: &zmq::Context, xpub: &str, xsub: &str) -> Result<()> {
+    let mut backend = zmq_xpub(context)?;
+    let mut frontend = zmq_xsub(context)?;
+
+    let _bind = bind_server(&backend, xsub)?;
+    let _connect = connect_client(&frontend, xpub)?;
+
+    zmq::proxy(&mut frontend, &mut backend)
+        .chain_err(|| ErrorKind::Neurotic)
+}
+
 pub fn zmq_xpub (context: &zmq::Context) -> Result<zmq::Socket> {
     context.socket(zmq::XPUB).chain_err(|| ErrorKind::Neurotic)
 }
