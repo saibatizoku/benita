@@ -3,10 +3,16 @@
 //!
 extern crate benita;
 extern crate chrono;
+extern crate clap;
 extern crate zmq;
 
-use chrono::{DateTime, Local};
+use std::thread;
+use std::time::Duration;
+
 use benita::errors::*;
+use benita::neuras::{zmq_sub, connect_client};
+use chrono::{DateTime, Local};
+use clap::{App, Arg};
 
 const SUB_CHANNEL: &'static str = "temperature-0123456789abcdef";
 
@@ -14,76 +20,130 @@ fn atof(s: &str) -> f64 {
     s.parse().unwrap()
 }
 
-fn run() -> Result<()> {
+fn parse_cli_arguments() -> Result<()> {
+    let matches = App::new("benita-subscriber")
+        .version("0.1.0")
+        .author("Joaquin R. <globojorro@gmail.com>")
+        .about("Benita IoT. Subscriber client.")
+        .arg(Arg::with_name("pub-url")
+                 .short("b")
+                 .long("pub")
+                 .value_name("PUB_URL")
+                 .help("Sets the url for the PUB server")
+                 .takes_value(true)
+                 .index(1)
+                 .required(true))
+        .arg(Arg::with_name("channel")
+                 .short("c")
+                 .long("channel")
+                 .value_name("CHANNEL")
+                 .help("Sets the subscription channel")
+                 .takes_value(true)
+                 .required(false)
+                 .index(2))
+        .arg(Arg::with_name("debug")
+                 .short("d")
+                 .multiple(true)
+                 .help("Turn debugging information on"))
+        .get_matches();
+
+    let pub_url = match matches.value_of("pub-url") {
+        Some(puburl) => puburl,
+        _ => return Err(ErrorKind::ConfigParse.into()),
+    };
+
+    let channel = match matches.value_of("channel") {
+        Some(ch) => ch,
+        _ => SUB_CHANNEL,
+    };
+
+    let _run =  run_subscriber(&pub_url, &channel)?;
+
+    // Never reach this line...
+    Ok(())
+}
+
+fn parse_sub_str(sub_str: &str) -> Result<(String, DateTime<Local>, f64, String)> {
+    let mut split = sub_str.split(' ');
+
+    // The first string is the UUID of the message source.
+    let uuid = match split.next() {
+        Some(_uuid) => _uuid.to_string(),
+        _ => {
+            println!("No valid UUID found");
+            return Err(ErrorKind::ResponseParse.into());
+        }
+    };
+
+    let dt = match split.next() {
+        Some(date_n_time) => date_n_time.parse::<DateTime<Local>>().unwrap(),
+        _ => {
+            println!("NO valid date-time found");
+            return Err(ErrorKind::ResponseParse.into());
+        }
+    };
+
+    let temperature = match split.next() {
+        Some(temp) => atof(&temp),
+        _ => {
+            println!("NO valid date-time found");
+            return Err(ErrorKind::ResponseParse.into());
+        }
+    };
+
+
+    let scale = match split.next() {
+        Some(_scale) => _scale.to_string(),
+        _ => {
+            println!("NO valid temperature scale found");
+            return Err(ErrorKind::ResponseParse.into());
+        }
+    };
+
+    Ok((uuid, dt, temperature, scale))
+}
+
+fn run_subscriber(pub_url: &str, channel: &str) -> Result<()> {
     println!("Collecting updates from weather server...");
 
     let context = zmq::Context::new();
-    let subscriber = context.socket(zmq::SUB).unwrap();
+    let subscriber = zmq_sub(&context)?;
+    let _connect = connect_client(&subscriber, pub_url)?;
 
-    assert!(subscriber.connect("tcp://192.168.16.123:5556").is_ok());
+    assert!(subscriber.set_subscribe(channel.as_bytes()).is_ok());
 
-    assert!(subscriber.set_subscribe(SUB_CHANNEL.as_bytes()).is_ok());
-
+    let mut samples = 0;
     let mut total_temp = 0f64;
-    let mut cnt = 0;
 
     // Reactor-type loop, it will run as long as the current program runs.
     loop {
-        let string = subscriber.recv_string(0).unwrap().unwrap();
-        let mut split = string.split(' ');
+        let sub_str = subscriber.recv_string(0).unwrap().unwrap();
 
-        // The first string is the UUID of the message source.
-        let uuid = match split.next() {
-            Some(_uuid) => _uuid,
-            _ => {
-                println!("No valid UUID found");
-                return Err(ErrorKind::ResponseParse.into());
-            }
-        };
-
-        let dt = match split.next() {
-            Some(date_n_time) => date_n_time.parse::<DateTime<Local>>().unwrap(),
-            _ => {
-                println!("NO valid date-time found");
-                return Err(ErrorKind::ResponseParse.into());
-            }
-        };
-
-        let temperature = match split.next() {
-            Some(temp) => atof(&temp),
-            _ => {
-                println!("NO valid date-time found");
-                return Err(ErrorKind::ResponseParse.into());
-            }
-        };
-
-
-        let scale = match split.next() {
-            Some(_scale) => _scale,
-            _ => {
-                println!("NO valid temperature scale found");
-                return Err(ErrorKind::ResponseParse.into());
-            }
-        };
+        let (uuid, dt, temperature, scale) = parse_sub_str(&sub_str)?;
         println!("{} {} {}",
                  dt.format("%F %T %z").to_string(),
                  temperature,
                  scale);
 
-        if cnt < 5 {
-            total_temp += temperature;
-            cnt += 1;
-        } else {
+        total_temp += temperature;
+
+        if samples == 6 {
             let avg = total_temp / 6.0;
             println!("UUID: {} AVG: {:.*} {}", uuid, 3, avg, scale);
+
             total_temp = 0f64;
-            cnt = 0;
+            samples = 1;
+        } else {
+            samples += 1;
         }
+
+        // No work left, so we sleep.
+        thread::sleep(Duration::from_millis(1));
     }
 }
 
 fn main() {
-    if let Err(ref e) = run() {
+    if let Err(ref e) = parse_cli_arguments() {
         println!("error: {}", e);
 
         for e in e.iter().skip(1) {
