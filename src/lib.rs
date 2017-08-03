@@ -57,6 +57,18 @@ impl I2cSensing for SensingDevice {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
+pub struct ProxyConfig<'a> {
+    pub backend: &'a str,
+    pub frontend: &'a str,
+}
+
+impl<'a> ProxyConfig<'a> {
+    pub fn from_str(config_str: &str) -> Result<ProxyConfig> {
+        toml::from_str(config_str).chain_err(|| ErrorKind::ConfigParse)
+    }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
 pub struct ServiceConfig<'a> {
     pub name: Option<&'a str>,
     pub description: Option<&'a str>,
@@ -84,7 +96,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn reads_and_parses_config_files() {
+    fn reads_and_parses_config_toml() {
 
         // Files with correct fields parse
         let config_str = r#"
@@ -118,39 +130,88 @@ mod tests {
 
         // Unknown fields are ignored
         let config_str = r#"
-            pub_url = "tcp://localhost:5558"
+            pub_url = "tcp://127.0.0.1:5558"
             channel = "temperature-0123456789abcdef"
-            rep_url = "tcp://localhost:5557"
-            proxy_url = "tcp://localhost:5550"
+            rep_url = "tcp://127.0.0.1:5557"
+            proxy_url = "tcp://127.0.0.1:5550"
             another_extra = "yeah"
             "#;
 
         let config = Config::from_str(config_str).unwrap();
         assert_eq!(config,
                    Config {
-                       pub_url: "tcp://localhost:5558",
+                       pub_url: "tcp://127.0.0.1:5558",
                        channel: "temperature-0123456789abcdef",
-                       rep_url: "tcp://localhost:5557",
+                       rep_url: "tcp://127.0.0.1:5557",
                        service: None,
                    });
     }
 
     #[test]
-    fn reads_and_parses_invalid_config_files_yielding_err() {
+    fn reads_and_parses_invalid_config_toml_yielding_err() {
         // Files with no known fields yield error
         let config_str = r#""#;
 
         let config: Result<Config> = Config::from_str(config_str);
         assert!(config.is_err());
 
-        // Files with no known fields yield error
+        // Files with invalid field values yield error
         let config_str = r#"
-            pub_url = "tcp://localhost:5558"
+            pub_url = "tcp://127.0.0.1:5558"
             channel = "temperature-0123456789abcdef"
             rep_url = 1234
             "#;
 
         let config: Result<Config> = Config::from_str(config_str);
+        assert!(config.is_err());
+    }
+
+    #[test]
+    fn reads_and_parses_proxy_config_toml() {
+
+        // Files with correct fields parse
+        let config_str = r#"
+            backend = "ipc://temp.ipc"
+            frontend = "tcp://127.0.0.1:5558"
+            "#;
+
+        let config = ProxyConfig::from_str(config_str).unwrap();
+        assert_eq!(config,
+                   ProxyConfig {
+                       backend: "ipc://temp.ipc",
+                       frontend: "tcp://127.0.0.1:5558",
+                   });
+
+        // Unknown fields are ignored
+        let config_str = r#"
+            backend = "ipc://temp.ipc"
+            frontend = "tcp://127.0.0.1:5558"
+            channel = "temperature-0123456789abcdef"
+            "#;
+
+        let config = ProxyConfig::from_str(config_str).unwrap();
+        assert_eq!(config,
+                   ProxyConfig {
+                       backend: "ipc://temp.ipc",
+                       frontend: "tcp://127.0.0.1:5558",
+                   });
+    }
+
+    #[test]
+    fn reads_and_parses_invalid_proxy_config_toml_yielding_err() {
+        // Files with no known fields yield error
+        let config_str = r#""#;
+
+        let config: Result<ProxyConfig> = ProxyConfig::from_str(config_str);
+        assert!(config.is_err());
+
+        // Files with invalid field values yield error
+        let config_str = r#"
+            backend = 0
+            frontend = "tcp://127.0.0.1:5558"
+            "#;
+
+        let config: Result<ProxyConfig> = ProxyConfig::from_str(config_str);
         assert!(config.is_err());
     }
 }
