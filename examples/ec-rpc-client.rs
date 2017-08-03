@@ -6,16 +6,48 @@
 #![recursion_limit = "1024"]
 
 extern crate benita;
+extern crate clap;
 extern crate zmq;
 
 use benita::errors::*;
 use benita::neuras::{zmq_req, connect_client};
+use clap::{App, Arg};
 
-fn run() -> Result<()> {
+fn parse_cli_arguments() -> Result<()> {
+    let matches = App::new("benita-subscriber")
+        .version("0.1.0")
+        .author("Joaquin R. <globojorro@gmail.com>")
+        .about("Benita IoT. Requester client.")
+        .arg(Arg::with_name("rep-url")
+                 .short("b")
+                 .long("rep")
+                 .value_name("REP_URL")
+                 .help("Sets the url for the REP server")
+                 .takes_value(true)
+                 .index(1)
+                 .required(true))
+        .arg(Arg::with_name("debug")
+                 .short("d")
+                 .multiple(true)
+                 .help("Turn debugging information on"))
+        .get_matches();
+
+    let rep_url = match matches.value_of("rep-url") {
+        Some(repurl) => repurl,
+        _ => return Err(ErrorKind::ConfigParse.into()),
+    };
+
+    let _run =  run_requester(&rep_url)?;
+
+    // Never reach this line...
+    Ok(())
+}
+
+fn run_requester(rep_url: &str) -> Result<()> {
     let context = zmq::Context::new();
     let requester = zmq_req(&context)?;
 
-    let _connect = connect_client(&requester, "tcp://192.168.16.123:5557")?;
+    let _connect = connect_client(&requester, rep_url)?;
 
     let mut msg = zmq::Message::new().unwrap();
 
@@ -42,7 +74,7 @@ fn run() -> Result<()> {
 }
 
 fn main() {
-    if let Err(ref e) = run() {
+    if let Err(ref e) = parse_cli_arguments() {
         println!("error: {}", e);
 
         for e in e.iter().skip(1) {
