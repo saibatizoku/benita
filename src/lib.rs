@@ -50,13 +50,24 @@ impl I2cSensing for SensingDevice {
     fn send<T: I2cCommand>(&self, cmd: T) -> Result<()> {
         let bus = format!("/dev/i2c-{}", self.bus);
         let mut dev = LinuxI2CDevice::new(bus, self.address)
-                       .chain_err(|| "Could not open I2C device")?;
-        dev.write(&cmd.to_bytes()).chain_err(|| "Could not send command")
+            .chain_err(|| "Could not open I2C device")?;
+        dev.write(&cmd.to_bytes())
+            .chain_err(|| "Could not send command")
     }
 }
 
-#[derive(Debug, Deserialize, PartialEq, Eq)]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
+pub struct ServiceConfig<'a> {
+    pub name: Option<&'a str>,
+    pub description: Option<&'a str>,
+    pub url: &'a str,
+    pub socket_type: &'a str,
+    pub channels: Option<Vec<&'a str>>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
 pub struct Config<'a> {
+    pub service: Option<Vec<ServiceConfig<'a>>>,
     pub pub_url: &'a str,
     pub channel: &'a str,
     pub rep_url: &'a str,
@@ -64,8 +75,7 @@ pub struct Config<'a> {
 
 impl<'a> Config<'a> {
     pub fn from_str(config_str: &str) -> Result<Config> {
-        toml::from_str(config_str)
-                    .chain_err(|| ErrorKind::ConfigParse)
+        toml::from_str(config_str).chain_err(|| ErrorKind::ConfigParse)
     }
 }
 
@@ -81,14 +91,30 @@ mod tests {
             pub_url = "tcp://127.0.0.1:5558"
             channel = "temperature-0123456789abcdef"
             rep_url = "tcp://127.0.0.1:5557"
+
+            [[service]]
+            name = "Main temperature source"
+            description = "Reference temperature for this application"
+            url = "tcp://127.0.0.1:5558"
+            socket_type = "PUB"
+            channels = ["temperature-0123456789abcdef"]
             "#;
 
         let config = Config::from_str(config_str).unwrap();
-        assert_eq!(config, Config {
-            pub_url: "tcp://127.0.0.1:5558",
-            channel: "temperature-0123456789abcdef",
-            rep_url: "tcp://127.0.0.1:5557",
-        });
+        let services = vec![ServiceConfig {
+                                name: Some("Main temperature source"),
+                                description: Some("Reference temperature for this application"),
+                                url: "tcp://127.0.0.1:5558",
+                                socket_type: "PUB",
+                                channels: Some(vec!["temperature-0123456789abcdef"]),
+                            }];
+        assert_eq!(config,
+                   Config {
+                       pub_url: "tcp://127.0.0.1:5558",
+                       channel: "temperature-0123456789abcdef",
+                       rep_url: "tcp://127.0.0.1:5557",
+                       service: Some(services),
+                   });
 
         // Unknown fields are ignored
         let config_str = r#"
@@ -100,11 +126,13 @@ mod tests {
             "#;
 
         let config = Config::from_str(config_str).unwrap();
-        assert_eq!(config, Config {
-            pub_url: "tcp://localhost:5558",
-            channel: "temperature-0123456789abcdef",
-            rep_url: "tcp://localhost:5557",
-        });
+        assert_eq!(config,
+                   Config {
+                       pub_url: "tcp://localhost:5558",
+                       channel: "temperature-0123456789abcdef",
+                       rep_url: "tcp://localhost:5557",
+                       service: None,
+                   });
     }
 
     #[test]
@@ -117,7 +145,7 @@ mod tests {
 
         // Files with no known fields yield error
         let config_str = r#"
-            pub_url = "tcp://192.168.16.123:5558"
+            pub_url = "tcp://localhost:5558"
             channel = "temperature-0123456789abcdef"
             rep_url = 1234
             "#;

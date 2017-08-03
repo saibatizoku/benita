@@ -38,7 +38,7 @@ fn run() -> Result<()> {
         requester.recv(&mut msg, 0).unwrap();
         println!("{}", msg.as_str().unwrap());
     }
-    Ok (())
+    Ok(())
 }
 
 fn main() {

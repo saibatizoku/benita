@@ -21,7 +21,8 @@ fn i2cfun(cmd: &str, delay: u64) -> Result<()> {
     println!("I2C Device opened at {}", &device_path);
 
     println!("Sending command: '{}'", cmd.to_ascii_uppercase());
-    dev.write(cmd.as_bytes()).chain_err(|| "Command could not be sent")?;
+    dev.write(cmd.as_bytes())
+        .chain_err(|| "Command could not be sent")?;
     println!("I2C Command sent");
 
     thread::sleep(Duration::from_millis(delay));
@@ -30,18 +31,20 @@ fn i2cfun(cmd: &str, delay: u64) -> Result<()> {
     match buf[0] {
         255 => println!("No data expected."),
         254 => println!("Pending"),
-        2   => println!("Error"),
-        1   => {
+        2 => println!("Error"),
+        1 => {
             println!("Success");
             if let Some(eol) = buf.into_iter().position(|&x| x == 0) {
-                let data: String = buf[1..eol].into_iter().map(|c| {
-                    (*c & !0x80) as char
-                }).collect();
+                let data: String = buf[1..eol]
+                    .into_iter()
+                    .map(|c| (*c & !0x80) as char)
+                    .collect();
                 println!("Response: {}", data);
             } else {
-                println!("Reading: {:?}", String::from_utf8(Vec::from(&buf[1..])).unwrap());
+                println!("Reading: {:?}",
+                         String::from_utf8(Vec::from(&buf[1..])).unwrap());
             }
-        },
+        }
         _ => println!("No response"),
     };
     Ok(())

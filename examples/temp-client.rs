@@ -65,7 +65,10 @@ fn run() -> Result<()> {
                 return Err(ErrorKind::ResponseParse.into());
             }
         };
-        println!("{} {} {}", dt.format("%F %T %z").to_string(), temperature, scale);
+        println!("{} {} {}",
+                 dt.format("%F %T %z").to_string(),
+                 temperature,
+                 scale);
 
         if cnt < 5 {
             total_temp += temperature;

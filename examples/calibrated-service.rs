@@ -29,67 +29,66 @@ fn atof(s: &str) -> f64 {
 
 fn parse_cli_arguments() -> Result<()> {
     let matches = App::new("benita")
-                        .version("0.1.0")
-                        .author("Joaquin R. <globojorro@gmail.com>")
-                        .about("Benita IoT")
-                        .arg(Arg::with_name("config")
-                                    .short("c")
-                                    .long("config")
-                                    .value_name("FILE")
-                                    .help("Sets a custom config file")
-                                    .takes_value(true))
-                        .arg(Arg::with_name("pub-server-url")
-                                    .short("p")
-                                    .long("pub-server")
-                                    .value_name("PUB_URL")
-                                    .help("Sets the url for the PUB server")
-                                    .takes_value(true)
-                                    .index(1)
-                                    .conflicts_with_all(&["config"]))
-                        .arg(Arg::with_name("rep-server-url")
-                                    .short("r")
-                                    .long("rep-server")
-                                    .value_name("REP_URL")
-                                    .help("Sets the url for the REP server")
-                                    .takes_value(true)
-                                    .index(2)
-                                    .conflicts_with_all(&["config"]))
-                        .arg(Arg::with_name("debug")
-                                    .short("d")
-                                    .multiple(true)
-                                    .help("Turn debugging information on"))
-                        .get_matches();
+        .version("0.1.0")
+        .author("Joaquin R. <globojorro@gmail.com>")
+        .about("Benita IoT")
+        .arg(Arg::with_name("config")
+                 .short("c")
+                 .long("config")
+                 .value_name("FILE")
+                 .help("Sets a custom config file")
+                 .takes_value(true))
+        .arg(Arg::with_name("pub-server-url")
+                 .short("p")
+                 .long("pub-server")
+                 .value_name("PUB_URL")
+                 .help("Sets the url for the PUB server")
+                 .takes_value(true)
+                 .index(1)
+                 .conflicts_with_all(&["config"]))
+        .arg(Arg::with_name("rep-server-url")
+                 .short("r")
+                 .long("rep-server")
+                 .value_name("REP_URL")
+                 .help("Sets the url for the REP server")
+                 .takes_value(true)
+                 .index(2)
+                 .conflicts_with_all(&["config"]))
+        .arg(Arg::with_name("debug")
+                 .short("d")
+                 .multiple(true)
+                 .help("Turn debugging information on"))
+        .get_matches();
+
+    let mut input = String::new();
+    let mut config = Config::default();
+    config.channel = SUB_CHANNEL;
+
+    if let Some(c) = matches.value_of("config") {
+        println!("Value for config: {}", &c);
+        let _read = File::open(&c)
+            .and_then(|mut f| f.read_to_string(&mut input))
+            .unwrap();
+
+        config = Config::from_str(&input)?;
+    } else {
+        if let Some(pub_url) = matches.value_of("pub-server-url") {
+            config.pub_url = pub_url;
+        }
+
+        if let Some(rep_url) = matches.value_of("rep-server-url") {
+            config.rep_url = rep_url;
+        }
+    }
 
     let context = zmq::Context::new();
     let subscriber = zmq_sub(&context)?;
     let requester = zmq_req(&context)?;
 
+    let _connect_sub = connect_client(&subscriber, config.pub_url)?;
+    let _subscribe = subscriber.set_subscribe(config.channel.as_bytes())?;
 
-    if let Some(c) = matches.value_of("config") {
-        println!("Value for config: {}", &c);
-        let mut input = String::new();
-        let _read = File::open(&c).and_then(|mut f| {
-            f.read_to_string(&mut input)
-        }).unwrap();
-
-        let _convert = match toml::from_str(&input) {
-            Ok(Config { pub_url, channel, rep_url, service } ) => {
-                let _connect_sub = connect_client(&subscriber, pub_url)?;
-                assert!(subscriber.set_subscribe(channel.as_bytes()).is_ok());
-                let _connect_req = connect_client(&requester, rep_url)?;
-            }
-            Err(_) => return Err(ErrorKind::ConfigParse.into()),
-        };
-    } else {
-        if let Some(pub_url) = matches.value_of("pub-server-url") {
-            let _connect_sub = connect_client(&subscriber, pub_url)?;
-            assert!(subscriber.set_subscribe(SUB_CHANNEL.as_bytes()).is_ok());
-        }
-
-        if let Some(rep_url) = matches.value_of("rep-server-url") {
-            let _connect_req = connect_client(&requester, rep_url)?;
-        }
-    }
+    let _connect_req = connect_client(&requester, config.rep_url)?;
 
     // Continued program logic goes here...
     let _r = run_calibrated_ec_service(&subscriber, &requester)?;
@@ -104,38 +103,38 @@ fn parse_sub_str(sub_str: &str) -> Result<(String, DateTime<Local>, f64, String)
     // The first string is the UUID of the message source.
     let uuid = match split.next() {
         Some(_uuid) => _uuid.to_string(),
-            _ => {
-                println!("No valid UUID found");
-                return Err(ErrorKind::ResponseParse.into());
-            }
+        _ => {
+            println!("No valid UUID found");
+            return Err(ErrorKind::ResponseParse.into());
+        }
     };
 
     let dt = match split.next() {
         Some(date_n_time) => date_n_time.parse::<DateTime<Local>>().unwrap(),
-            _ => {
-                println!("NO valid date-time found");
-                return Err(ErrorKind::ResponseParse.into());
-            }
+        _ => {
+            println!("NO valid date-time found");
+            return Err(ErrorKind::ResponseParse.into());
+        }
     };
 
     let temperature = match split.next() {
         Some(temp) => atof(&temp),
-            _ => {
-                println!("NO valid date-time found");
-                return Err(ErrorKind::ResponseParse.into());
-            }
+        _ => {
+            println!("NO valid date-time found");
+            return Err(ErrorKind::ResponseParse.into());
+        }
     };
 
 
     let scale = match split.next() {
         Some(_scale) => _scale.to_string(),
-            _ => {
-                println!("NO valid temperature scale found");
-                return Err(ErrorKind::ResponseParse.into());
-            }
+        _ => {
+            println!("NO valid temperature scale found");
+            return Err(ErrorKind::ResponseParse.into());
+        }
     };
 
-    Ok ((uuid, dt, temperature, scale))
+    Ok((uuid, dt, temperature, scale))
 }
 
 fn send_ec_request(requester: &zmq::Socket, avg_temp: f64) -> Result<()> {
@@ -157,7 +156,7 @@ fn send_ec_request(requester: &zmq::Socket, avg_temp: f64) -> Result<()> {
     let _send = requester.send("sleep".as_bytes(), 0).unwrap();
     let _recv = requester.recv(&mut msg, 0).unwrap();
 
-    Ok (())
+    Ok(())
 }
 
 fn run_calibrated_ec_service(subscriber: &zmq::Socket, requester: &zmq::Socket) -> Result<()> {
@@ -171,7 +170,10 @@ fn run_calibrated_ec_service(subscriber: &zmq::Socket, requester: &zmq::Socket) 
         let sub_str = subscriber.recv_string(0).unwrap().unwrap();
 
         let (uuid, dt, temperature, scale) = parse_sub_str(&sub_str)?;
-        println!("{} {} {}", dt.format("%F %T %z").to_string(), temperature, scale);
+        println!("{} {} {}",
+                 dt.format("%F %T %z").to_string(),
+                 temperature,
+                 scale);
 
         total_temp += temperature;
 

@@ -6,7 +6,7 @@ use benita::neuras::zmq_xpub_xsub_proxy;
 
 fn run() -> Result<()> {
     let context = zmq::Context::new();
-    zmq_xpub_xsub_proxy (&context, "tcp://192.168.16.123:5556", "tcp://*:5558")
+    zmq_xpub_xsub_proxy(&context, "tcp://192.168.16.123:5556", "tcp://*:5558")
 }
 
 fn main() {
@@ -25,4 +25,3 @@ fn main() {
         ::std::process::exit(1);
     }
 }
-

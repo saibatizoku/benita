@@ -2,8 +2,6 @@
 //!
 //! This server binds to `tcp://*:5557`.
 
-#![feature(str_checked_slicing)]
-
 // error-chain recurses deeply
 #![recursion_limit = "1024"]
 
@@ -18,7 +16,9 @@ use std::time::Duration;
 
 use ezo_ec::errors::*;
 use ezo_ec::command as ec_command;
+use ezo_ec::response as ec_response;
 use ec_command::Command;
+use ec_response::OutputStringStatus;
 use i2cdev::linux::LinuxI2CDevice;
 
 const I2C_BUS_ID: u8 = 1;
@@ -82,11 +82,9 @@ fn run() -> Result<()> {
                 let _calibrate = ec_command::TemperatureCompensation(temp).run(&mut dev)?;
                 format!("Compensated Temperature: {}", temp)
             }
-            PossibleCommand::NotRecognized => {
-                "Unknown command".to_string()
-            }
+            PossibleCommand::NotRecognized => "Unknown command".to_string(),
             PossibleCommand::GetParams => {
-                let output_state = ec_command::OutputState.run(&mut dev)?;
+                let output_state: OutputStringStatus = ec_command::OutputState.run(&mut dev)?;
                 output_state.to_string()
             }
             PossibleCommand::Read => {
