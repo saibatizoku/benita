@@ -1,6 +1,5 @@
 use std::io;
 use neuras;
-use zmq;
 
 error_chain! {
     errors {
@@ -22,6 +21,5 @@ error_chain! {
     }
     foreign_links {
         Io(io::Error);
-        Zmq(zmq::Error);
     }
 }
