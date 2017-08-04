@@ -8,11 +8,10 @@
 extern crate benita;
 extern crate clap;
 extern crate neuras;
-extern crate zmq;
 
 use benita::errors::*;
 use clap::{App, Arg};
-use neuras::{zmq_req, connect_client};
+use neuras::{create_context, create_message, connect_client, zmq_req};
 
 fn parse_cli_arguments() -> Result<()> {
     let matches = App::new("benita-subscriber")
@@ -45,12 +44,12 @@ fn parse_cli_arguments() -> Result<()> {
 }
 
 fn run_requester(rep_url: &str) -> Result<()> {
-    let context = zmq::Context::new();
+    let context = create_context();
     let requester = zmq_req(&context)?;
 
     let _connect = connect_client(&requester, rep_url)?;
 
-    let mut msg = zmq::Message::new().unwrap();
+    let mut msg = create_message()?;
 
     {
         println!("Requesting 'get_output_params'");

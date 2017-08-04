@@ -5,15 +5,16 @@
 // error-chain recurses deeply
 #![recursion_limit = "1024"]
 
+extern crate benita;
 extern crate chrono;
 extern crate ezo_rtd;
 extern crate i2cdev;
-extern crate zmq;
+extern crate neuras;
 
 use std::thread;
 use std::time::Duration;
 
-use ezo_rtd::errors::*;
+use benita::errors::*;
 use ezo_rtd::command as rtd_command;
 use ezo_rtd::response as rtd_response;
 use rtd_command::Command;
@@ -30,8 +31,8 @@ fn run() -> Result<()> {
     let device_path = format!("/dev/i2c-{}", I2C_BUS_ID);
     let mut dev = LinuxI2CDevice::new(&device_path, EZO_SENSOR_ADDR)
         .chain_err(|| "Could not open I2C device")?;
-    let context = zmq::Context::new();
-    let publisher = context.socket(zmq::PUB).unwrap();
+    let context = neuras::create_context();
+    let publisher = neuras::zmq_pub(&context)?;
 
     assert!(publisher.bind("tcp://*:5556").is_ok());
     assert!(publisher.bind("inproc://temperature").is_ok());

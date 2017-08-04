@@ -9,12 +9,12 @@ extern crate benita;
 extern crate chrono;
 extern crate ezo_ec;
 extern crate i2cdev;
-extern crate zmq;
+extern crate neuras;
 
 use std::thread;
 use std::time::Duration;
 
-use ezo_ec::errors::*;
+use benita::errors::*;
 use ezo_ec::command as ec_command;
 use ezo_ec::response as ec_response;
 use ec_command::Command;
@@ -59,14 +59,14 @@ fn run() -> Result<()> {
         .chain_err(|| "Could not open I2C device")?;
 
     // We start our ZMQ context.
-    let context = zmq::Context::new();
+    let context = neuras::create_context();
     // We configure our socket as REP, for accepting requests
     // and providing REsPonses.
-    let responder = context.socket(zmq::REP).unwrap();
+    let responder = neuras::zmq_rep(&context)?;
     // We bind our socket to local port 5557, using TCP.
     assert!(responder.bind("tcp://*:5557").is_ok());
     // We initialize our ZMQ message. It will be reused throughout.
-    let mut msg = zmq::Message::new().unwrap();
+    let mut msg = neuras::create_message()?;
 
     // This is the main loop, it will run for as long as the program runs.
     loop {
