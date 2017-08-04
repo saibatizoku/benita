@@ -5,7 +5,6 @@ extern crate benita;
 extern crate chrono;
 extern crate clap;
 extern crate neuras;
-extern crate zmq;
 
 use std::thread;
 use std::time::Duration;
@@ -13,7 +12,7 @@ use std::time::Duration;
 use benita::errors::*;
 use chrono::{DateTime, Local};
 use clap::{App, Arg};
-use neuras::{zmq_sub, connect_client};
+use neuras::{create_context, connect_client, subscribe_client, zmq_sub};
 
 const SUB_CHANNEL: &'static str = "temperature-0123456789abcdef";
 
@@ -107,11 +106,11 @@ fn parse_sub_str(sub_str: &str) -> Result<(String, DateTime<Local>, f64, String)
 fn run_subscriber(pub_url: &str, channel: &str) -> Result<()> {
     println!("Collecting updates from weather server...");
 
-    let context = zmq::Context::new();
+    let context = create_context();
     let subscriber = zmq_sub(&context)?;
     let _connect = connect_client(&subscriber, pub_url)?;
 
-    assert!(subscriber.set_subscribe(channel.as_bytes()).is_ok());
+    let _subscribe = subscribe_client(&subscriber, channel)?;
 
     let mut samples = 0;
     let mut total_temp = 0f64;
