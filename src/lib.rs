@@ -13,6 +13,9 @@
 
 #[macro_use]
 extern crate error_chain;
+extern crate ezo_ec;
+extern crate ezo_ph;
+extern crate ezo_rtd;
 extern crate i2cdev;
 extern crate neuras;
 #[macro_use]

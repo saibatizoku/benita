@@ -1,5 +1,8 @@
 use std::io;
 use neuras;
+use ezo_ec;
+use ezo_ph;
+use ezo_rtd;
 
 error_chain! {
     errors {
@@ -18,6 +21,9 @@ error_chain! {
     }
     links {
         Neuras(neuras::errors::Error, neuras::errors::ErrorKind);
+        EcSensor(ezo_ec::errors::Error, ezo_ec::errors::ErrorKind);
+        PhSensor(ezo_ph::errors::Error, ezo_ph::errors::ErrorKind);
+        RtdSensor(ezo_rtd::errors::Error, ezo_rtd::errors::ErrorKind);
     }
     foreign_links {
         Io(io::Error);
