@@ -1,4 +1,5 @@
 use std::io;
+use neuras;
 use zmq;
 
 error_chain! {
@@ -15,6 +16,9 @@ error_chain! {
         ResponseParse {
             description ("could not parse response")
         }
+    }
+    links {
+        Neuras(neuras::errors::Error, neuras::errors::ErrorKind);
     }
     foreign_links {
         Io(io::Error);

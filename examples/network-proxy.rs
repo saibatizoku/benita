@@ -1,5 +1,8 @@
+#![recursion_limit = "1024"]
+
 extern crate benita;
 extern crate clap;
+extern crate neuras;
 extern crate zmq;
 
 use std::fs::File;
@@ -7,8 +10,8 @@ use std::io::Read;
 
 use benita::errors::*;
 use benita::ProxyConfig;
-use benita::neuras::zmq_xpub_xsub_proxy;
 use clap::{App, Arg};
+use neuras::zmq_xpub_xsub_proxy;
 
 fn parse_cli_arguments() -> Result<()> {
     let matches = App::new("benita-neuras-proxy")
@@ -74,7 +77,8 @@ fn run_proxy(backend: &str, frontend: &str) -> Result<()> {
     let context = zmq::Context::new();
     println!("Proxied PUB service now serving at: {}", &frontend);
     println!("... press `Ctrl-C` to quit.");
-    zmq_xpub_xsub_proxy(&context, backend, frontend)
+    let _proxy = zmq_xpub_xsub_proxy(&context, backend, frontend)?;
+    Ok(())
 }
 
 fn main() {

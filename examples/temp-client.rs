@@ -4,15 +4,16 @@
 extern crate benita;
 extern crate chrono;
 extern crate clap;
+extern crate neuras;
 extern crate zmq;
 
 use std::thread;
 use std::time::Duration;
 
 use benita::errors::*;
-use benita::neuras::{zmq_sub, connect_client};
 use chrono::{DateTime, Local};
 use clap::{App, Arg};
+use neuras::{zmq_sub, connect_client};
 
 const SUB_CHANNEL: &'static str = "temperature-0123456789abcdef";
 

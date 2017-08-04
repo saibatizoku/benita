@@ -7,11 +7,12 @@
 
 extern crate benita;
 extern crate clap;
+extern crate neuras;
 extern crate zmq;
 
 use benita::errors::*;
-use benita::neuras::{zmq_req, connect_client};
 use clap::{App, Arg};
+use neuras::{zmq_req, connect_client};
 
 fn parse_cli_arguments() -> Result<()> {
     let matches = App::new("benita-subscriber")

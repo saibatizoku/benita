@@ -14,18 +14,18 @@
 #[macro_use]
 extern crate error_chain;
 extern crate i2cdev;
+extern crate neuras;
 #[macro_use]
 extern crate serde_derive;
 extern crate toml;
-extern crate url;
 extern crate zmq;
 
 pub mod errors;
-pub mod neuras;
 
 use errors::*;
 use i2cdev::core::I2CDevice;
 use i2cdev::linux::LinuxI2CDevice;
+
 
 #[derive(Clone)]
 pub struct SensingDevice {
