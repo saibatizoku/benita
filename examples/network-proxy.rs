@@ -1,3 +1,7 @@
+//! Proxy between networks for PUB services.
+//!
+
+// error-chain recurses deeply
 #![recursion_limit = "1024"]
 
 extern crate benita;

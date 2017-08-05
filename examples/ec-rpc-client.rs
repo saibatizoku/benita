@@ -1,6 +1,6 @@
 //! Sends remote commands to the RTD EZO chip, using the exposed a limited API.
 //!
-//! This client binds to `tcp://localhost:5557`.
+//! This server binds to the `REP_URL` argument, expected from the command line.
 
 // error-chain recurses deeply
 #![recursion_limit = "1024"]

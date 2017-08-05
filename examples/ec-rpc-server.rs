@@ -1,12 +1,13 @@
-//! Allows for remote command of the RTD EZO chip, exposing a limited API.
+//! Allows for remote command of the EC EZO chip, exposing a limited API.
 //!
-//! This server binds to `tcp://*:5557`.
+//! This server binds to the `REP_URL` argument, expected from the command line.
 
 // error-chain recurses deeply
 #![recursion_limit = "1024"]
 
 extern crate benita;
 extern crate chrono;
+extern crate clap;
 extern crate ezo_ec;
 extern crate i2cdev;
 extern crate neuras;
@@ -15,6 +16,7 @@ use std::thread;
 use std::time::Duration;
 
 use benita::errors::*;
+use clap::{App, Arg};
 use ezo_ec::command as ec_command;
 use ezo_ec::response as ec_response;
 use ec_command::Command;
@@ -52,7 +54,34 @@ fn parse_command(cmd_str: &str) -> PossibleCommand {
     }
 }
 
-fn run() -> Result<()> {
+fn parse_cli_arguments() -> Result<()> {
+    let matches = App::new("benita-ec-rep")
+        .version("0.1.0")
+        .author("Joaquin R. <globojorro@gmail.com>")
+        .about("Benita IoT. A response service for electrical conductivity data.")
+        .arg(Arg::with_name("rep-url")
+                 .short("r")
+                 .long("rep-url")
+                 .value_name("REP_URL")
+                 .help("Sets the url for the response server")
+                 .takes_value(true)
+                 .index(1)
+                 .required(true))
+        .get_matches();
+
+    let mut rep_url = String::new();
+
+    if let Some(c) = matches.value_of("rep-url") {
+        rep_url = String::from(c);
+    }
+
+    run(&rep_url)?;
+
+    // Never reach this line...
+    Ok(())
+}
+
+fn run(rep_url: &str) -> Result<()> {
     // We initialize our I2C device connection.
     let device_path = format!("/dev/i2c-{}", I2C_BUS_ID);
     let mut dev = LinuxI2CDevice::new(&device_path, EZO_SENSOR_ADDR)
@@ -63,8 +92,8 @@ fn run() -> Result<()> {
     // We configure our socket as REP, for accepting requests
     // and providing REsPonses.
     let responder = neuras::zmq_rep(&context)?;
-    // We bind our socket to local port 5557, using TCP.
-    assert!(responder.bind("tcp://*:5557").is_ok());
+    // We bind our socket to REP_URL.
+    assert!(responder.bind(rep_url).is_ok());
     // We initialize our ZMQ message. It will be reused throughout.
     let mut msg = neuras::create_message()?;
 
@@ -106,7 +135,7 @@ fn run() -> Result<()> {
 }
 
 fn main() {
-    if let Err(ref e) = run() {
+    if let Err(ref e) = parse_cli_arguments() {
         println!("error: {}", e);
 
         for e in e.iter().skip(1) {
