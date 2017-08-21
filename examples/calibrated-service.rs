@@ -14,8 +14,7 @@ use std::io::Read;
 use std::thread;
 use std::time::Duration;
 
-use benita::errors::*;
-use benita::Config;
+use benita::errors::{ErrorKind, Result, ResultExt};
 use clap::{App, Arg};
 use chrono::{DateTime, Local};
 use neuras::{create_context, create_message, connect_client, subscribe_client, zmq_req, zmq_sub};

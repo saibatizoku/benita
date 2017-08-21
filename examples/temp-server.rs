@@ -16,7 +16,7 @@ extern crate neuras;
 use std::thread;
 use std::time::Duration;
 
-use benita::errors::*;
+use benita::errors::{Result, ResultExt};
 use clap::{App, Arg};
 use ezo_rtd::command as rtd_command;
 use ezo_rtd::response as rtd_response;

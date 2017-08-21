@@ -15,7 +15,7 @@ extern crate neuras;
 use std::thread;
 use std::time::Duration;
 
-use benita::errors::*;
+use benita::errors::{Result, ResultExt};
 use clap::{App, Arg};
 use ezo_ec::command as ec_command;
 use ezo_ec::response as ec_response;

@@ -9,7 +9,7 @@ extern crate benita;
 extern crate clap;
 extern crate neuras;
 
-use benita::errors::*;
+use benita::errors::{ErrorKind, Result, ResultExt};
 use clap::{App, Arg};
 use neuras::{create_context, create_message, connect_client, zmq_req};
 

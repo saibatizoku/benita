@@ -11,7 +11,7 @@ extern crate neuras;
 use std::fs::File;
 use std::io::Read;
 
-use benita::errors::*;
+use benita::errors::Result;
 use benita::ProxyConfig;
 use clap::{App, Arg};
 use neuras::{create_context, zmq_xpub_xsub_proxy};
