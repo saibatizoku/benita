@@ -6,6 +6,20 @@ use errors::*;
 use toml;
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
+pub struct SensorsConfig<'a> {
+    pub pub_url: &'a str,
+    pub channel: &'a str,
+    pub rep_ec_url: &'a str,
+    pub rep_ph_url: &'a str,
+}
+
+impl<'a> SensorsConfig<'a> {
+    pub fn from_str(config_str: &str) -> Result<SensorsConfig> {
+        toml::from_str(config_str).chain_err(|| ErrorKind::ConfigParse)
+    }
+}
+
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
 pub struct ProxyConfig<'a> {
     pub backend_url: &'a str,
     pub frontend_url: &'a str,

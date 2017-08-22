@@ -7,14 +7,14 @@ extern crate benita;
 extern crate clap;
 extern crate chrono;
 extern crate neuras;
-extern crate toml;
 
 use std::fs::File;
 use std::io::Read;
 use std::thread;
 use std::time::Duration;
 
-use benita::errors::{ErrorKind, Result, ResultExt};
+use benita::config::SensorsConfig as Config;
+use benita::errors::{ErrorKind, Result};
 use clap::{App, Arg};
 use chrono::{DateTime, Local};
 use neuras::utils::{create_context, create_message, connect_socket, subscribe_client, zmq_req, zmq_sub};
