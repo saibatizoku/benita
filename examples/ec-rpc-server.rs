@@ -88,14 +88,14 @@ fn run(rep_url: &str) -> Result<()> {
         .chain_err(|| "Could not open I2C device")?;
 
     // We start our ZMQ context.
-    let context = neuras::create_context();
+    let context = neuras::utils::create_context();
     // We configure our socket as REP, for accepting requests
     // and providing REsPonses.
-    let responder = neuras::zmq_rep(&context)?;
+    let responder = neuras::utils::zmq_rep(&context)?;
     // We bind our socket to REP_URL.
     assert!(responder.bind(rep_url).is_ok());
     // We initialize our ZMQ message. It will be reused throughout.
-    let mut msg = neuras::create_message()?;
+    let mut msg = neuras::utils::create_message()?;
 
     // This is the main loop, it will run for as long as the program runs.
     loop {

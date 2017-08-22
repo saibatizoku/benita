@@ -14,7 +14,7 @@ use std::io::Read;
 use benita::errors::Result;
 use benita::ProxyConfig;
 use clap::{App, Arg};
-use neuras::{create_context, zmq_xpub_xsub_proxy};
+use neuras::utils::{create_context, zmq_xpub_xsub_proxy};
 
 fn parse_cli_arguments() -> Result<()> {
     let matches = App::new("benita-neuras-proxy")

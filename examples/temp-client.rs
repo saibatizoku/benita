@@ -12,7 +12,7 @@ use std::time::Duration;
 use benita::errors::{ErrorKind, Result, ResultExt};
 use chrono::{DateTime, Local};
 use clap::{App, Arg};
-use neuras::{create_context, connect_client, subscribe_client, zmq_sub};
+use neuras::utils::{create_context, connect_socket, subscribe_client, zmq_sub};
 
 const SUB_CHANNEL: &'static str = "temperature-0123456789abcdef";
 
@@ -108,7 +108,7 @@ fn run_subscriber(pub_url: &str, channel: &str) -> Result<()> {
 
     let context = create_context();
     let subscriber = zmq_sub(&context)?;
-    let _connect = connect_client(&subscriber, pub_url)?;
+    let _connect = connect_socket(&subscriber, pub_url)?;
 
     let _subscribe = subscribe_client(&subscriber, channel)?;
 

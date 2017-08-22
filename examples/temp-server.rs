@@ -20,7 +20,7 @@ use benita::errors::{Result, ResultExt};
 use clap::{App, Arg};
 use ezo_rtd::command as rtd_command;
 use ezo_rtd::response as rtd_response;
-use neuras::{create_context, zmq_pub};
+use neuras::utils::{create_context, zmq_pub};
 use rtd_command::Command;
 use rtd_response::SensorReading;
 

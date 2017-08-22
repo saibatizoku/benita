@@ -11,7 +11,7 @@ extern crate neuras;
 
 use benita::errors::{ErrorKind, Result, ResultExt};
 use clap::{App, Arg};
-use neuras::{create_context, create_message, connect_client, zmq_req};
+use neuras::utils::{create_context, create_message, connect_socket, zmq_req};
 
 fn parse_cli_arguments() -> Result<()> {
     let matches = App::new("benita-subscriber")
@@ -47,7 +47,7 @@ fn run_requester(rep_url: &str) -> Result<()> {
     let context = create_context();
     let requester = zmq_req(&context)?;
 
-    let _connect = connect_client(&requester, rep_url)?;
+    let _connect = connect_socket(&requester, rep_url)?;
 
     let mut msg = create_message()?;
 

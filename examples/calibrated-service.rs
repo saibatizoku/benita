@@ -17,7 +17,7 @@ use std::time::Duration;
 use benita::errors::{ErrorKind, Result, ResultExt};
 use clap::{App, Arg};
 use chrono::{DateTime, Local};
-use neuras::{create_context, create_message, connect_client, subscribe_client, zmq_req, zmq_sub};
+use neuras::utils::{create_context, create_message, connect_socket, subscribe_client, zmq_req, zmq_sub};
 
 
 const SUB_CHANNEL: &'static str = "temperature-0123456789abcdef";
@@ -84,10 +84,10 @@ fn parse_cli_arguments() -> Result<()> {
     let subscriber = zmq_sub(&context)?;
     let requester = zmq_req(&context)?;
 
-    let _connect_sub = connect_client(&subscriber, config.pub_url)?;
+    let _connect_sub = connect_socket(&subscriber, config.pub_url)?;
     let _subscribe = subscribe_client(&subscriber, config.channel)?;
 
-    let _connect_req = connect_client(&requester, config.rep_url)?;
+    let _connect_req = connect_socket(&requester, config.rep_url)?;
 
     // Continued program logic goes here...
     println!("Collecting updates from weather server...");
@@ -115,6 +115,7 @@ fn parse_cli_arguments() -> Result<()> {
 
             let mut msg = create_message()?;
 
+            // EC
             let calibrate = format!("calibrate {:.*}", 3, avg_temp);
             let _send = requester.send(calibrate.as_bytes(), 0).unwrap();
             let _recv = requester.recv(&mut msg, 0).unwrap();
