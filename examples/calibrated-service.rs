@@ -74,20 +74,27 @@ fn parse_cli_arguments() -> Result<()> {
         if let Some(pub_url) = matches.value_of("pub-server-url") {
             config.pub_url = pub_url;
         }
-
-        if let Some(rep_url) = matches.value_of("rep-server-url") {
-            config.rep_url = rep_url;
+        if let Some(rep_ec_url) = matches.value_of("rep-ec-url") {
+            config.rep_ec_url = rep_ec_url;
+        }
+        if let Some(rep_ph_url) = matches.value_of("rep-ph-url") {
+            config.rep_ph_url = rep_ph_url;
         }
     }
 
+    // Create ZMQ context
     let context = create_context();
+
+    // Create ZMQ sockets
     let subscriber = zmq_sub(&context)?;
-    let requester = zmq_req(&context)?;
+    let req_ec = zmq_req(&context)?;
+    let req_ph = zmq_req(&context)?;
 
     let _connect_sub = connect_socket(&subscriber, config.pub_url)?;
     let _subscribe = subscribe_client(&subscriber, config.channel)?;
 
-    let _connect_req = connect_socket(&requester, config.rep_url)?;
+    let _connect_ec = connect_socket(&req_ec, config.rep_ec_url)?;
+    let _connect_ph = connect_socket(&req_ph, config.rep_ph_url)?;
 
     // Continued program logic goes here...
     println!("Collecting updates from weather server...");
@@ -115,22 +122,30 @@ fn parse_cli_arguments() -> Result<()> {
 
             let mut msg = create_message()?;
 
+            // PH
+            let _send = req_ph.send("read".as_bytes(), 0).unwrap();
+            let _recv = req_ph.recv(&mut msg, 0).unwrap();
+            println!("pH {}", msg.as_str().unwrap());
+
+            let _send = req_ph.send("sleep".as_bytes(), 0).unwrap();
+            let _recv = req_ph.recv(&mut msg, 0).unwrap();
+
             // EC
             let calibrate = format!("calibrate {:.*}", 3, avg_temp);
-            let _send = requester.send(calibrate.as_bytes(), 0).unwrap();
-            let _recv = requester.recv(&mut msg, 0).unwrap();
+            let _send = req_ec.send(calibrate.as_bytes(), 0).unwrap();
+            let _recv = req_ec.recv(&mut msg, 0).unwrap();
             println!("{}", msg.as_str().unwrap());
 
-            let _send = requester.send("get_params".as_bytes(), 0).unwrap();
-            let _recv = requester.recv(&mut msg, 0).unwrap();
+            let _send = req_ec.send("get_params".as_bytes(), 0).unwrap();
+            let _recv = req_ec.recv(&mut msg, 0).unwrap();
             println!("{}", msg.as_str().unwrap());
 
-            let _send = requester.send("read".as_bytes(), 0).unwrap();
-            let _recv = requester.recv(&mut msg, 0).unwrap();
+            let _send = req_ec.send("read".as_bytes(), 0).unwrap();
+            let _recv = req_ec.recv(&mut msg, 0).unwrap();
             println!("{}", msg.as_str().unwrap());
 
-            let _send = requester.send("sleep".as_bytes(), 0).unwrap();
-            let _recv = requester.recv(&mut msg, 0).unwrap();
+            let _send = req_ec.send("sleep".as_bytes(), 0).unwrap();
+            let _recv = req_ec.recv(&mut msg, 0).unwrap();
 
             total_temp = 0f64;
             samples = 1;
