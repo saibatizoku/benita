@@ -12,7 +12,7 @@ use std::fs::File;
 use std::io::Read;
 
 use benita::errors::Result;
-use benita::ProxyConfig;
+use benita::config::ProxyConfig;
 use clap::{App, Arg};
 use neuras::utils::{create_context, zmq_xpub_xsub_proxy};
 
@@ -62,15 +62,15 @@ fn parse_cli_arguments() -> Result<()> {
         config = ProxyConfig::from_str(&input)?;
     } else {
         if let Some(frontend) = matches.value_of("frontend-url") {
-            config.frontend = frontend;
+            config.frontend_url = frontend;
         }
 
         if let Some(backend) = matches.value_of("backend-url") {
-            config.backend = backend;
+            config.backend_url = backend;
         }
     }
 
-    let _run =  run_proxy(config.backend, config.frontend)?;
+    let _run =  run_proxy(config.backend_url, config.frontend_url)?;
 
     // Never reach this line...
     Ok(())
