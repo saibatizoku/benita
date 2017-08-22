@@ -15,7 +15,7 @@ extern crate neuras;
 use std::thread;
 use std::time::Duration;
 
-use benita::errors::{ErrorKind, Result, ResultExt};
+use benita::errors::{Result, ResultExt};
 use clap::{App, Arg};
 use ezo_ph::command as ph_command;
 use ezo_ph::response as ph_response;

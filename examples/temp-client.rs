@@ -9,7 +9,7 @@ extern crate neuras;
 use std::thread;
 use std::time::Duration;
 
-use benita::errors::{ErrorKind, Result, ResultExt};
+use benita::errors::{ErrorKind, Result};
 use chrono::{DateTime, Local};
 use clap::{App, Arg};
 use neuras::utils::{create_context, connect_socket, subscribe_client, zmq_sub};
