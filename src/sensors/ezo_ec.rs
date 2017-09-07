@@ -2,7 +2,17 @@
 
 pub mod commands {
     //! Commands from EZO EC chipset.
-    pub use ezo_ec::command::*;
+    pub use ezo_ec::command::{Baud, CalibrationClear, CalibrationDry, CalibrationHigh,
+                              CalibrationLow, CalibrationOnePoint, CalibrationState, Command,
+                              CompensatedTemperatureValue, DeviceAddress, DeviceInformation,
+                              Export, ExportInfo, Factory, Find, Import, LedOff, LedOn, LedState,
+                              OutputDisableConductivity, OutputDisableSalinity,
+                              OutputDisableSpecificGravity, OutputDisableTds,
+                              OutputEnableConductivity, OutputEnableSalinity,
+                              OutputEnableSpecificGravity, OutputEnableTds, OutputState,
+                              ProbeTypeOne, ProbeTypePointOne, ProbeTypeState, ProbeTypeTen,
+                              ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState, Reading,
+                              Sleep, Status, TemperatureCompensation};
 }
 
 pub mod responses {
