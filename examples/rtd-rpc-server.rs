@@ -6,22 +6,17 @@
 #![recursion_limit = "1024"]
 
 extern crate benita;
-extern crate chrono;
 extern crate clap;
-extern crate ezo_rtd;
-extern crate i2cdev;
 extern crate neuras;
 
 use std::thread;
 use std::time::Duration;
 
 use benita::errors::{Result, ResultExt};
+use benita::sensors::ezo_rtd::TemperatureSensor;
+use benita::sensors::ezo_rtd::responses::SensorReading;
+
 use clap::{App, Arg};
-use ezo_rtd::command as rtd_command;
-use ezo_rtd::response as rtd_response;
-use rtd_command::Command;
-use rtd_response::SensorReading;
-use i2cdev::linux::LinuxI2CDevice;
 
 const I2C_BUS_ID: u8 = 1;
 const EZO_SENSOR_ADDR: u16 = 101; // could be specified as 0x65
@@ -79,7 +74,7 @@ fn parse_cli_arguments() -> Result<()> {
 fn run(rep_url: &str) -> Result<()> {
     // We initialize our I2C device connection.
     let device_path = format!("/dev/i2c-{}", I2C_BUS_ID);
-    let mut dev = LinuxI2CDevice::new(&device_path, EZO_SENSOR_ADDR)
+    let mut rtd_sensor = TemperatureSensor::new(&device_path, EZO_SENSOR_ADDR)
         .chain_err(|| "Could not open I2C device")?;
 
     // We start our ZMQ context.
@@ -103,15 +98,15 @@ fn run(rep_url: &str) -> Result<()> {
         // Parse and process the command.
         let command_response = match parse_command(msg_str) {
             PossibleCommand::Scale => {
-                let _scale = rtd_command::ScaleState.run(&mut dev)?;
+                let _scale = rtd_sensor.get_scale()?;
                 format!("{:?}", _scale)
             }
             PossibleCommand::Read => {
-                let SensorReading(sensor_output) = rtd_command::Reading.run(&mut dev)?;
+                let SensorReading(sensor_output) = rtd_sensor.get_reading()?;
                 format!("{:.*}", 3, sensor_output)
             }
             PossibleCommand::Sleep => {
-                let _sleep = rtd_command::Sleep.run(&mut dev)?;
+                let _sleep = rtd_sensor.set_sleep()?;
                 "Sleeping".to_string()
             }
             PossibleCommand::NotRecognized => "Unknown command".to_string(),
