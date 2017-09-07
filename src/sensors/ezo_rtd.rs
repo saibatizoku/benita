@@ -4,8 +4,8 @@ pub mod commands {
     //! Commands from EZO RTD chipset.
     pub use ezo_rtd::command::{Baud, CalibrationClear, CalibrationState, CalibrationTemperature,
                                Command, DataloggerDisable, DataloggerInterval, DataloggerPeriod,
-                               DeviceInformation, Export, ExportInfo, Factory, Find, Import,
-                               LedOff, LedOn, LedState, MemoryClear, MemoryRecall,
+                               DeviceAddress, DeviceInformation, Export, ExportInfo, Factory,
+                               Find, Import, LedOff, LedOn, LedState, MemoryClear, MemoryRecall,
                                MemoryRecallLast, ProtocolLockDisable, ProtocolLockEnable,
                                ProtocolLockState, Reading, ScaleCelsius, ScaleFahrenheit,
                                ScaleKelvin, ScaleState, Sleep, Status};
@@ -238,7 +238,7 @@ impl TemperatureSensor {
     }
 
     /// Set the current temperature scale to Kelvin.
-    pub fn set_scale_to_Kelvin(&mut self) -> Result<()> {
+    pub fn set_scale_to_kelvin(&mut self) -> Result<()> {
         let _set = ScaleKelvin
             .run(&mut self.i2cdev)
             .chain_err(|| ErrorKind::SensorTrouble)?;
