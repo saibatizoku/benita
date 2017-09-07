@@ -7,6 +7,7 @@ authors = ["Joaquín R <globojorro@gmail.com>"]
 chrono = "0.4.0"
 clap = "~2.19.0"
 error-chain = "~0.11.0-rc.2"
+ezo_common = { git = "https://github.com/saibatizoku/ezo-common-rs.git", branch = "master" }
 ezo_ec = { git = "https://github.com/saibatizoku/ezo-ec-rs.git", branch = "master" }
 ezo_ph = { git = "https://github.com/saibatizoku/ezo-ph-rs.git", branch = "master" }
 ezo_rtd = { git = "https://github.com/saibatizoku/ezo-rtd-rs.git", branch = "master" }
