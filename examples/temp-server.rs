@@ -9,23 +9,18 @@
 extern crate benita;
 extern crate chrono;
 extern crate clap;
-extern crate ezo_rtd;
-extern crate i2cdev;
 extern crate neuras;
 
 use std::thread;
 use std::time::Duration;
 
 use benita::errors::{Result, ResultExt};
-use clap::{App, Arg};
-use ezo_rtd::command as rtd_command;
-use ezo_rtd::response as rtd_response;
-use neuras::utils::{bind_socket, create_context, zmq_pub};
-use rtd_command::Command;
-use rtd_response::SensorReading;
+use benita::sensors::ezo_rtd::TemperatureSensor;
+use benita::sensors::ezo_rtd::responses::SensorReading;
 
 use chrono::{DateTime, Utc};
-use i2cdev::linux::LinuxI2CDevice;
+use clap::{App, Arg};
+use neuras::utils::{bind_socket, create_context, zmq_pub};
 
 const I2C_BUS_ID: u8 = 1;
 const EZO_SENSOR_ADDR: u16 = 101; // could be specified as 0x65
@@ -62,7 +57,7 @@ fn parse_cli_arguments() -> Result<()> {
 
 fn run(pub_url: &str) -> Result<()> {
     let device_path = format!("/dev/i2c-{}", I2C_BUS_ID);
-    let mut dev = LinuxI2CDevice::new(&device_path, EZO_SENSOR_ADDR)
+    let mut rtd_sensor = TemperatureSensor::new(&device_path, EZO_SENSOR_ADDR)
         .chain_err(|| "Could not open I2C device")?;
     let context = create_context();
     let publisher = zmq_pub(&context)?;
@@ -71,13 +66,13 @@ fn run(pub_url: &str) -> Result<()> {
 
     loop {
         // We query the current temperature state of the sensor chip.
-        let scale = rtd_command::ScaleState.run(&mut dev)?;
+        let scale = rtd_sensor.get_scale()?;
 
         // We take a temperature reading (around 600ms).
-        let SensorReading(temperature) = rtd_command::Reading.run(&mut dev)?;
+        let SensorReading(temperature) = rtd_sensor.get_reading()?;
 
         // We immediately put the chip to sleep.
-        let _sleep = rtd_command::Sleep.run(&mut dev)?;
+        let _sleep = rtd_sensor.set_sleep()?;
 
         // We print out the result with the current ISO datetime.
         let dt: DateTime<Utc> = Utc::now();
