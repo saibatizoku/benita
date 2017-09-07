@@ -17,7 +17,7 @@ pub mod commands {
 
 pub mod responses {
     //! Responses from EZO EC chipset.
-    pub use ezo_ec::response::*;
+    pub use ezo_ec::response::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus, Exported, ExportedInfo, LedStatus, OutputStringStatus, ParameterStatus, ProbeReading, ProbeType, ProtocolLockStatus};
 }
 
 use errors::*;
