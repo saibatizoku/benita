@@ -4,8 +4,8 @@
 #![recursion_limit = "1024"]
 
 extern crate benita;
-extern crate clap;
 extern crate chrono;
+extern crate clap;
 extern crate neuras;
 
 use std::fs::File;
@@ -13,11 +13,12 @@ use std::io::Read;
 use std::thread;
 use std::time::Duration;
 
-use benita::config::SensorsConfig as Config;
+use benita::config::SensorServiceConfig as Config;
 use benita::errors::{ErrorKind, Result};
 use clap::{App, Arg};
 use chrono::{DateTime, Local};
-use neuras::utils::{create_context, create_message, connect_socket, subscribe_client, zmq_req, zmq_sub};
+use neuras::utils::{connect_socket, create_context, create_message, subscribe_client, zmq_req,
+                    zmq_sub};
 
 
 const SUB_CHANNEL: &'static str = "temperature-0123456789abcdef";
@@ -31,32 +32,40 @@ fn parse_cli_arguments() -> Result<()> {
         .version("0.1.0")
         .author("Joaquin R. <globojorro@gmail.com>")
         .about("Benita IoT")
-        .arg(Arg::with_name("config")
-                 .short("c")
-                 .long("config")
-                 .value_name("FILE")
-                 .help("Sets a custom config file")
-                 .takes_value(true))
-        .arg(Arg::with_name("pub-server-url")
-                 .short("p")
-                 .long("pub-server")
-                 .value_name("PUB_URL")
-                 .help("Sets the url for the PUB server")
-                 .takes_value(true)
-                 .index(1)
-                 .conflicts_with_all(&["config"]))
-        .arg(Arg::with_name("rep-server-url")
-                 .short("r")
-                 .long("rep-server")
-                 .value_name("REP_URL")
-                 .help("Sets the url for the REP server")
-                 .takes_value(true)
-                 .index(2)
-                 .conflicts_with_all(&["config"]))
-        .arg(Arg::with_name("debug")
-                 .short("d")
-                 .multiple(true)
-                 .help("Turn debugging information on"))
+        .arg(
+            Arg::with_name("config")
+                .short("c")
+                .long("config")
+                .value_name("FILE")
+                .help("Sets a custom config file")
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("pub-server-url")
+                .short("p")
+                .long("pub-server")
+                .value_name("PUB_URL")
+                .help("Sets the url for the PUB server")
+                .takes_value(true)
+                .index(1)
+                .conflicts_with_all(&["config"]),
+        )
+        .arg(
+            Arg::with_name("rep-server-url")
+                .short("r")
+                .long("rep-server")
+                .value_name("REP_URL")
+                .help("Sets the url for the REP server")
+                .takes_value(true)
+                .index(2)
+                .conflicts_with_all(&["config"]),
+        )
+        .arg(
+            Arg::with_name("debug")
+                .short("d")
+                .multiple(true)
+                .help("Turn debugging information on"),
+        )
         .get_matches();
 
     let mut input = String::new();
@@ -107,10 +116,12 @@ fn parse_cli_arguments() -> Result<()> {
         let sub_str = subscriber.recv_string(0).unwrap().unwrap();
 
         let (uuid, dt, temperature, scale) = parse_sub_str(&sub_str)?;
-        println!("{} {} {}",
-                 dt.format("%F %T %z").to_string(),
-                 temperature,
-                 scale);
+        println!(
+            "{} {} {}",
+            dt.format("%F %T %z").to_string(),
+            temperature,
+            scale
+        );
 
         total_temp += temperature;
 

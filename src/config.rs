@@ -6,15 +6,15 @@ use errors::*;
 use toml;
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
-pub struct SensorsConfig<'a> {
+pub struct SensorServiceConfig<'a> {
     pub pub_url: &'a str,
     pub channel: &'a str,
     pub rep_ec_url: &'a str,
     pub rep_ph_url: &'a str,
 }
 
-impl<'a> SensorsConfig<'a> {
-    pub fn from_str(config_str: &str) -> Result<SensorsConfig> {
+impl<'a> SensorServiceConfig<'a> {
+    pub fn from_str(config_str: &str) -> Result<SensorServiceConfig> {
         toml::from_str(config_str).chain_err(|| ErrorKind::ConfigParse)
     }
 }
@@ -45,14 +45,16 @@ mod tests {
             rep_ph_url = "ipc://tmp/benita.ph.ipc"
             "#;
 
-        let config = SensorsConfig::from_str(config_str).unwrap();
-        assert_eq!(config,
-                   SensorsConfig {
-                       pub_url: "ipc://tmp/benita.temp.ipc",
-                       channel: "01234-id",
-                       rep_ec_url: "ipc://tmp/benita.ec.ipc",
-                       rep_ph_url: "ipc://tmp/benita.ph.ipc",
-                   });
+        let config = SensorServiceConfig::from_str(config_str).unwrap();
+        assert_eq!(
+            config,
+            SensorServiceConfig {
+                pub_url: "ipc://tmp/benita.temp.ipc",
+                channel: "01234-id",
+                rep_ec_url: "ipc://tmp/benita.ec.ipc",
+                rep_ph_url: "ipc://tmp/benita.ph.ipc",
+            }
+        );
 
         // Unknown fields are ignored
         let config_str = r#"
@@ -63,14 +65,16 @@ mod tests {
             extra = "unseen"
             "#;
 
-        let config = SensorsConfig::from_str(config_str).unwrap();
-        assert_eq!(config,
-                   SensorsConfig {
-                       pub_url: "ipc://tmp/benita.temp.ipc",
-                       channel: "01234-id",
-                       rep_ec_url: "ipc://tmp/benita.ec.ipc",
-                       rep_ph_url: "ipc://tmp/benita.ph.ipc",
-                   });
+        let config = SensorServiceConfig::from_str(config_str).unwrap();
+        assert_eq!(
+            config,
+            SensorServiceConfig {
+                pub_url: "ipc://tmp/benita.temp.ipc",
+                channel: "01234-id",
+                rep_ec_url: "ipc://tmp/benita.ec.ipc",
+                rep_ph_url: "ipc://tmp/benita.ph.ipc",
+            }
+        );
     }
 
     #[test]
@@ -78,7 +82,7 @@ mod tests {
         // Files with no known fields yield error
         let config_str = r#""#;
 
-        let config: Result<SensorsConfig> = SensorsConfig::from_str(config_str);
+        let config: Result<SensorServiceConfig> = SensorServiceConfig::from_str(config_str);
         assert!(config.is_err());
 
         // Files with invalid field values yield error
@@ -87,7 +91,7 @@ mod tests {
             frontend_url = "tcp://127.0.0.1:5558"
             "#;
 
-        let config: Result<SensorsConfig> = SensorsConfig::from_str(config_str);
+        let config: Result<SensorServiceConfig> = SensorServiceConfig::from_str(config_str);
         assert!(config.is_err());
     }
 
@@ -100,11 +104,13 @@ mod tests {
             "#;
 
         let config = ProxyConfig::from_str(config_str).unwrap();
-        assert_eq!(config,
-                   ProxyConfig {
-                       backend_url: "ipc://temp.ipc",
-                       frontend_url: "tcp://127.0.0.1:5558",
-                   });
+        assert_eq!(
+            config,
+            ProxyConfig {
+                backend_url: "ipc://temp.ipc",
+                frontend_url: "tcp://127.0.0.1:5558",
+            }
+        );
 
         // Unknown fields are ignored
         let config_str = r#"
@@ -114,11 +120,13 @@ mod tests {
             "#;
 
         let config = ProxyConfig::from_str(config_str).unwrap();
-        assert_eq!(config,
-                   ProxyConfig {
-                       backend_url: "ipc://temp.ipc",
-                       frontend_url: "tcp://127.0.0.1:5558",
-                   });
+        assert_eq!(
+            config,
+            ProxyConfig {
+                backend_url: "ipc://temp.ipc",
+                frontend_url: "tcp://127.0.0.1:5558",
+            }
+        );
     }
 
     #[test]
