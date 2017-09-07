@@ -3,7 +3,7 @@
 pub mod commands {
     //! Commands from EZO RTD chipset.
     pub use ezo_rtd::command::{Baud, CalibrationClear, CalibrationState, CalibrationTemperature,
-                               DataloggerDisable, DataloggerInterval, DataloggerPeriod,
+                               Command, DataloggerDisable, DataloggerInterval, DataloggerPeriod,
                                DeviceInformation, Export, ExportInfo, Factory, Find, Import,
                                LedOff, LedOn, LedState, MemoryClear, MemoryRecall,
                                MemoryRecallLast, ProtocolLockDisable, ProtocolLockEnable,
