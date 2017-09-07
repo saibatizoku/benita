@@ -15,6 +15,7 @@
 
 #[macro_use]
 extern crate error_chain;
+extern crate ezo_common;
 extern crate ezo_ec;
 extern crate ezo_ph;
 extern crate ezo_rtd;

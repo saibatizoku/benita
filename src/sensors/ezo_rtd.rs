@@ -1,11 +1,23 @@
-//! A collection of available sensors.
+//! EZO RTD submersible temperature sensor. Command-API for the EZO RTD chipset.
+
+pub mod commands {
+    //! Commands from EZO RTD chipset.
+    pub use ezo_rtd::command::{Baud, CalibrationState, CalibrationTemperature, CalibrationClear, DataloggerPeriod, DataloggerDisable, DataloggerInterval, DeviceInformation, Export, ExportInfo, Factory, Find, Import, LedOff, LedOn, LedState, MemoryClear, MemoryRecall, MemoryRecallLast, ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState, Reading, ScaleCelsius, ScaleFahrenheit,ScaleKelvin, ScaleState, Sleep, Status};
+}
+
+pub mod responses {
+    //! Responses from EZO RTD chipset.
+    pub use ezo_rtd::response::{CalibrationStatus, DataLoggerStorageIntervalSeconds, DeviceInfo, DeviceStatus, Exported, ExportedInfo, LedStatus, MemoryReading, ProtocolLockStatus, SensorReading, Temperature, TemperatureScale};
+}
 
 use errors::*;
 use i2cdev::linux::LinuxI2CDevice;
-use ezo_rtd::command::{Command, ScaleState, Status, Reading};
-use ezo_rtd::response::{DeviceStatus, SensorReading, TemperatureScale};
+use ezo_common::BpsRate;
 
-/// Aquatic Temperature Sensor
+use self::commands::*;
+use self::responses::*;
+
+/// EZO-RTD Submersible Temperature Sensor
 pub struct TemperatureSensor {
     i2cdev: LinuxI2CDevice,
 }
