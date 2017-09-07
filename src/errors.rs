@@ -1,3 +1,4 @@
+//! Errors.
 use std::io;
 use neuras;
 use ezo_ec;
