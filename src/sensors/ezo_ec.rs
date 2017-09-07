@@ -33,7 +33,7 @@ pub struct ConductivitySensor {
 }
 
 impl ConductivitySensor {
-    /// Creates a new handle for the Electrical Conductivity Sensor connected
+    /// Creates a new handle for the Conductivity Sensor connected
     /// at the designated path and address.
     pub fn new(i2c_path: &str, device_address: u16) -> Result<ConductivitySensor> {
         let i2cdev = LinuxI2CDevice::new(i2c_path, device_address)
@@ -41,8 +41,10 @@ impl ConductivitySensor {
         Ok(ConductivitySensor { i2cdev: i2cdev })
     }
 
-    /// Change the EZO EC chip to UART mode. WARNING: after using this command, the chip will not
-    /// be available until it is put into I2C mode again. Read your chipset data-sheet for proper
+    /// Change the EZO EC chip to UART mode.
+    ///
+    /// __WARNING:__ after using this command, the chip will not be available
+    /// until it is put into I2C mode again. Read your chipset data-sheet for proper
     /// the procedure.
     pub fn set_uart_mode(&mut self, bps_rate: u32) -> Result<()> {
         let bps = match bps_rate {
@@ -72,15 +74,31 @@ impl ConductivitySensor {
 
     /// Set the value for dry calibration.
     pub fn set_calibration_dry(&mut self) -> Result<()> {
-        let _cmd = CalibrationClear
+        let _cmd = CalibrationDry
             .run(&mut self.i2cdev)
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
-    /// Set the calibration temperature for the sensor.
+    /// Set the calibration high-point for the sensor.
     pub fn set_calibration_high(&mut self, t: f64) -> Result<()> {
-        let _cmd = CalibrationTemperature(t)
+        let _cmd = CalibrationHigh(t)
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(())
+    }
+
+    /// Set the calibration low-point for the sensor.
+    pub fn set_calibration_low(&mut self, t: f64) -> Result<()> {
+        let _cmd = CalibrationLow(t)
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(())
+    }
+
+    /// Set the calibration single-point for the sensor.
+    pub fn set_calibration_single(&mut self, t: f64) -> Result<()> {
+        let _cmd = CalibrationOnePoint(t)
             .run(&mut self.i2cdev)
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
@@ -227,7 +245,9 @@ impl ConductivitySensor {
         Ok(())
     }
 
-    /// Get the current status of the Electrical Conductivity Sensor. Returns a `DeviceStatus` result.
+    /// Get the current status of the Conductivity Sensor.
+    ///
+    /// Returns a `DeviceStatus` result.
     pub fn get_status(&mut self) -> Result<DeviceStatus> {
         let status = Status
             .run(&mut self.i2cdev)
