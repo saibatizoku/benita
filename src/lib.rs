@@ -12,7 +12,6 @@
 #![recursion_limit = "1024"]
 
 #[deny(missing_docs)]
-
 #[macro_use]
 extern crate error_chain;
 extern crate ezo_common;

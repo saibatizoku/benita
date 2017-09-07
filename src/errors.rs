@@ -18,6 +18,9 @@ error_chain! {
         ResponseParse {
             description ("could not parse response")
         }
+        SensorTrouble {
+            description ("trouble with the sensor")
+        }
     }
     links {
         Neuras(neuras::errors::Error, neuras::errors::ErrorKind);
