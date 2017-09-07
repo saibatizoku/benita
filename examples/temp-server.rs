@@ -20,7 +20,7 @@ use benita::errors::{Result, ResultExt};
 use clap::{App, Arg};
 use ezo_rtd::command as rtd_command;
 use ezo_rtd::response as rtd_response;
-use neuras::utils::{create_context, zmq_pub};
+use neuras::utils::{bind_socket, create_context, zmq_pub};
 use rtd_command::Command;
 use rtd_response::SensorReading;
 
@@ -36,14 +36,16 @@ fn parse_cli_arguments() -> Result<()> {
         .version("0.1.0")
         .author("Joaquin R. <globojorro@gmail.com>")
         .about("Benita IoT. A publication service for temperature data.")
-        .arg(Arg::with_name("pub-url")
-                 .short("p")
-                 .long("pub-url")
-                 .value_name("PUB_URL")
-                 .help("Sets the url for the publication server")
-                 .takes_value(true)
-                 .index(1)
-                 .required(true))
+        .arg(
+            Arg::with_name("pub-url")
+                .short("p")
+                .long("pub-url")
+                .value_name("PUB_URL")
+                .help("Sets the url for the publication server")
+                .takes_value(true)
+                .index(1)
+                .required(true),
+        )
         .get_matches();
 
     let mut pub_url = String::new();
@@ -65,7 +67,7 @@ fn run(pub_url: &str) -> Result<()> {
     let context = create_context();
     let publisher = zmq_pub(&context)?;
 
-    assert!(publisher.bind(pub_url).is_ok());
+    let _bind = bind_socket(&publisher, pub_url).chain_err(|| "Publisher could not be started")?;
 
     loop {
         // We query the current temperature state of the sensor chip.

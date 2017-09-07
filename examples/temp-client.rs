@@ -12,7 +12,7 @@ use std::time::Duration;
 use benita::errors::{ErrorKind, Result};
 use chrono::{DateTime, Local};
 use clap::{App, Arg};
-use neuras::utils::{create_context, connect_socket, subscribe_client, zmq_sub};
+use neuras::utils::{connect_socket, create_context, subscribe_client, zmq_sub};
 
 const SUB_CHANNEL: &'static str = "temperature-0123456789abcdef";
 
@@ -25,26 +25,32 @@ fn parse_cli_arguments() -> Result<()> {
         .version("0.1.0")
         .author("Joaquin R. <globojorro@gmail.com>")
         .about("Benita IoT. Subscriber client.")
-        .arg(Arg::with_name("pub-url")
-                 .short("b")
-                 .long("pub")
-                 .value_name("PUB_URL")
-                 .help("Sets the url for the PUB server")
-                 .takes_value(true)
-                 .index(1)
-                 .required(true))
-        .arg(Arg::with_name("channel")
-                 .short("c")
-                 .long("channel")
-                 .value_name("CHANNEL")
-                 .help("Sets the subscription channel")
-                 .takes_value(true)
-                 .required(false)
-                 .index(2))
-        .arg(Arg::with_name("debug")
-                 .short("d")
-                 .multiple(true)
-                 .help("Turn debugging information on"))
+        .arg(
+            Arg::with_name("pub-url")
+                .short("b")
+                .long("pub")
+                .value_name("PUB_URL")
+                .help("Sets the url for the PUB server")
+                .takes_value(true)
+                .index(1)
+                .required(true),
+        )
+        .arg(
+            Arg::with_name("channel")
+                .short("c")
+                .long("channel")
+                .value_name("CHANNEL")
+                .help("Sets the subscription channel")
+                .takes_value(true)
+                .required(false)
+                .index(2),
+        )
+        .arg(
+            Arg::with_name("debug")
+                .short("d")
+                .multiple(true)
+                .help("Turn debugging information on"),
+        )
         .get_matches();
 
     let pub_url = match matches.value_of("pub-url") {
@@ -57,7 +63,7 @@ fn parse_cli_arguments() -> Result<()> {
         _ => SUB_CHANNEL,
     };
 
-    let _run =  run_subscriber(&pub_url, &channel)?;
+    let _run = run_subscriber(&pub_url, &channel)?;
 
     // Never reach this line...
     Ok(())
@@ -120,10 +126,12 @@ fn run_subscriber(pub_url: &str, channel: &str) -> Result<()> {
         let sub_str = subscriber.recv_string(0).unwrap().unwrap();
 
         let (uuid, dt, temperature, scale) = parse_sub_str(&sub_str)?;
-        println!("{} {} {}",
-                 dt.format("%F %T %z").to_string(),
-                 temperature,
-                 scale);
+        println!(
+            "{} {} {}",
+            dt.format("%F %T %z").to_string(),
+            temperature,
+            scale
+        );
 
         total_temp += temperature;
 

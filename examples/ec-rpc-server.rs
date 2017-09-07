@@ -58,15 +58,19 @@ fn parse_cli_arguments() -> Result<()> {
     let matches = App::new("benita-ec-rep")
         .version("0.1.0")
         .author("Joaquin R. <globojorro@gmail.com>")
-        .about("Benita IoT. A response service for electrical conductivity data.")
-        .arg(Arg::with_name("rep-url")
-                 .short("r")
-                 .long("rep-url")
-                 .value_name("REP_URL")
-                 .help("Sets the url for the response server")
-                 .takes_value(true)
-                 .index(1)
-                 .required(true))
+        .about(
+            "Benita IoT. A response service for electrical conductivity data.",
+        )
+        .arg(
+            Arg::with_name("rep-url")
+                .short("r")
+                .long("rep-url")
+                .value_name("REP_URL")
+                .help("Sets the url for the response server")
+                .takes_value(true)
+                .index(1)
+                .required(true),
+        )
         .get_matches();
 
     let mut rep_url = String::new();

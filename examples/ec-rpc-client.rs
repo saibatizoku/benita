@@ -11,25 +11,29 @@ extern crate neuras;
 
 use benita::errors::{ErrorKind, Result};
 use clap::{App, Arg};
-use neuras::utils::{create_context, create_message, connect_socket, zmq_req};
+use neuras::utils::{connect_socket, create_context, create_message, zmq_req};
 
 fn parse_cli_arguments() -> Result<()> {
     let matches = App::new("benita-subscriber")
         .version("0.1.0")
         .author("Joaquin R. <globojorro@gmail.com>")
         .about("Benita IoT. Requester client.")
-        .arg(Arg::with_name("rep-url")
-                 .short("b")
-                 .long("rep")
-                 .value_name("REP_URL")
-                 .help("Sets the url for the REP server")
-                 .takes_value(true)
-                 .index(1)
-                 .required(true))
-        .arg(Arg::with_name("debug")
-                 .short("d")
-                 .multiple(true)
-                 .help("Turn debugging information on"))
+        .arg(
+            Arg::with_name("rep-url")
+                .short("b")
+                .long("rep")
+                .value_name("REP_URL")
+                .help("Sets the url for the REP server")
+                .takes_value(true)
+                .index(1)
+                .required(true),
+        )
+        .arg(
+            Arg::with_name("debug")
+                .short("d")
+                .multiple(true)
+                .help("Turn debugging information on"),
+        )
         .get_matches();
 
     let rep_url = match matches.value_of("rep-url") {
@@ -37,7 +41,7 @@ fn parse_cli_arguments() -> Result<()> {
         _ => return Err(ErrorKind::ConfigParse.into()),
     };
 
-    let _run =  run_requester(&rep_url)?;
+    let _run = run_requester(&rep_url)?;
 
     // Never reach this line...
     Ok(())
