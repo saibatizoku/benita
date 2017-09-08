@@ -12,7 +12,7 @@ use std::time::Duration;
 
 use benita::errors::*;
 
-use clap::{App, Arg, SubCommand, AppSettings};
+use clap::{App, Arg, ArgMatches, SubCommand, AppSettings};
 
 /// Main loop.
 fn run_loop() -> Result<()> {
@@ -23,6 +23,39 @@ fn run_loop() -> Result<()> {
     }
 
     // Never reach this line...
+}
+
+fn parse_network_commands(matches: &ArgMatches) -> () {
+    match matches.subcommand() {
+        ("network", Some(net_matches)) => {
+            let _netcmd = match net_matches.subcommand() {
+                ("client", Some(client_matches)) => {
+                    let _subcmd = match client_matches.subcommand() {
+                        ("req", Some(rep_matches)) => {
+                            println!("REQ!");
+                        },
+                        ("sub", Some(sub_matches)) => {
+                            println!("SUB!");
+                        },
+                        _ => unreachable!(),
+                    };
+                },
+                ("server", Some(server_matches)) => {
+                    let _subcmd = match server_matches.subcommand() {
+                        ("rep", Some(rep_matches)) => {
+                            println!("REP!");
+                        },
+                        ("pub", Some(sub_matches)) => {
+                            println!("PUB!");
+                        },
+                        _ => unreachable!(),
+                    };
+                },
+                _ => unreachable!(),
+            };
+        },
+            _ => unreachable!(),
+    }
 }
 
 /// Parse arguments, and execute the main loop.
@@ -57,14 +90,26 @@ fn parse_cli_arguments() -> Result<()> {
         .subcommand(SubCommand::with_name("rep")
                     .about("start a responder server")
                     .settings(&[AppSettings::ArgRequiredElseHelp])
+                    .arg(Arg::with_name("i2cdev")
+                         .help("Path to i2cdev bus.")
+                         .required(true)
+                         .takes_value(true))
+                    .arg(Arg::with_name("device_address")
+                         .help("I2C device address.")
+                         .required(true)
+                         .takes_value(true))
                     .arg(Arg::with_name("url")
                          .help("URL to serve responses")
                          .required(true)
                          .takes_value(true)))
         .subcommand(SubCommand::with_name("pub")
-                    .about("start at publishing server")
+                    .about("start at publishing service for a response server")
                     .settings(&[AppSettings::ArgRequiredElseHelp])
-                    .arg(Arg::with_name("url")
+                    .arg(Arg::with_name("rep-url")
+                         .help("URL of the response server to be published.")
+                         .required(true)
+                         .takes_value(true))
+                    .arg(Arg::with_name("pub-url")
                          .help("URL for the publisher")
                          .required(true)
                          .takes_value(true))
@@ -99,9 +144,21 @@ fn parse_cli_arguments() -> Result<()> {
                     .subcommand(network_cmd.clone()))
         .get_matches();
 
+    let _parse_cli = match matches.subcommand() {
+        ("conductivity", Some(conductivity_matches)) => {
+            let _subcmd = parse_network_commands(conductivity_matches);
+        },
+        ("temperature", Some(temperature_matches)) => {
+            let _subcmd = parse_network_commands(temperature_matches);
+        },
+        ("ph", Some(ph_matches)) => {
+            let _subcmd = parse_network_commands(ph_matches);
+        },
+        _ => unreachable!(),
+    };
 
-    println!("Running benita... Press <Ctrl-C> to stop.");
-    let _run = run_loop()?;
+    // println!("Running benita... Press <Ctrl-C> to stop.");
+    // let _run = run_loop()?;
     Ok(())
 }
 
