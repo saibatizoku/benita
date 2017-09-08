@@ -5,17 +5,12 @@
 #![recursion_limit = "1024"]
 
 extern crate benita;
-extern crate chrono;
 extern crate clap;
-extern crate neuras;
 
-use std::fs::File;
-use std::io::Read;
 use std::thread;
 use std::time::Duration;
 
-use benita::config::SensorServiceConfig as Config;
-use benita::errors::{ErrorKind, Result};
+use benita::errors::*;
 
 use clap::{App, Arg, SubCommand, AppSettings};
 
@@ -32,55 +27,79 @@ fn run_loop() -> Result<()> {
 
 /// Parse arguments, and execute the main loop.
 fn parse_cli_arguments() -> Result<()> {
+    // Network Client subcommands
+    let network_client_cmd = SubCommand::with_name("client")
+        .about("network client services")
+        .settings(&[AppSettings::SubcommandRequiredElseHelp])
+        .subcommand(SubCommand::with_name("req")
+                    .about("start a requester client")
+                    .settings(&[AppSettings::ArgRequiredElseHelp])
+                    .arg(Arg::with_name("url")
+                         .help("URL to make requests to")
+                         .required(true)
+                         .takes_value(true)))
+        .subcommand(SubCommand::with_name("sub")
+                    .about("start at subscription client")
+                    .settings(&[AppSettings::ArgRequiredElseHelp])
+                    .arg(Arg::with_name("url")
+                         .help("publisher URL to subscribe to")
+                         .required(true)
+                         .takes_value(true))
+                    .arg(Arg::with_name("channel")
+                         .help("channel to subscribe to")
+                         .required(true)
+                         .takes_value(true)));
+
+    // Network Server subcommands
+    let network_server_cmd = SubCommand::with_name("server")
+        .about("network server services")
+        .settings(&[AppSettings::SubcommandRequiredElseHelp])
+        .subcommand(SubCommand::with_name("rep")
+                    .about("start a responder server")
+                    .settings(&[AppSettings::ArgRequiredElseHelp])
+                    .arg(Arg::with_name("url")
+                         .help("URL to serve responses")
+                         .required(true)
+                         .takes_value(true)))
+        .subcommand(SubCommand::with_name("pub")
+                    .about("start at publishing server")
+                    .settings(&[AppSettings::ArgRequiredElseHelp])
+                    .arg(Arg::with_name("url")
+                         .help("URL for the publisher")
+                         .required(true)
+                         .takes_value(true))
+                    .arg(Arg::with_name("channel")
+                         .help("channel for the publishing")
+                         .required(true)
+                         .takes_value(true)));
+
+    // Network subcommands
+    let network_cmd = SubCommand::with_name("network")
+        .about("network server/client services")
+        .settings(&[AppSettings::SubcommandRequiredElseHelp])
+        .subcommand(network_client_cmd)
+        .subcommand(network_server_cmd);
+
+    // Defines our application and parses the argument matches
     let matches = App::new("benita")
         .version("0.1.0")
         .author("Joaquin R. <globojorro@gmail.com>")
         .about("Command-line interface for managing benita services.")
+        .subcommand(SubCommand::with_name("conductivity")
+                    .about("Control the conductivity sensor")
+                    .settings(&[AppSettings::SubcommandRequiredElseHelp])
+                    .subcommand(network_cmd.clone()))
         .subcommand(SubCommand::with_name("temperature")
                     .about("Control the temperature sensor")
                     .settings(&[AppSettings::SubcommandRequiredElseHelp])
-                    .subcommand(SubCommand::with_name("web")
-                                .about("web server/client services")
-                                .settings(&[AppSettings::SubcommandRequiredElseHelp])
-                                .subcommand(SubCommand::with_name("client")
-                                            .about("web client services")
-                                            .settings(&[AppSettings::SubcommandRequiredElseHelp])
-                                            .subcommand(SubCommand::with_name("start")
-                                                        .about("start web client"))
-                                            .subcommand(SubCommand::with_name("status")
-                                                        .about("web client status"))
-                                            .subcommand(SubCommand::with_name("stop")
-                                                        .about("stop web client")))
-                                .subcommand(SubCommand::with_name("server")
-                                            .about("web server services")
-                                            .settings(&[AppSettings::SubcommandRequiredElseHelp])
-                                            .subcommand(SubCommand::with_name("start")
-                                                        .about("start web server"))
-                                            .subcommand(SubCommand::with_name("status")
-                                                        .about("web server status"))
-                                            .subcommand(SubCommand::with_name("stop")
-                                                        .about("stop web server")))))
-        .arg(
-            Arg::with_name("config")
-                .short("c")
-                .long("config")
-                .value_name("FILE")
-                .help("Sets a custom config file")
-                .takes_value(true),
-        )
+                    .subcommand(network_cmd.clone()))
+        .subcommand(SubCommand::with_name("ph")
+                    .about("Control the pH sensor")
+                    .settings(&[AppSettings::SubcommandRequiredElseHelp])
+                    .subcommand(network_cmd.clone()))
         .get_matches();
 
-    let mut input = String::new();
-    let mut config = Config::default();
 
-    if let Some(c) = matches.value_of("config") {
-        println!("Value for config: {}", &c);
-        let _read = File::open(&c)
-            .and_then(|mut f| f.read_to_string(&mut input))
-            .unwrap();
-
-        config = Config::from_str(&input)?;
-    }
     println!("Running benita... Press <Ctrl-C> to stop.");
     let _run = run_loop()?;
     Ok(())
