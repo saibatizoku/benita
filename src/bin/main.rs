@@ -17,7 +17,7 @@ use std::time::Duration;
 use benita::config::SensorServiceConfig as Config;
 use benita::errors::{ErrorKind, Result};
 
-use clap::{App, Arg};
+use clap::{App, Arg, SubCommand, AppSettings};
 
 /// Main loop.
 fn run_loop() -> Result<()> {
@@ -36,6 +36,30 @@ fn parse_cli_arguments() -> Result<()> {
         .version("0.1.0")
         .author("Joaquin R. <globojorro@gmail.com>")
         .about("Command-line interface for managing benita services.")
+        .subcommand(SubCommand::with_name("temperature")
+                    .about("Control the temperature sensor")
+                    .settings(&[AppSettings::SubcommandRequiredElseHelp])
+                    .subcommand(SubCommand::with_name("web")
+                                .about("web server/client services")
+                                .settings(&[AppSettings::SubcommandRequiredElseHelp])
+                                .subcommand(SubCommand::with_name("client")
+                                            .about("web client services")
+                                            .settings(&[AppSettings::SubcommandRequiredElseHelp])
+                                            .subcommand(SubCommand::with_name("start")
+                                                        .about("start web client"))
+                                            .subcommand(SubCommand::with_name("status")
+                                                        .about("web client status"))
+                                            .subcommand(SubCommand::with_name("stop")
+                                                        .about("stop web client")))
+                                .subcommand(SubCommand::with_name("server")
+                                            .about("web server services")
+                                            .settings(&[AppSettings::SubcommandRequiredElseHelp])
+                                            .subcommand(SubCommand::with_name("start")
+                                                        .about("start web server"))
+                                            .subcommand(SubCommand::with_name("status")
+                                                        .about("web server status"))
+                                            .subcommand(SubCommand::with_name("stop")
+                                                        .about("stop web server")))))
         .arg(
             Arg::with_name("config")
                 .short("c")
