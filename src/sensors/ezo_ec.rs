@@ -2,30 +2,33 @@
 
 pub mod commands {
     //! Commands from EZO EC chipset.
-    pub use ezo_ec::command::{Baud, CalibrationClear, CalibrationDry, CalibrationHigh,
-                              CalibrationLow, CalibrationOnePoint, CalibrationState, Command,
-                              CompensatedTemperatureValue, DeviceAddress, DeviceInformation,
-                              Export, ExportInfo, Factory, Find, Import, LedOff, LedOn, LedState,
-                              OutputDisableConductivity, OutputDisableSalinity,
-                              OutputDisableSpecificGravity, OutputDisableTds,
-                              OutputEnableConductivity, OutputEnableSalinity,
-                              OutputEnableSpecificGravity, OutputEnableTds, OutputState,
-                              ProbeTypeOne, ProbeTypePointOne, ProbeTypeState, ProbeTypeTen,
-                              ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState, Reading,
-                              Sleep, Status, TemperatureCompensation};
+    pub use ezo_ec::command::*;
 }
 
 pub mod responses {
     //! Responses from EZO EC chipset.
-    pub use ezo_ec::response::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus, Exported, ExportedInfo, LedStatus, OutputStringStatus, ParameterStatus, ProbeReading, ProbeType, ProtocolLockStatus};
+    pub use ezo_ec::response::*;
 }
 
 use errors::*;
 use i2cdev::linux::LinuxI2CDevice;
 use ezo_common::BpsRate;
 
-use self::commands::*;
-use self::responses::*;
+use self::commands::{Baud, CalibrationClear, CalibrationDry, CalibrationHigh,
+    CalibrationLow, CalibrationOnePoint, CalibrationState, Command,
+    CompensatedTemperatureValue, DeviceAddress, DeviceInformation,
+    Export, ExportInfo, Factory, Find, Import, LedOff, LedOn, LedState,
+    OutputDisableConductivity, OutputDisableSalinity,
+    OutputDisableSpecificGravity, OutputDisableTds,
+    OutputEnableConductivity, OutputEnableSalinity,
+    OutputEnableSpecificGravity, OutputEnableTds, OutputState,
+    ProbeTypeOne, ProbeTypePointOne, ProbeTypeState, ProbeTypeTen,
+    ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState, Reading,
+    Sleep, Status, TemperatureCompensation};
+
+use self::responses::{CalibrationStatus, CompensationValue, DeviceInfo,
+    DeviceStatus, Exported, ExportedInfo, LedStatus, OutputStringStatus,
+    ProbeReading, ProbeType, ProtocolLockStatus};
 
 /// EZO-EC Submersible Electrical Conductivity Sensor
 pub struct ConductivitySensor {
@@ -121,6 +124,14 @@ impl ConductivitySensor {
         Ok(info)
     }
 
+    /// Get the current compensated temperature value.
+    pub fn get_compensated_temperature_value(&mut self) -> Result<CompensationValue> {
+        let value = CompensatedTemperatureValue
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(value)
+    }
+
     /// Get a single calibration string from the sensor. This command needs to be called
     /// repeatedly, use the function `get_export_info()` to find out how many times.
     pub fn get_export_line(&mut self) -> Result<Exported> {
@@ -199,6 +210,110 @@ impl ConductivitySensor {
         Ok(status)
     }
 
+    /// Disable conductivity from output.
+    pub fn set_output_conductivity_off(&mut self) -> Result<()> {
+        let _set = OutputDisableConductivity
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(())
+    }
+
+    /// Disable salinity from output.
+    pub fn set_output_salinity_off(&mut self) -> Result<()> {
+        let _set = OutputDisableSalinity
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(())
+    }
+
+    /// Disable specific gravity from output.
+    pub fn set_output_specific_gravity_off(&mut self) -> Result<()> {
+        let _set = OutputDisableSpecificGravity
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(())
+    }
+
+    /// Disable total dissolved solids from output.
+    pub fn set_output_tds_off(&mut self) -> Result<()> {
+        let _set = OutputDisableTds
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(())
+    }
+
+    /// Enable conductivity from output.
+    pub fn set_output_conductivity_on(&mut self) -> Result<()> {
+        let _set = OutputEnableConductivity
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(())
+    }
+
+    /// Enable salinity from output.
+    pub fn set_output_salinity_on(&mut self) -> Result<()> {
+        let _set = OutputEnableSalinity
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(())
+    }
+
+    /// Enable specific gravity from output.
+    pub fn set_output_specific_gravity_on(&mut self) -> Result<()> {
+        let _set = OutputEnableSpecificGravity
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(())
+    }
+
+    /// Enable total dissolved solids from output.
+    pub fn set_output_tds_on(&mut self) -> Result<()> {
+        let _set = OutputEnableTds
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(())
+    }
+
+    /// Get the output string status.
+    pub fn get_output_string_status(&mut self) -> Result<OutputStringStatus> {
+        let status = OutputState
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(status)
+    }
+
+    /// Set the probe type to `1.0`.
+    pub fn set_probe_type_one(&mut self) -> Result<()> {
+        let _set = ProbeTypeOne
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(())
+    }
+
+    /// Set the probe type to `0.1`.
+    pub fn set_probe_type_point_one(&mut self) -> Result<()> {
+        let _set = ProbeTypePointOne
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(())
+    }
+
+    /// Set the probe type to `10`.
+    pub fn set_probe_type_ten(&mut self) -> Result<()> {
+        let _set = ProbeTypeTen
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(())
+    }
+
+    /// Get probe type status.
+    pub fn get_probe_type_status(&mut self) -> Result<ProbeType> {
+        let status = ProbeTypeState
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(status)
+    }
+
     /// Set the lock off for the I2C protocol mode.
     pub fn set_protocol_lock_off(&mut self) -> Result<()> {
         let _set = ProtocolLockDisable
@@ -253,5 +368,13 @@ impl ConductivitySensor {
             .run(&mut self.i2cdev)
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(status)
+    }
+
+    /// Set the compensation temperature.
+    pub fn set_compensation_temperature(&mut self, value: f64) -> Result<()> {
+        let _cmd = TemperatureCompensation(value)
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(())
     }
 }
