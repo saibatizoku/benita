@@ -6,22 +6,17 @@
 #![recursion_limit = "1024"]
 
 extern crate benita;
-extern crate chrono;
 extern crate clap;
-extern crate ezo_ph;
-extern crate i2cdev;
 extern crate neuras;
 
 use std::thread;
 use std::time::Duration;
 
 use benita::errors::{Result, ResultExt};
+use benita::sensors::ezo_ph::PhSensor;
+use benita::sensors::ezo_ph::responses::SensorReading;
+
 use clap::{App, Arg};
-use ezo_ph::command as ph_command;
-use ezo_ph::response as ph_response;
-use ph_command::Command;
-use ph_response::SensorReading;
-use i2cdev::linux::LinuxI2CDevice;
 
 const I2C_BUS_ID: u8 = 1;
 const EZO_SENSOR_ADDR: u16 = 99; // could be specified as 0x63
@@ -83,7 +78,7 @@ fn parse_cli_arguments() -> Result<()> {
 fn run(rep_url: &str) -> Result<()> {
     // We initialize our I2C device connection.
     let device_path = format!("/dev/i2c-{}", I2C_BUS_ID);
-    let mut dev = LinuxI2CDevice::new(&device_path, EZO_SENSOR_ADDR)
+    let mut ph_sensor = PhSensor::new(&device_path, EZO_SENSOR_ADDR)
         .chain_err(|| "Could not open I2C device")?;
 
     // We start our ZMQ context.
@@ -107,15 +102,15 @@ fn run(rep_url: &str) -> Result<()> {
         // Parse and process the command.
         let command_response = match parse_command(msg_str) {
             PossibleCommand::Calibrate(temp) => {
-                let _calibrate = ph_command::TemperatureCompensation(temp).run(&mut dev)?;
+                let _calibrate = ph_sensor.set_compensation_temperature(temp)?;
                 format!("Compensated Temperature: {}", temp)
             }
             PossibleCommand::Read => {
-                let SensorReading(sensor_output) = ph_command::Reading.run(&mut dev)?;
+                let SensorReading(sensor_output) = ph_sensor.get_reading()?;
                 format!("{}", sensor_output)
             }
             PossibleCommand::Sleep => {
-                let _sleep = ph_command::Sleep.run(&mut dev)?;
+                let _sleep = ph_sensor.set_sleep()?;
                 "Sleeping".to_string()
             }
             PossibleCommand::NotRecognized => "Unknown command".to_string(),
