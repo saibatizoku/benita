@@ -21,6 +21,7 @@ toml = "0.4"
 [[bin]]
 name = "benita"
 path = "src/bin/main.rs"
+doc = false
 
 [profile.release]
 lto = true
