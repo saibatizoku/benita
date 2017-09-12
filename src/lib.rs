@@ -11,7 +11,7 @@
 
 #![recursion_limit = "1024"]
 
-#[deny(missing_docs)]
+extern crate chrono;
 #[macro_use]
 extern crate error_chain;
 extern crate ezo_common;
@@ -26,4 +26,5 @@ extern crate toml;
 
 pub mod config;
 pub mod errors;
+pub mod programs;
 pub mod sensors;
