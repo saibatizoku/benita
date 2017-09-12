@@ -156,7 +156,7 @@ dependencies = [
 [[package]]
 name = "ezo_common"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/ezo-common-rs.git#65d617e69f25e1e804d02703546653b6c24f1c16"
+source = "git+https://github.com/saibatizoku/ezo-common-rs.git#02dea7a6183d1c434b8cb6fcffc80cb225ca7db8"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -290,7 +290,7 @@ dependencies = [
 [[package]]
 name = "neuras"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/neuras.git#5fa46a4846b1d3cd784e4a38329d17bd16a674e4"
+source = "git+https://github.com/saibatizoku/neuras.git#4c823587e38bf0cc93fa707e20200c06b3dfea1e"
 dependencies = [
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "url 1.5.1 (registry+https://github.com/rust-lang/crates.io-index)",

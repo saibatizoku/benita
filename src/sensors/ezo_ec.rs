@@ -11,8 +11,9 @@ pub mod responses {
 }
 
 use errors::*;
-use i2cdev::linux::LinuxI2CDevice;
+
 use ezo_common::BpsRate;
+use i2cdev::linux::LinuxI2CDevice;
 
 use self::commands::{Baud, CalibrationClear, CalibrationDry, CalibrationHigh,
     CalibrationLow, CalibrationOnePoint, CalibrationState, Command,
@@ -50,17 +51,7 @@ impl ConductivitySensor {
     /// until it is put into I2C mode again. Read your chipset data-sheet for proper
     /// the procedure.
     pub fn set_uart_mode(&mut self, bps_rate: u32) -> Result<()> {
-        let bps = match bps_rate {
-            300 => BpsRate::Bps300,
-            1200 => BpsRate::Bps1200,
-            2400 => BpsRate::Bps2400,
-            9600 => BpsRate::Bps9600,
-            19200 => BpsRate::Bps19200,
-            38400 => BpsRate::Bps38400,
-            57600 => BpsRate::Bps57600,
-            115200 => BpsRate::Bps115200,
-            _ => return Err(ErrorKind::SensorTrouble.into()),
-        };
+        let bps = BpsRate::parse_u32(bps_rate)?;
         let _cmd = Baud(bps)
             .run(&mut self.i2cdev)
             .chain_err(|| ErrorKind::SensorTrouble)?;
