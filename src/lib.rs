@@ -26,5 +26,5 @@ extern crate toml;
 
 pub mod config;
 pub mod errors;
-pub mod programs;
+pub mod network;
 pub mod sensors;

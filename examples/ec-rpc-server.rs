@@ -13,6 +13,7 @@ use std::thread;
 use std::time::Duration;
 
 use benita::errors::{Result, ResultExt};
+use benita::network::conductivity::REPCommand;
 use benita::sensors::ezo_ec::ConductivitySensor;
 use benita::sensors::ezo_ec::responses::OutputStringStatus;
 
@@ -21,34 +22,6 @@ use neuras::utils::bind_socket;
 
 const I2C_BUS_ID: u8 = 1;
 const EZO_SENSOR_ADDR: u16 = 100; // could be specified as 0x64
-
-#[derive(Debug, Clone, Copy, PartialEq)]
-enum PossibleCommand {
-    // 'T,n' command, where n is a temperature float/int
-    Calibrate(f64),
-    // 'O,?' command
-    GetParams,
-    // 'R'
-    Read,
-    // 'SLEEP' command
-    Sleep,
-    // command not recognized
-    NotRecognized,
-}
-
-fn parse_command(cmd_str: &str) -> PossibleCommand {
-    match cmd_str {
-        "read" => PossibleCommand::Read,
-        a if cmd_str.starts_with("calibrate ") => {
-            let rest = a.get(10..).unwrap();
-            let temp = rest.parse().unwrap();
-            PossibleCommand::Calibrate(temp)
-        }
-        "get_params" => PossibleCommand::GetParams,
-        "sleep" => PossibleCommand::Sleep,
-        _ => PossibleCommand::NotRecognized,
-    }
-}
 
 fn parse_cli_arguments() -> Result<()> {
     let matches = App::new("benita-ec-rep")
@@ -108,21 +81,21 @@ fn run(rep_url: &str) -> Result<()> {
         let msg_str = msg.as_str().unwrap();
 
         // Parse and process the command.
-        let command_response = match parse_command(msg_str) {
-            PossibleCommand::Calibrate(temp) => {
+        let command_response = match REPCommand::parse(msg_str) {
+            REPCommand::Calibrate(temp) => {
                 let _calibrate = ec_sensor.set_compensation_temperature(temp)?;
                 format!("Compensated Temperature: {}", temp)
             }
-            PossibleCommand::NotRecognized => "Unknown command".to_string(),
-            PossibleCommand::GetParams => {
+            REPCommand::NotRecognized => "Unknown command".to_string(),
+            REPCommand::GetParams => {
                 let output_state: OutputStringStatus = ec_sensor.get_output_string_status()?;
                 output_state.to_string()
             }
-            PossibleCommand::Read => {
+            REPCommand::Read => {
                 let sensor_output = ec_sensor.get_reading()?;
                 format!("{:?}", sensor_output)
             }
-            PossibleCommand::Sleep => {
+            REPCommand::Sleep => {
                 let _sleep = ec_sensor.set_sleep()?;
                 "Sleeping".to_string()
             }
