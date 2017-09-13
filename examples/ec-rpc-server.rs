@@ -14,8 +14,8 @@ use std::time::Duration;
 
 use benita::errors::{Result, ResultExt};
 use benita::network::conductivity::REPCommand;
-use benita::sensors::ezo_ec::ConductivitySensor;
-use benita::sensors::ezo_ec::responses::OutputStringStatus;
+use benita::sensors::conductivity::ConductivitySensor;
+use benita::sensors::conductivity::responses::OutputStringStatus;
 
 use clap::{App, Arg};
 use neuras::utils::bind_socket;

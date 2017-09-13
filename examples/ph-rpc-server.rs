@@ -13,8 +13,8 @@ use std::thread;
 use std::time::Duration;
 
 use benita::errors::{Result, ResultExt};
-use benita::sensors::ezo_ph::PhSensor;
-use benita::sensors::ezo_ph::responses::SensorReading;
+use benita::sensors::ph::PhSensor;
+use benita::sensors::ph::responses::SensorReading;
 
 use clap::{App, Arg};
 

@@ -13,8 +13,8 @@ use std::thread;
 use std::time::Duration;
 
 use benita::errors::{Result, ResultExt};
-use benita::sensors::ezo_rtd::TemperatureSensor;
-use benita::sensors::ezo_rtd::responses::SensorReading;
+use benita::sensors::temperature::TemperatureSensor;
+use benita::sensors::temperature::responses::SensorReading;
 
 use clap::{App, Arg};
 

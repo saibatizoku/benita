@@ -15,7 +15,7 @@ use std::thread;
 use std::time::Duration;
 
 use benita::errors::{Result, ResultExt};
-use benita::sensors::ezo_rtd::TemperatureSensor;
+use benita::sensors::temperature::TemperatureSensor;
 
 use chrono::{DateTime, Utc};
 use clap::{App, Arg};
