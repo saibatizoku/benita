@@ -16,7 +16,6 @@ use std::time::Duration;
 
 use benita::errors::{Result, ResultExt};
 use benita::sensors::ezo_rtd::TemperatureSensor;
-use benita::sensors::ezo_rtd::responses::SensorReading;
 
 use chrono::{DateTime, Utc};
 use clap::{App, Arg};
@@ -69,14 +68,14 @@ fn run(pub_url: &str) -> Result<()> {
         let scale = rtd_sensor.get_scale()?;
 
         // We take a temperature reading (around 600ms).
-        let SensorReading(temperature) = rtd_sensor.get_reading()?;
+        let temperature = rtd_sensor.get_reading()?;
 
         // We immediately put the chip to sleep.
         let _sleep = rtd_sensor.set_sleep()?;
 
         // We print out the result with the current ISO datetime.
         let dt: DateTime<Utc> = Utc::now();
-        let update = format!("{} {:?} {:.*} {:?}", PUB_CHANNEL, dt, 3, temperature, scale);
+        let update = format!("{} {:?} {} {:?}", PUB_CHANNEL, dt, temperature, scale);
         publisher.send(&update.as_bytes(), 0).unwrap();
         println!("{}", &update);
 

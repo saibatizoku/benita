@@ -89,6 +89,7 @@ fn run(rep_url: &str) -> Result<()> {
 
     // We start our ZMQ context.
     let context = neuras::utils::create_context();
+
     // We configure our socket as REP, for accepting requests
     // and providing REsPonses.
     let responder = neuras::utils::zmq_rep(&context)?;
