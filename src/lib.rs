@@ -11,6 +11,7 @@
 
 #![recursion_limit = "1024"]
 
+extern crate clap;
 extern crate chrono;
 #[macro_use]
 extern crate error_chain;
@@ -24,6 +25,7 @@ extern crate neuras;
 extern crate serde_derive;
 extern crate toml;
 
+pub mod cli;
 pub mod config;
 pub mod errors;
 pub mod network;
