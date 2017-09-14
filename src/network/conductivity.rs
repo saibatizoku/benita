@@ -8,23 +8,24 @@ use neuras;
 
 use chrono::{DateTime, Local};
 
+/// REP command-set.
+///
+/// 'T,n' command, where n is a temperature float/int
+/// 'O,?' command
+/// 'R'
+/// 'SLEEP' command
+/// command not recognized
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum REPCommand {
-    // 'T,n' command, where n is a temperature float/int
     Calibrate(f64),
-    // 'O,?' command
     GetParams,
-    // 'R'
     Read,
-    // 'SLEEP' command
     Sleep,
-    // command not recognized
-    NotRecognized,
 }
 
 impl REPCommand {
-    pub fn parse(cmd_str: &str) -> REPCommand {
-        match cmd_str {
+    pub fn parse(cmd_str: &str) -> Result<REPCommand> {
+        let cmd = match cmd_str {
             "read" => REPCommand::Read,
             a if cmd_str.starts_with("calibrate ") => {
                 let rest = a.get(10..).unwrap();
@@ -33,8 +34,9 @@ impl REPCommand {
             }
             "get_params" => REPCommand::GetParams,
             "sleep" => REPCommand::Sleep,
-            _ => REPCommand::NotRecognized,
-        }
+            _ => return Err(ErrorKind::CommandParse.into()),
+        };
+        Ok(cmd)
     }
 }
 

@@ -82,23 +82,23 @@ fn run(rep_url: &str) -> Result<()> {
 
         // Parse and process the command.
         let command_response = match REPCommand::parse(msg_str) {
-            REPCommand::Calibrate(temp) => {
+            Ok(REPCommand::Calibrate(temp)) => {
                 let _calibrate = ec_sensor.set_compensation_temperature(temp)?;
                 format!("Compensated Temperature: {}", temp)
             }
-            REPCommand::NotRecognized => "Unknown command".to_string(),
-            REPCommand::GetParams => {
+            Ok(REPCommand::GetParams) => {
                 let output_state: OutputStringStatus = ec_sensor.get_output_string_status()?;
                 output_state.to_string()
             }
-            REPCommand::Read => {
+            Ok(REPCommand::Read) => {
                 let sensor_output = ec_sensor.get_reading()?;
                 format!("{:?}", sensor_output)
             }
-            REPCommand::Sleep => {
+            Ok(REPCommand::Sleep) => {
                 let _sleep = ec_sensor.set_sleep()?;
                 "Sleeping".to_string()
             }
+            _ => "Unknown command".to_string(),
         };
 
         // Send response to the client.
