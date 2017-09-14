@@ -290,7 +290,7 @@ dependencies = [
 [[package]]
 name = "neuras"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/neuras.git#4c823587e38bf0cc93fa707e20200c06b3dfea1e"
+source = "git+https://github.com/saibatizoku/neuras.git#011ae77e65289ba20d476b3a87acd79b2fdda0af"
 dependencies = [
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "url 1.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
