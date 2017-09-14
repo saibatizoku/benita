@@ -11,6 +11,9 @@ error_chain! {
         AddressParse {
             description ("could not parse address")
         }
+        CommandParse {
+            description ("could not parse command")
+        }
         ConfigParse {
             description ("could not parse configuration file")
         }
