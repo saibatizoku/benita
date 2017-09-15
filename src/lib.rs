@@ -1,7 +1,8 @@
 //! # benita
 //!
-//! Benita provides a client to interact with sensors over I2C. It is designed
-//! for usage on embedded devices with SoC (Systems On Chip) with Linux.
+//! Benita provides a network client to interact with sensors using `i2cdev`.
+//! It is designed for usage on embedded devices with SoC (Systems On Chip)
+//! with Linux, and personal computers in the network.
 //!
 //! The included aquatic sensors are:
 //!
@@ -25,8 +26,13 @@ extern crate neuras;
 extern crate serde_derive;
 extern crate toml;
 
+/// Command-line utilities and applications.
 pub mod cli;
+/// Configuration utilites and services.
 pub mod config;
+/// Error definitions.
 pub mod errors;
+/// Network utilities and services.
 pub mod network;
+/// Sensor utilities and services.
 pub mod sensors;
