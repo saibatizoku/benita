@@ -1,20 +1,20 @@
-//! Executable programs for handling sensors.
+//! Networked services for Conductivity sensing.
+
 use std::thread;
 use std::time::Duration;
 
 use config::SensorServiceConfig;
 use errors::*;
-use neuras;
 
+use neuras;
 use chrono::{DateTime, Local};
 
 /// REP command-set.
 ///
-/// 'T,n' command, where n is a temperature float/int
-/// 'O,?' command
-/// 'R'
-/// 'SLEEP' command
-/// command not recognized
+/// *   `calibrate n` command, where n is a temperature float/int.
+/// *   `get_params` command, return the output readings configuration.
+/// *   `read` command, returns the output readings.
+/// *   `sleep` command, sets the device to sleep/low-power mode.
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum REPCommand {
     Calibrate(f64),
@@ -40,10 +40,12 @@ impl REPCommand {
     }
 }
 
+// simple atof utility.
 fn atof(s: &str) -> f64 {
     s.parse().unwrap()
 }
 
+// parse the response.
 fn parse_calibration_value_msg(sub_msg: &str) -> Result<(String, DateTime<Local>, f64, String)> {
     let mut split = sub_msg.split(' ');
     // The first string is the UUID of the message source.
@@ -82,8 +84,12 @@ fn parse_calibration_value_msg(sub_msg: &str) -> Result<(String, DateTime<Local>
     Ok((uuid, dt, temperature, scale))
 }
 
+/// Run a configured sensor service.
+///
+/// This service samples the temperature at a given interval, using that value
+/// to compensate the pH sensor and sample, and then the conductivity sensor.
 #[allow(dead_code)]
-pub fn calibrated_sampler(config: SensorServiceConfig) -> Result<()> {
+pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()> {
     // Create ZMQ context
     let context = neuras::utils::create_context();
 
