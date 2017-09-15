@@ -1,31 +1,22 @@
 //! An example that takes readings from the RTD EZO chip in a loop.
 //!
-
 #![recursion_limit = "1024"]
-
 extern crate benita;
-extern crate chrono;
-extern crate clap;
-extern crate neuras;
 
 use std::fs::File;
 use std::io::Read;
-use std::thread;
-use std::time::Duration;
 
-use benita::cli::benita::benita_cli_parser;
+use benita::cli::benita::benita_calibrated_service_cli_parser;
 use benita::config::SensorServiceConfig as Config;
-use benita::errors::{ErrorKind, Result};
+use benita::errors::*;
 use benita::network::conductivity::run_calibrated_sampling_service;
-
-use chrono::{DateTime, Local};
 
 
 const SUB_CHANNEL: &'static str = "temperature-0123456789abcdef";
 
 
 fn parse_cli_arguments() -> Result<()> {
-    let matches = benita_cli_parser().get_matches();
+    let matches = benita_calibrated_service_cli_parser().get_matches();
 
     let mut input = String::new();
     let mut config = Config::default();

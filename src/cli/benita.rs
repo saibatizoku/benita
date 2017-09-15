@@ -160,3 +160,45 @@ pub fn benita_cli_parser<'a, 'b>() -> App<'a, 'b> {
                 .subcommand(network_cmd.clone()),
         )
 }
+
+/// `benita-calibrated-service` command-line application for sensor and network services.
+pub fn benita_calibrated_service_cli_parser<'a, 'b>() -> App<'a, 'b> {
+    App::new("benita-calibrated-service")
+        .version("0.1.0")
+        .author("Joaquin R. <globojorro@gmail.com>")
+        .about("Benita IoT")
+        .arg(
+            Arg::with_name("config")
+                .short("c")
+                .long("config")
+                .value_name("FILE")
+                .help("Sets a custom config file")
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("pub-server-url")
+                .short("p")
+                .long("pub-server")
+                .value_name("PUB_URL")
+                .help("Sets the url for the PUB server")
+                .takes_value(true)
+                .index(1)
+                .conflicts_with_all(&["config"]),
+        )
+        .arg(
+            Arg::with_name("rep-server-url")
+                .short("r")
+                .long("rep-server")
+                .value_name("REP_URL")
+                .help("Sets the url for the REP server")
+                .takes_value(true)
+                .index(2)
+                .conflicts_with_all(&["config"]),
+        )
+        .arg(
+            Arg::with_name("debug")
+                .short("d")
+                .multiple(true)
+                .help("Turn debugging information on"),
+        )
+}
