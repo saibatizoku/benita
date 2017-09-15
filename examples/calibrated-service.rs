@@ -13,60 +13,19 @@ use std::io::Read;
 use std::thread;
 use std::time::Duration;
 
+use benita::cli::benita::benita_cli_parser;
 use benita::config::SensorServiceConfig as Config;
 use benita::errors::{ErrorKind, Result};
-use clap::{App, Arg};
+use benita::network::conductivity::run_calibrated_sampling_service;
+
 use chrono::{DateTime, Local};
-use neuras::utils::{connect_socket, create_context, create_message, subscribe_client, zmq_req,
-                    zmq_sub};
 
 
 const SUB_CHANNEL: &'static str = "temperature-0123456789abcdef";
 
-fn atof(s: &str) -> f64 {
-    s.parse().unwrap()
-}
 
 fn parse_cli_arguments() -> Result<()> {
-    let matches = App::new("benita")
-        .version("0.1.0")
-        .author("Joaquin R. <globojorro@gmail.com>")
-        .about("Benita IoT")
-        .arg(
-            Arg::with_name("config")
-                .short("c")
-                .long("config")
-                .value_name("FILE")
-                .help("Sets a custom config file")
-                .takes_value(true),
-        )
-        .arg(
-            Arg::with_name("pub-server-url")
-                .short("p")
-                .long("pub-server")
-                .value_name("PUB_URL")
-                .help("Sets the url for the PUB server")
-                .takes_value(true)
-                .index(1)
-                .conflicts_with_all(&["config"]),
-        )
-        .arg(
-            Arg::with_name("rep-server-url")
-                .short("r")
-                .long("rep-server")
-                .value_name("REP_URL")
-                .help("Sets the url for the REP server")
-                .takes_value(true)
-                .index(2)
-                .conflicts_with_all(&["config"]),
-        )
-        .arg(
-            Arg::with_name("debug")
-                .short("d")
-                .multiple(true)
-                .help("Turn debugging information on"),
-        )
-        .get_matches();
+    let matches = benita_cli_parser().get_matches();
 
     let mut input = String::new();
     let mut config = Config::default();
@@ -91,124 +50,10 @@ fn parse_cli_arguments() -> Result<()> {
         }
     }
 
-    // Create ZMQ context
-    let context = create_context();
-
-    // Create ZMQ sockets
-    let subscriber = zmq_sub(&context)?;
-    let req_ec = zmq_req(&context)?;
-    let req_ph = zmq_req(&context)?;
-
-    let _connect_sub = connect_socket(&subscriber, config.pub_url)?;
-    let _subscribe = subscribe_client(&subscriber, config.channel)?;
-
-    let _connect_ec = connect_socket(&req_ec, config.rep_ec_url)?;
-    let _connect_ph = connect_socket(&req_ph, config.rep_ph_url)?;
-
-    // Continued program logic goes here...
-    println!("Collecting updates from weather server...");
-
-    let mut samples = 1;
-    let mut total_temp = 0f64;
-
-    // Reactor-type loop, it will run as long as the current program runs.
-    loop {
-        let sub_str = subscriber.recv_string(0).unwrap().unwrap();
-
-        let (uuid, dt, temperature, scale) = parse_sub_str(&sub_str)?;
-        println!(
-            "{} {} {}",
-            dt.format("%F %T %z").to_string(),
-            temperature,
-            scale
-        );
-
-        total_temp += temperature;
-
-        if samples == 6 {
-            let avg_temp = total_temp / 6.0;
-            println!("UUID: {} AVG: {:.*} {}", uuid, 3, avg_temp, scale);
-
-            println!("Calibrating EC: {}", dt.format("%F %T %z").to_string());
-
-            let mut msg = create_message()?;
-
-            // PH
-            let _send = req_ph.send("read".as_bytes(), 0).unwrap();
-            let _recv = req_ph.recv(&mut msg, 0).unwrap();
-            println!("pH {}", msg.as_str().unwrap());
-
-            let _send = req_ph.send("sleep".as_bytes(), 0).unwrap();
-            let _recv = req_ph.recv(&mut msg, 0).unwrap();
-
-            // EC
-            let calibrate = format!("calibrate {:.*}", 3, avg_temp);
-            let _send = req_ec.send(calibrate.as_bytes(), 0).unwrap();
-            let _recv = req_ec.recv(&mut msg, 0).unwrap();
-            println!("{}", msg.as_str().unwrap());
-
-            let _send = req_ec.send("get_params".as_bytes(), 0).unwrap();
-            let _recv = req_ec.recv(&mut msg, 0).unwrap();
-            println!("{}", msg.as_str().unwrap());
-
-            let _send = req_ec.send("read".as_bytes(), 0).unwrap();
-            let _recv = req_ec.recv(&mut msg, 0).unwrap();
-            println!("{}", msg.as_str().unwrap());
-
-            let _send = req_ec.send("sleep".as_bytes(), 0).unwrap();
-            let _recv = req_ec.recv(&mut msg, 0).unwrap();
-
-            total_temp = 0f64;
-            samples = 1;
-        } else {
-            samples += 1;
-        }
-
-        // No work left, so we sleep.
-        thread::sleep(Duration::from_millis(1));
-    }
+    let _run = run_calibrated_sampling_service(config)?;
 
     // Never reach this line...
-}
-
-fn parse_sub_str(sub_str: &str) -> Result<(String, DateTime<Local>, f64, String)> {
-    let mut split = sub_str.split(' ');
-
-    // The first string is the UUID of the message source.
-    let uuid = match split.next() {
-        Some(_uuid) => _uuid.to_string(),
-        _ => {
-            println!("No valid UUID found");
-            return Err(ErrorKind::ResponseParse.into());
-        }
-    };
-
-    let dt = match split.next() {
-        Some(date_n_time) => date_n_time.parse::<DateTime<Local>>().unwrap(),
-        _ => {
-            println!("NO valid date-time found");
-            return Err(ErrorKind::ResponseParse.into());
-        }
-    };
-
-    let temperature = match split.next() {
-        Some(temp) => atof(&temp),
-        _ => {
-            println!("NO valid date-time found");
-            return Err(ErrorKind::ResponseParse.into());
-        }
-    };
-
-
-    let scale = match split.next() {
-        Some(_scale) => _scale.to_string(),
-        _ => {
-            println!("NO valid temperature scale found");
-            return Err(ErrorKind::ResponseParse.into());
-        }
-    };
-
-    Ok((uuid, dt, temperature, scale))
+    Ok(())
 }
 
 fn main() {
