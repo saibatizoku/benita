@@ -9,11 +9,11 @@ extern crate benita;
 use std::thread;
 use std::time::Duration;
 
-use benita::cli::benita::{benita_cli_parser, parse_network_commands};
+use benita::cli::benita::{benita_cli_parser, sensor_cli_parser};
 use benita::errors::*;
 
-#[allow(dead_code)]
 /// Main loop.
+#[allow(dead_code)]
 fn run_loop() -> Result<()> {
     // Reactor-type loop, it will run as long as the current program runs.
     loop {
@@ -30,19 +30,20 @@ fn parse_cli_arguments() -> Result<()> {
     let matches = benita_cli_parser().get_matches();
 
     let _parse_cli = match matches.subcommand() {
-        ("conductivity", Some(conductivity_matches)) => {
-            let _subcmd = parse_network_commands(conductivity_matches)?;
+        ("conductivity", Some(_conductivity_matches)) => {
+            let _subcmd = sensor_cli_parser(_conductivity_matches)?;
         },
-        ("temperature", Some(temperature_matches)) => {
-            let _subcmd = parse_network_commands(temperature_matches)?;
+        ("temperature", Some(_temperature_matches)) => {
+            let _subcmd = sensor_cli_parser(_temperature_matches)?;
         },
-        ("ph", Some(ph_matches)) => {
-            let _subcmd = parse_network_commands(ph_matches)?;
+        ("ph", Some(_ph_matches)) => {
+            let _subcmd = sensor_cli_parser(_ph_matches)?;
         },
         _ => unreachable!(),
     };
 
-    // println!("Running benita... Press <Ctrl-C> to stop.");
+    // Inform that the service has started.
+    println!("Running benita... Press <Ctrl-C> to stop.");
     // let _run = run_loop()?;
     Ok(())
 }

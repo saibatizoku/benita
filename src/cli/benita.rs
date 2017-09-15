@@ -1,41 +1,50 @@
+//! Command-line argument parsers for common services.
 use errors::*;
 
 use clap::{App, Arg, ArgMatches, SubCommand, AppSettings};
 
-pub fn parse_network_commands(matches: &ArgMatches) -> Result<()> {
-    let _parse_matches = match matches.subcommand() {
-        ("network", Some(net_matches)) => {
-            let _netcmd = match net_matches.subcommand() {
-                ("client", Some(client_matches)) => {
-                    let _subcmd = match client_matches.subcommand() {
-                        ("req", Some(rep_matches)) => {
-                            println!("REQ!");
-                        },
-                        ("sub", Some(sub_matches)) => {
-                            println!("SUB!");
-                        },
-                        _ => unreachable!(),
-                    };
+/// A parser for `benita` sensor network sub-commands.
+pub fn sensor_network_cli_parser(matches: &ArgMatches) -> Result<()> {
+    let _netcmd = match matches.subcommand() {
+        ("client", Some(_client_matches)) => {
+            let _subcmd = match _client_matches.subcommand() {
+                ("req", Some(_rep_matches)) => {
+                    println!("REQ!");
                 },
-                ("server", Some(server_matches)) => {
-                    let _subcmd = match server_matches.subcommand() {
-                        ("rep", Some(rep_matches)) => {
-                            println!("REP!");
-                        },
-                        ("pub", Some(sub_matches)) => {
-                            println!("PUB!");
-                        },
-                        _ => unreachable!(),
-                    };
+                ("sub", Some(_sub_matches)) => {
+                    println!("SUB!");
                 },
                 _ => unreachable!(),
             };
         },
-            _ => unreachable!(),
+        ("server", Some(_server_matches)) => {
+            let _subcmd = match _server_matches.subcommand() {
+                ("rep", Some(_rep_matches)) => {
+                    println!("REP!");
+                },
+                ("pub", Some(_sub_matches)) => {
+                    println!("PUB!");
+                },
+                _ => unreachable!(),
+            };
+        },
+        _ => unreachable!(),
     };
     Ok(())
 }
 
+/// A parser for `benita` sensor sub-commands.
+pub fn sensor_cli_parser(matches: &ArgMatches) -> Result<()> {
+    let _parse_matches = match matches.subcommand() {
+        ("network", Some(net_matches)) => {
+            let _netcmd = sensor_network_cli_parser(net_matches)?;
+        },
+        _ => unreachable!(),
+    };
+    Ok(())
+}
+
+/// `benita` command-line application for sensor and network services.
 pub fn benita_cli_parser<'a, 'b>() -> App<'a, 'b> {
     // Network Client subcommands
     let network_client_cmd = SubCommand::with_name("client")
