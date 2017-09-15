@@ -67,8 +67,7 @@ fn run(rep_url: &str) -> Result<()> {
     // and providing REsPonses.
     let responder = neuras::utils::zmq_rep(&context)?;
     // We bind our socket to REP_URL.
-    let _bind_socket = bind_socket(&responder, rep_url)
-        .chain_err(|| "problems binding to socket")?;
+    let _bind_socket = bind_socket(&responder, rep_url).chain_err(|| "problems binding to socket")?;
     // We initialize our ZMQ message. It will be reused throughout.
     let mut msg = neuras::utils::create_message()?;
 

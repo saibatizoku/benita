@@ -32,13 +32,13 @@ fn parse_cli_arguments() -> Result<()> {
     let _parse_cli = match matches.subcommand() {
         ("conductivity", Some(_conductivity_matches)) => {
             let _subcmd = sensor_cli_parser(_conductivity_matches)?;
-        },
+        }
         ("temperature", Some(_temperature_matches)) => {
             let _subcmd = sensor_cli_parser(_temperature_matches)?;
-        },
+        }
         ("ph", Some(_ph_matches)) => {
             let _subcmd = sensor_cli_parser(_ph_matches)?;
-        },
+        }
         _ => unreachable!(),
     };
 

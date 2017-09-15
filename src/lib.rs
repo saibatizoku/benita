@@ -12,8 +12,8 @@
 
 #![recursion_limit = "1024"]
 
-extern crate clap;
 extern crate chrono;
+extern crate clap;
 #[macro_use]
 extern crate error_chain;
 extern crate ezo_common;

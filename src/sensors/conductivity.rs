@@ -15,21 +15,19 @@ use errors::*;
 use ezo_common::BpsRate;
 use i2cdev::linux::LinuxI2CDevice;
 
-use self::commands::{Baud, CalibrationClear, CalibrationDry, CalibrationHigh,
-    CalibrationLow, CalibrationOnePoint, CalibrationState, Command,
-    CompensatedTemperatureValue, DeviceAddress, DeviceInformation,
-    Export, ExportInfo, Factory, Find, Import, LedOff, LedOn, LedState,
-    OutputDisableConductivity, OutputDisableSalinity,
-    OutputDisableSpecificGravity, OutputDisableTds,
-    OutputEnableConductivity, OutputEnableSalinity,
-    OutputEnableSpecificGravity, OutputEnableTds, OutputState,
-    ProbeTypeOne, ProbeTypePointOne, ProbeTypeState, ProbeTypeTen,
-    ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState, Reading,
-    Sleep, Status, TemperatureCompensation};
+use self::commands::{Baud, CalibrationClear, CalibrationDry, CalibrationHigh, CalibrationLow,
+                     CalibrationOnePoint, CalibrationState, Command, CompensatedTemperatureValue,
+                     DeviceAddress, DeviceInformation, Export, ExportInfo, Factory, Find, Import,
+                     LedOff, LedOn, LedState, OutputDisableConductivity, OutputDisableSalinity,
+                     OutputDisableSpecificGravity, OutputDisableTds, OutputEnableConductivity,
+                     OutputEnableSalinity, OutputEnableSpecificGravity, OutputEnableTds,
+                     OutputState, ProbeTypeOne, ProbeTypePointOne, ProbeTypeState, ProbeTypeTen,
+                     ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState, Reading, Sleep,
+                     Status, TemperatureCompensation};
 
-use self::responses::{CalibrationStatus, CompensationValue, DeviceInfo,
-    DeviceStatus, Exported, ExportedInfo, LedStatus, OutputStringStatus,
-    ProbeReading, ProbeType, ProtocolLockStatus};
+use self::responses::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus, Exported,
+                      ExportedInfo, LedStatus, OutputStringStatus, ProbeReading, ProbeType,
+                      ProtocolLockStatus};
 
 /// EZO-EC Submersible Electrical Conductivity Sensor
 pub struct ConductivitySensor {
