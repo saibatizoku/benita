@@ -15,7 +15,6 @@ use std::time::Duration;
 use benita::errors::{Result, ResultExt};
 use benita::network::conductivity::REPCommand;
 use benita::sensors::conductivity::ConductivitySensor;
-use benita::sensors::conductivity::responses::OutputStringStatus;
 
 use clap::{App, Arg};
 use neuras::utils::bind_socket;
@@ -81,23 +80,24 @@ fn run(rep_url: &str) -> Result<()> {
 
         // Parse and process the command.
         let command_response = match REPCommand::parse(msg_str) {
-            Ok(REPCommand::Calibrate(temp)) => {
-                let _calibrate = ec_sensor.set_compensation_temperature(temp)?;
-                format!("Compensated Temperature: {}", temp)
-            }
-            Ok(REPCommand::GetParams) => {
-                let output_state: OutputStringStatus = ec_sensor.get_output_string_status()?;
-                output_state.to_string()
-            }
-            Ok(REPCommand::Read) => {
-                let sensor_output = ec_sensor.get_reading()?;
-                format!("{:?}", sensor_output)
-            }
-            Ok(REPCommand::Sleep) => {
-                let _sleep = ec_sensor.set_sleep()?;
-                "Sleeping".to_string()
-            }
-            _ => "Unknown command".to_string(),
+            Ok(REPCommand::Calibrate(temp)) => match ec_sensor.set_compensation_temperature(temp) {
+                Ok(_) => format!("temperature-compensation {}", temp),
+                Err(e) => format!("error {}", e),
+            },
+            Ok(REPCommand::GetParams) => match ec_sensor.get_output_string_status() {
+                Ok(output_state) => output_state.to_string(),
+                Err(e) => format!("error {}", e),
+            },
+            Ok(REPCommand::Read) => match ec_sensor.get_reading() {
+                Ok(sensor_output) => format!("{:?}", sensor_output),
+                Err(e) => format!("error {}", e),
+            },
+            Ok(REPCommand::Sleep) => match ec_sensor.set_sleep() {
+                Ok(_) => "sleeping".to_string(),
+                Err(e) => format!("error {}", e),
+            },
+            // Respond with the given error
+            Err(e) => format!("error {}", e),
         };
 
         // Send response to the client.
