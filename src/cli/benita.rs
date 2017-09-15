@@ -161,7 +161,7 @@ pub fn benita_cli_parser<'a, 'b>() -> App<'a, 'b> {
         )
 }
 
-/// `benita-calibrated-service` command-line application for sensor and network services.
+/// `benita-calibrated-service` command-line application for networked sensor services.
 pub fn benita_calibrated_service_cli_parser<'a, 'b>() -> App<'a, 'b> {
     App::new("benita-calibrated-service")
         .version("0.1.0")

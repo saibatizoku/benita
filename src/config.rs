@@ -5,6 +5,7 @@
 use errors::*;
 use toml;
 
+/// Configuration settings for the calibrated sensors service.
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
 pub struct SensorServiceConfig<'a> {
     pub pub_url: &'a str,
@@ -19,6 +20,7 @@ impl<'a> SensorServiceConfig<'a> {
     }
 }
 
+/// Configuration settings for networked proxies.
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
 pub struct ProxyConfig<'a> {
     pub backend_url: &'a str,

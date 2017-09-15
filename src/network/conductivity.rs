@@ -87,7 +87,8 @@ fn parse_calibration_value_msg(sub_msg: &str) -> Result<(String, DateTime<Local>
 /// Run a configured sensor service.
 ///
 /// This service samples the temperature at a given interval, using that value
-/// to compensate the pH sensor and sample, and then the conductivity sensor.
+/// to compensate the pH sensor and sample, and then doing the same with the
+/// conductivity sensor.
 #[allow(dead_code)]
 pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()> {
     // Create ZMQ context
