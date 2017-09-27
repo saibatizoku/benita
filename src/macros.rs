@@ -80,7 +80,9 @@ macro_rules! sensor_socket {
 mod tests {
     use errors::*;
     use neuras;
-    use neuras::utils::{bind_socket, connect_socket, create_context, zmq_req};
+    use neuras::utils::{create_context, zmq_req};
+
+    #[allow(unused)]
 
     #[test]
     fn macro_creates_a_sensor_socket() {
