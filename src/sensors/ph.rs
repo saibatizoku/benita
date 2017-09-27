@@ -24,20 +24,8 @@ use self::commands::{Baud, CalibrationClear, CalibrationHigh, CalibrationLow, Ca
 use self::responses::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus, Exported,
                       ExportedInfo, LedStatus, ProbeSlope, ProtocolLockStatus, SensorReading};
 
-/// EZO-PH Submersible pH Sensor
-pub struct PhSensor {
-    i2cdev: LinuxI2CDevice,
-}
-
-impl PhSensor {
-    /// Creates a new handle for the pH Sensor connected
-    /// at the designated path and address.
-    pub fn new(i2c_path: &str, device_address: u16) -> Result<PhSensor> {
-        let i2cdev = LinuxI2CDevice::new(i2c_path, device_address)
-            .chain_err(|| "Could not open the specified I2C device")?;
-        Ok(PhSensor { i2cdev: i2cdev })
-    }
-}
+// Use macro to define `PhSensor`
+sensor_i2cdev!(PhSensor, "EZO-EC Submersible pH Sensor.");
 
 impl PhSensor {
     /// Change the EZO PH chip to UART mode.

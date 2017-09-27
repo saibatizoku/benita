@@ -25,20 +25,9 @@ use ezo_common::BpsRate;
 use self::commands::*;
 use self::responses::*;
 
-/// EZO-RTD Submersible Temperature Sensor
-pub struct TemperatureSensor {
-    i2cdev: LinuxI2CDevice,
-}
 
-impl TemperatureSensor {
-    /// Creates a new handle for the Temperature Sensor connected
-    /// at the designated path and address.
-    pub fn new(i2c_path: &str, device_address: u16) -> Result<TemperatureSensor> {
-        let i2cdev = LinuxI2CDevice::new(i2c_path, device_address)
-            .chain_err(|| "Could not open the specified I2C device")?;
-        Ok(TemperatureSensor { i2cdev: i2cdev })
-    }
-}
+// Use macro to define `TemperatureSensor`
+sensor_i2cdev!(TemperatureSensor, "EZO-RTD Submersible Temperature Sensor");
 
 impl TemperatureSensor {
     /// Change the EZO RTD chip to UART mode. WARNING: after using this command, the chip will not

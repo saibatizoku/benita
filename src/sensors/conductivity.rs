@@ -29,20 +29,8 @@ use self::responses::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceSt
                       ExportedInfo, LedStatus, OutputStringStatus, ProbeReading, ProbeType,
                       ProtocolLockStatus};
 
-/// EZO-EC Submersible Electrical Conductivity Sensor
-pub struct ConductivitySensor {
-    i2cdev: LinuxI2CDevice,
-}
-
-impl ConductivitySensor {
-    /// Creates a new handle for the Conductivity Sensor connected
-    /// at the designated path and address.
-    pub fn new(i2c_path: &str, device_address: u16) -> Result<ConductivitySensor> {
-        let i2cdev = LinuxI2CDevice::new(i2c_path, device_address)
-            .chain_err(|| "Could not open the specified I2C device")?;
-        Ok(ConductivitySensor { i2cdev: i2cdev })
-    }
-}
+// Use macro to define `ConductivitySensor`
+sensor_i2cdev!(ConductivitySensor, "EZO-EC Submersible Electrical Conductivity Sensor.");
 
 impl ConductivitySensor {
     /// Change the EZO EC chip to UART mode.
