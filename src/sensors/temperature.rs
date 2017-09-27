@@ -38,7 +38,9 @@ impl TemperatureSensor {
             .chain_err(|| "Could not open the specified I2C device")?;
         Ok(TemperatureSensor { i2cdev: i2cdev })
     }
+}
 
+impl TemperatureSensor {
     /// Change the EZO RTD chip to UART mode. WARNING: after using this command, the chip will not
     /// be available until it is put into I2C mode again. Read your chipset data-sheet for proper
     /// the procedure.
@@ -49,7 +51,9 @@ impl TemperatureSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl TemperatureSensor {
     /// Set the calibration temperature for the sensor.
     pub fn set_calibration_temperature(&mut self, t: f64) -> Result<()> {
         let _cmd = CalibrationTemperature(t)
@@ -57,7 +61,9 @@ impl TemperatureSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl TemperatureSensor {
     /// Clear the device's calibration settings.
     pub fn set_calibration_clear(&mut self) -> Result<()> {
         let _cmd = CalibrationClear
@@ -73,7 +79,9 @@ impl TemperatureSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(cal)
     }
+}
 
+impl TemperatureSensor {
     /// Get a summary of the number of calibration strings required to export the current sensor
     /// settings. It includes the number of lines and the total sum of exportable characters.
     pub fn get_export_info(&mut self) -> Result<ExportedInfo> {
@@ -101,7 +109,9 @@ impl TemperatureSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl TemperatureSensor {
     /// Set the data logger interval, `n`.
     ///
     /// The device will take readings and save them to memory at the given interval.
@@ -127,7 +137,9 @@ impl TemperatureSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(interval)
     }
+}
 
+impl TemperatureSensor {
     /// Set the sensor device to the factory settings.
     ///
     /// __NOTE:__ this will delete the settings of the device.
@@ -137,7 +149,9 @@ impl TemperatureSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl TemperatureSensor {
     /// Set the device on Find mode. This will make the LED blink continuously until the device
     /// receives a new command.
     pub fn set_find_mode(&mut self) -> Result<()> {
@@ -145,7 +159,9 @@ impl TemperatureSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl TemperatureSensor {
     /// Set a new I2C address on the device.
     ///
     /// __NOTE:__ using this command will make the current `self` obsolete. It is up to you to
@@ -156,7 +172,9 @@ impl TemperatureSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl TemperatureSensor {
     /// Get the general information about the sensor device.
     pub fn get_device_info(&mut self) -> Result<DeviceInfo> {
         let info = DeviceInformation
@@ -164,7 +182,9 @@ impl TemperatureSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(info)
     }
+}
 
+impl TemperatureSensor {
     /// Turn off the LED.
     pub fn set_led_off(&mut self) -> Result<()> {
         let _set = LedOff
@@ -188,7 +208,9 @@ impl TemperatureSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(status)
     }
+}
 
+impl TemperatureSensor {
     /// Clear memory readings.
     pub fn set_memory_clear(&mut self) -> Result<()> {
         let _set = MemoryClear
@@ -212,7 +234,9 @@ impl TemperatureSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(reading)
     }
+}
 
+impl TemperatureSensor {
     /// Set the lock off for the I2C protocol mode.
     pub fn set_protocol_lock_off(&mut self) -> Result<()> {
         let _set = ProtocolLockDisable
@@ -236,7 +260,9 @@ impl TemperatureSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(status)
     }
+}
 
+impl TemperatureSensor {
     /// Get the current sensor reading. Returns a `SensorReading` result.
     pub fn get_reading(&mut self) -> Result<SensorReading> {
         let reading = Reading
@@ -244,7 +270,9 @@ impl TemperatureSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(reading)
     }
+}
 
+impl TemperatureSensor {
     /// Set the current temperature scale to Celsius.
     pub fn set_scale_to_celsius(&mut self) -> Result<()> {
         let _set = ScaleCelsius
@@ -276,7 +304,9 @@ impl TemperatureSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(scale)
     }
+}
 
+impl TemperatureSensor {
     /// Set the sensor chip to sleep.
     ///
     /// __NOTE:__ using this command will make the sensor device sleep until:
@@ -289,7 +319,9 @@ impl TemperatureSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl TemperatureSensor {
     /// Get the current status of the Temperature Sensor. Returns a `DeviceStatus` result.
     pub fn get_status(&mut self) -> Result<DeviceStatus> {
         let status = Status
