@@ -9,7 +9,7 @@ use std::io::Read;
 use benita::cli::benita::benita_calibrated_service_cli_parser;
 use benita::config::SensorServiceConfig as Config;
 use benita::errors::*;
-use benita::network::conductivity::run_calibrated_sampling_service;
+use benita::network::services::run_calibrated_sampling_service;
 
 
 const SUB_CHANNEL: &'static str = "temperature-0123456789abcdef";
