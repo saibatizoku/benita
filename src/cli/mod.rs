@@ -1,2 +1,2 @@
-/// Command-line application for service execution and configuration.
+/// Application commands for service execution and configuration.
 pub mod benita;

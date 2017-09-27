@@ -1,4 +1,4 @@
-//! Command-line argument parsers for common services.
+//! Top-level command parsers for common networked sensor services.
 use errors::*;
 
 use clap::{App, AppSettings, Arg, ArgMatches, SubCommand};
