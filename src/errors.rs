@@ -17,6 +17,18 @@ error_chain! {
         ConfigParse {
             description ("could not parse configuration file")
         }
+        SocketBind {
+            description ("socket could not bind to the network URL")
+        }
+        SocketConnect {
+            description ("socket could not connect to the network URL")
+        }
+        SocketSend {
+            description ("message could not be sent to the network")
+        }
+        SocketReceive {
+            description ("message could not be received from the network")
+        }
         Neurotic {
             description ("our network has gone neurotic")
         }
