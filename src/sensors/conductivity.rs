@@ -42,7 +42,9 @@ impl ConductivitySensor {
             .chain_err(|| "Could not open the specified I2C device")?;
         Ok(ConductivitySensor { i2cdev: i2cdev })
     }
+}
 
+impl ConductivitySensor {
     /// Change the EZO EC chip to UART mode.
     ///
     /// __WARNING:__ after using this command, the chip will not be available
@@ -55,7 +57,9 @@ impl ConductivitySensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl ConductivitySensor {
     /// Clear the sensor's calibration settings.
     pub fn set_calibration_clear(&mut self) -> Result<()> {
         let _cmd = CalibrationClear
@@ -103,7 +107,9 @@ impl ConductivitySensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(cal)
     }
+}
 
+impl ConductivitySensor {
     /// Get a summary of the number of calibration strings required to export the current sensor
     /// settings. It includes the number of lines and the total sum of exportable characters.
     pub fn get_export_info(&mut self) -> Result<ExportedInfo> {
@@ -111,14 +117,6 @@ impl ConductivitySensor {
             .run(&mut self.i2cdev)
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(info)
-    }
-
-    /// Get the current compensated temperature value.
-    pub fn get_compensated_temperature_value(&mut self) -> Result<CompensationValue> {
-        let value = CompensatedTemperatureValue
-            .run(&mut self.i2cdev)
-            .chain_err(|| ErrorKind::SensorTrouble)?;
-        Ok(value)
     }
 
     /// Get a single calibration string from the sensor. This command needs to be called
@@ -137,7 +135,9 @@ impl ConductivitySensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl ConductivitySensor {
     /// Set the sensor to the factory settings.
     ///
     /// __NOTE:__ this will delete the settings of the sensor.
@@ -147,7 +147,9 @@ impl ConductivitySensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl ConductivitySensor {
     /// Set the sensor on Find mode. This will make the LED blink continuously until the sensor
     /// receives a new command.
     pub fn set_find_mode(&mut self) -> Result<()> {
@@ -155,7 +157,9 @@ impl ConductivitySensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl ConductivitySensor {
     /// Set a new I2C address on the sensor.
     ///
     /// __NOTE:__ using this command will make the current `self` obsolete. It is up to you to
@@ -166,7 +170,9 @@ impl ConductivitySensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl ConductivitySensor {
     /// Get the general information about the sensor device.
     pub fn get_device_info(&mut self) -> Result<DeviceInfo> {
         let info = DeviceInformation
@@ -174,7 +180,9 @@ impl ConductivitySensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(info)
     }
+}
 
+impl ConductivitySensor {
     /// Turn off the LED.
     pub fn set_led_off(&mut self) -> Result<()> {
         let _set = LedOff
@@ -198,7 +206,9 @@ impl ConductivitySensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(status)
     }
+}
 
+impl ConductivitySensor {
     /// Disable conductivity from output.
     pub fn set_output_conductivity_off(&mut self) -> Result<()> {
         let _set = OutputDisableConductivity
@@ -270,7 +280,9 @@ impl ConductivitySensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(status)
     }
+}
 
+impl ConductivitySensor {
     /// Set the probe type to `1.0`.
     pub fn set_probe_type_one(&mut self) -> Result<()> {
         let _set = ProbeTypeOne
@@ -302,7 +314,9 @@ impl ConductivitySensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(status)
     }
+}
 
+impl ConductivitySensor {
     /// Set the lock off for the I2C protocol mode.
     pub fn set_protocol_lock_off(&mut self) -> Result<()> {
         let _set = ProtocolLockDisable
@@ -326,7 +340,9 @@ impl ConductivitySensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(status)
     }
+}
 
+impl ConductivitySensor {
     /// Get the current sensor reading. Returns a `SensorReading` result.
     pub fn get_reading(&mut self) -> Result<ProbeReading> {
         let reading = Reading
@@ -334,8 +350,9 @@ impl ConductivitySensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(reading)
     }
+}
 
-
+impl ConductivitySensor {
     /// Set the sensor chip to sleep.
     ///
     /// __NOTE:__ using this command will make the sensor device sleep until:
@@ -348,7 +365,9 @@ impl ConductivitySensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl ConductivitySensor {
     /// Get the current status of the Conductivity Sensor.
     ///
     /// Returns a `DeviceStatus` result.
@@ -358,12 +377,22 @@ impl ConductivitySensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(status)
     }
+}
 
+impl ConductivitySensor {
     /// Set the compensation temperature.
     pub fn set_compensation_temperature(&mut self, value: f64) -> Result<()> {
         let _cmd = TemperatureCompensation(value)
             .run(&mut self.i2cdev)
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
+    }
+
+    /// Get the current compensated temperature value.
+    pub fn get_compensated_temperature_value(&mut self) -> Result<CompensationValue> {
+        let value = CompensatedTemperatureValue
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(value)
     }
 }
