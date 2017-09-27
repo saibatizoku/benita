@@ -37,7 +37,9 @@ impl PhSensor {
             .chain_err(|| "Could not open the specified I2C device")?;
         Ok(PhSensor { i2cdev: i2cdev })
     }
+}
 
+impl PhSensor {
     /// Change the EZO PH chip to UART mode.
     ///
     /// __WARNING:__ after using this command, the chip will not be available
@@ -50,7 +52,9 @@ impl PhSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl PhSensor {
     /// Clear the sensor's calibration settings.
     pub fn set_calibration_clear(&mut self) -> Result<()> {
         let _cmd = CalibrationClear
@@ -90,15 +94,9 @@ impl PhSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(cal)
     }
+}
 
-    /// Get the current compensated temperature value.
-    pub fn get_compensated_temperature_value(&mut self) -> Result<CompensationValue> {
-        let value = CompensatedTemperatureValue
-            .run(&mut self.i2cdev)
-            .chain_err(|| ErrorKind::SensorTrouble)?;
-        Ok(value)
-    }
-
+impl PhSensor {
     /// Set a new I2C address on the sensor.
     ///
     /// __NOTE:__ using this command will make the current `self` obsolete. It is up to you to
@@ -109,7 +107,9 @@ impl PhSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl PhSensor {
     /// Get the general information about the sensor device.
     pub fn get_device_info(&mut self) -> Result<DeviceInfo> {
         let info = DeviceInformation
@@ -117,7 +117,9 @@ impl PhSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(info)
     }
+}
 
+impl PhSensor {
     /// Get a single calibration string from the sensor. This command needs to be called
     /// repeatedly, use the function `get_export_info()` to find out how many times.
     pub fn get_export_line(&mut self) -> Result<Exported> {
@@ -136,6 +138,16 @@ impl PhSensor {
         Ok(info)
     }
 
+    /// Import a calibration string to the sensor.
+    pub fn set_import_line(&mut self, import: String) -> Result<()> {
+        let _import = Import(import)
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(())
+    }
+}
+
+impl PhSensor {
     /// Set the sensor to the factory settings.
     ///
     /// __NOTE:__ this will delete the settings of the sensor.
@@ -145,7 +157,9 @@ impl PhSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl PhSensor {
     /// Set the sensor on Find mode. This will make the LED blink continuously until the sensor
     /// receives a new command.
     pub fn set_find_mode(&mut self) -> Result<()> {
@@ -153,15 +167,9 @@ impl PhSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
-    /// Import a calibration string to the sensor.
-    pub fn set_import_line(&mut self, import: String) -> Result<()> {
-        let _import = Import(import)
-            .run(&mut self.i2cdev)
-            .chain_err(|| ErrorKind::SensorTrouble)?;
-        Ok(())
-    }
-
+impl PhSensor {
     /// Turn off the LED.
     pub fn set_led_off(&mut self) -> Result<()> {
         let _set = LedOff
@@ -185,7 +193,9 @@ impl PhSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(status)
     }
+}
 
+impl PhSensor {
     /// Set the lock off for the I2C protocol mode.
     pub fn set_protocol_lock_off(&mut self) -> Result<()> {
         let _set = ProtocolLockDisable
@@ -209,7 +219,9 @@ impl PhSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(status)
     }
+}
 
+impl PhSensor {
     /// Get the current sensor reading. Returns a `SensorReading` result.
     pub fn get_reading(&mut self) -> Result<SensorReading> {
         let reading = Reading
@@ -217,8 +229,9 @@ impl PhSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(reading)
     }
+}
 
-
+impl PhSensor {
     /// Set the sensor chip to sleep.
     ///
     /// __NOTE:__ using this command will make the sensor device sleep until:
@@ -231,7 +244,9 @@ impl PhSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+}
 
+impl PhSensor {
     /// Get the current slope of the pH Sensor.
     ///
     /// Returns a `ProbeSlope` result.
@@ -241,7 +256,9 @@ impl PhSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(slope)
     }
+}
 
+impl PhSensor {
     /// Get the current status of the pH Sensor.
     ///
     /// Returns a `DeviceStatus` result.
@@ -251,7 +268,9 @@ impl PhSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(status)
     }
+}
 
+impl PhSensor {
     /// Set the compensation temperature.
     pub fn set_compensation_temperature(&mut self, value: f64) -> Result<()> {
         let _cmd = TemperatureCompensation(value)
@@ -259,4 +278,13 @@ impl PhSensor {
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
+
+    /// Get the current compensated temperature value.
+    pub fn get_compensated_temperature_value(&mut self) -> Result<CompensationValue> {
+        let value = CompensatedTemperatureValue
+            .run(&mut self.i2cdev)
+            .chain_err(|| ErrorKind::SensorTrouble)?;
+        Ok(value)
+    }
 }
+
