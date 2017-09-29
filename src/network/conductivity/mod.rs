@@ -42,6 +42,7 @@ network_socket! {
 }
 
 impl ConductivityClient {
+    /// get the output string parameters for sensor readings.
     pub fn get_output_params(&mut self) -> Result<String> {
         let _read = self.send("get_params".as_bytes())?;
         let _response = self.recv()?;
@@ -51,6 +52,7 @@ impl ConductivityClient {
         }
     }
 
+    /// send the compensation temperature for sensor readings.
     pub fn send_compensate(&mut self, t: f64) -> Result<String> {
         let calibrate = format!("calibrate {:.*}", 3, t);
         let _read = self.send(calibrate.as_bytes())?;
@@ -61,6 +63,7 @@ impl ConductivityClient {
         }
     }
 
+    /// get the output string with sensor readings.
     pub fn send_read(&mut self) -> Result<String> {
         let _read = self.send("read".as_bytes())?;
         let _response = self.recv()?;
@@ -70,6 +73,7 @@ impl ConductivityClient {
         }
     }
 
+    /// set the sensor to sleep (low-power) mode.
     pub fn send_sleep(&mut self) -> Result<String> {
         let _read = self.send("read".as_bytes())?;
         let _response = self.recv()?;
