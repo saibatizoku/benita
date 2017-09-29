@@ -34,8 +34,12 @@ impl REPCommand {
     }
 }
 
-sensor_socket!(ConductivityClient, SocketSend,
-               "Socket that communicates with the Conductivity sensor.");
+// Define the network client socket for sending requests to the
+// `ConductivitySensorServer`.
+network_socket! {
+    ConductivityClient,
+    "Socket that makes requests to the Conductivity sensor server."
+}
 
 impl ConductivityClient {
     pub fn get_output_params(&mut self) -> Result<String> {
@@ -76,8 +80,10 @@ impl ConductivityClient {
     }
 }
 
-sensor_socket!(ConductivityServer, SocketSend,
-               "Socket that responds to Conductivity sensor commands.");
-
-    }
+// Define the network server socket for directly interacting with the
+// Conductivity sensor via I2C.
+network_socket! {
+    ConductivitySensorServer,
+    ConductivitySensor,
+    "Socket that responds to Conductivity sensor commands."
 }

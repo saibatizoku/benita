@@ -5,7 +5,7 @@ use neuras;
 
 
 /// Creates a client for network requests of the ph sensor.
-sensor_socket!(PhClient, SocketSend,
+network_socket!(PhClient,
                "Socket that communicates with the pH sensor.");
 
 impl PhClient {

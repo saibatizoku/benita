@@ -1,7 +1,7 @@
 //! Exported macros.
 //!
 //! *   sensor_i2cdev!
-//! *   sensor_socket!
+//! *   network_socket!
 
 /// Create and define a sensor available through `i2cdev`.
 #[macro_export]
@@ -29,14 +29,78 @@ macro_rules! sensor_i2cdev {
 
 /// Create and define a network socket compatible with the `benita` network.
 #[macro_export]
-macro_rules! sensor_socket {
-    ($name:ident , $error:ident , $doc:tt) => {
+macro_rules! network_socket {
+    ($name:ident , $doc:tt) => {
         #[ doc = $doc ]
         pub struct $name {
             socket: neuras::zmq::Socket,
             message: neuras::zmq::Message,
         }
 
+        impl $name {
+            /// Create a new network socket.
+            pub fn new(socket: neuras::zmq::Socket) -> Result<$name> {
+                let message = neuras::utils::create_message()?;
+                Ok($name { socket, message })
+            }
+        }
+
+        network_socket_impl!($name);
+    };
+    ($name:ident , $sensor:ident , $doc:tt) => {
+        #[ doc = $doc ]
+        pub struct $name {
+            socket: neuras::zmq::Socket,
+            message: neuras::zmq::Message,
+            sensor: $sensor,
+        }
+
+        impl $name {
+            /// Create a new network socket.
+            pub fn new(socket: neuras::zmq::Socket, sensor: $sensor) -> Result<$name> {
+                let message = neuras::utils::create_message()?;
+                Ok($name { socket, message, sensor })
+            }
+        }
+
+        network_socket_impl!($name);
+    };
+}
+
+macro_rules! network_socket_impl {
+    ($name:ident) => {
+        impl $name {
+            /// Binds the socket to the given URL.
+            pub fn bind(&self, url: &str) -> Result<()> {
+                let _bind = neuras::utils::bind_socket(&self.socket, url)
+                    .chain_err(|| ErrorKind::SocketBind)?;
+                Ok(())
+            }
+
+            /// Connects the socket to the given URL.
+            pub fn connect(&self, url: &str) -> Result<()> {
+                let _connect = neuras::utils::connect_socket(&self.socket, url)
+                    .chain_err(|| ErrorKind::SocketConnect)?;
+                Ok(())
+            }
+
+            /// Sends a message over the network socket.
+            pub fn send(&self, msg: &[u8]) -> Result<()> {
+                let _send = self.socket.send(msg, 0)
+                    .chain_err(|| ErrorKind::SocketSend)?;
+                Ok(())
+            }
+
+            /// Receives a message from the network socket.
+            pub fn recv(&mut self) -> Result<&neuras::zmq::Message> {
+                let _recv = self.socket.recv(&mut self.message, 0)
+                    .chain_err(|| ErrorKind::SocketReceive)?;
+                Ok(&self.message)
+            }
+        }
+
+    };
+    ($name:ident) => {
         impl $name {
             /// Create a new network socket.
             pub fn new(socket: neuras::zmq::Socket) -> Result<$name> {
@@ -72,21 +136,21 @@ macro_rules! sensor_socket {
                 Ok(&self.message)
             }
         }
-
     };
 }
 
 #[cfg(test)]
 mod tests {
     use errors::*;
+
     use neuras;
     use neuras::utils::{create_context, zmq_req};
 
     #[allow(unused)]
 
     #[test]
-    fn macro_creates_a_sensor_socket() {
-        sensor_socket!(NewSocket, SocketError, "NewSocket docs.");
+    fn macro_creates_a_network_socket() {
+        network_socket!(NewSocket, "NewSocket docs.");
 
         let context = create_context();
         let requester = zmq_req(&context).unwrap();
