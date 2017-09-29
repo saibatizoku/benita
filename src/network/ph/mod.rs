@@ -14,7 +14,7 @@ impl PhClient {
         let _response = self.recv()?;
         match _response.as_str() {
             Some(resp) => Ok(resp.to_string()),
-            _ => Err(ErrorKind::SocketReceive.into()),
+            _ => Err(ErrorKind::CommandResponse.into()),
         }
     }
 
@@ -24,7 +24,7 @@ impl PhClient {
         let _response = self.recv()?;
         match _response.as_str() {
             Some(resp) => Ok(resp.to_string()),
-            _ => Err(ErrorKind::SocketReceive.into()),
+            _ => Err(ErrorKind::CommandResponse.into()),
         }
     }
 
@@ -33,7 +33,7 @@ impl PhClient {
         let _response = self.recv()?;
         match _response.as_str() {
             Some(reading) => Ok(reading.to_string()),
-            _ => Err(ErrorKind::SocketReceive.into()),
+            _ => Err(ErrorKind::CommandResponse.into()),
         }
     }
 
@@ -42,7 +42,7 @@ impl PhClient {
         let _response = self.recv()?;
         match _response.as_str() {
             Some(reading) => Ok(reading.to_string()),
-            _ => Err(ErrorKind::SocketReceive.into()),
+            _ => Err(ErrorKind::CommandResponse.into()),
         }
     }
 }

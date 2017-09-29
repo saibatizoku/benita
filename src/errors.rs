@@ -17,6 +17,9 @@ error_chain! {
         CommandRequest {
             description ("command request failed")
         }
+        CommandResponse {
+            description ("command response failed")
+        }
         ConfigParse {
             description ("could not parse configuration file")
         }
