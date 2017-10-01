@@ -4,7 +4,7 @@ use std::time::Duration;
 
 use config::SensorServiceConfig;
 use errors::*;
-use network::conductivity::{ConductivityClient, REPCommand};
+use network::conductivity::{ConductivityClient, ConductivitySensorServer, REPCommand};
 use network::ph::PhClient;
 use sensors::conductivity::ConductivitySensor;
 
@@ -22,7 +22,7 @@ type TemperatureScale = String;
 /// the `i2c_address` location.
 pub fn run_conductivity_server(rep_url: &str, i2c_path: &str, i2c_address: u16) -> Result<()> {
     // We initialize our I2C device connection.
-    let mut ec_sensor = ConductivitySensor::new(&i2c_path, i2c_address)
+    let ec_sensor = ConductivitySensor::new(&i2c_path, i2c_address)
         .chain_err(|| "Could not open I2C device")?;
 
     // We start our ZMQ context.
@@ -33,41 +33,21 @@ pub fn run_conductivity_server(rep_url: &str, i2c_path: &str, i2c_address: u16) 
     let responder = neuras::utils::zmq_rep(&context)?;
     // We bind our socket to REP_URL.
     let _bind_socket = bind_socket(&responder, rep_url).chain_err(|| "problems binding to socket")?;
-    // We initialize our ZMQ message. It will be reused throughout.
-    let mut msg = neuras::utils::create_message()?;
+    // Setup our sensor server
+    let mut sensor_server = ConductivitySensorServer::new(responder, ec_sensor)?;
 
     // This is the main loop, it will run for as long as the program runs.
     loop {
         // We start by recieving the command request from the client.
-        responder.recv(&mut msg, 0).unwrap();
-
-        // The command as a str.
-        let msg_str = msg.as_str().unwrap();
-
-        // Parse and process the command.
-        let command_response = match REPCommand::parse(msg_str) {
-            Ok(REPCommand::Calibrate(temp)) => match ec_sensor.set_compensation_temperature(temp) {
-                Ok(_) => format!("temperature-compensation {}", temp),
-                Err(e) => format!("error {}", e),
-            },
-            Ok(REPCommand::GetParams) => match ec_sensor.get_output_string_status() {
-                Ok(output_state) => output_state.to_string(),
-                Err(e) => format!("error {}", e),
-            },
-            Ok(REPCommand::Read) => match ec_sensor.get_reading() {
-                Ok(sensor_output) => format!("{:?}", sensor_output),
-                Err(e) => format!("error {}", e),
-            },
-            Ok(REPCommand::Sleep) => match ec_sensor.set_sleep() {
-                Ok(_) => "sleeping".to_string(),
-                Err(e) => format!("error {}", e),
-            },
-            // Respond with the given error
-            Err(e) => format!("error {}", e),
-        };
-
-        // Send response to the client.
-        responder.send(command_response.as_bytes(), 0).unwrap();
+        {
+            let msg_str = sensor_server.recv()?;
+            // The command as a str.
+            let command_request: REPCommand = REPCommand::parse(msg_str.as_str())?;
+            // Parse and process the command.
+            let command_response: String = sensor_server.process_request(command_request)?;
+            // Send response to the client.
+            let _respond = sensor_server.send(command_response.as_bytes())?;
+        }
 
         // No work left, so we sleep.
         thread::sleep(Duration::from_millis(1));
