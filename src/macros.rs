@@ -104,6 +104,29 @@ macro_rules! network_socket_impl {
     };
 }
 
+/// Define a command sent over a network socket.
+#[macro_export]
+macro_rules! socket_command {
+    ( $name:ident , $trait:ty ,
+      $socket:ty ,
+      response: $response:ty ,
+      $resp:ident : $runfn:block,
+      $doc:tt ) => {
+        #[ doc = $doc ]
+        pub struct $name;
+
+        impl $trait for $name {
+            type Socket = $socket;
+            type Response = $response;
+
+            fn run(&self, socket: &mut $socket) -> Result<$response> {
+                let $resp = socket;
+                $runfn
+            }
+        }
+    };
+}
+
 #[cfg(test)]
 mod tests {
     use errors::*;
