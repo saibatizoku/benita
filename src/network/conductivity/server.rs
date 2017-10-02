@@ -1,4 +1,43 @@
 //! Server for Conductivity sensing.
+pub mod commands {
+    use errors::*;
+    use super::{SocketCommand, ConductivitySensorServer};
+
+    macro_rules! conductivity_command {
+        ( $name:ident , $response:ty ,
+          $resp:ident : $runfn:block,
+          $doc:tt ) => {
+              socket_command! {
+                  $name, SocketCommand,
+                  ConductivitySensorServer,
+                  response : $response,
+                  $resp : $runfn,
+                  $doc
+              }
+          };
+    }
+
+    conductivity_command! {
+        ReadCommand, String,
+        responder: {
+            let response = responder.sensor.get_reading()
+                .chain_err(|| ErrorKind::CommandRequest)?;
+            Ok(format!("{:?}", response))
+        },
+        "Read command"
+    }
+
+    conductivity_command! {
+        SleepCommand, (),
+        responder: {
+            let _response = responder.sensor.set_sleep()
+                .chain_err(|| ErrorKind::CommandRequest)?;
+            Ok(())
+        },
+        "Network command for sleep mode."
+    }
+}
+
 use errors::*;
 use sensors::conductivity::ConductivitySensor;
 
