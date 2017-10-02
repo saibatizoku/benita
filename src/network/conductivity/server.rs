@@ -39,7 +39,9 @@ pub mod commands {
 }
 
 use errors::*;
+use network::SocketCommand;
 use sensors::conductivity::ConductivitySensor;
+use self::commands::{ReadCommand, SleepCommand};
 
 use neuras;
 
@@ -127,17 +129,15 @@ impl ConductivitySensorServer {
 impl ConductivitySensorServer {
     /// get the output string with sensor readings.
     pub fn get_reading(&mut self) -> Result<String> {
-        let response = self.sensor.get_reading()
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("{:?}", response))
+        let response = ReadCommand.run(self)?;
+        Ok(response)
     }
 }
 
 impl ConductivitySensorServer {
     /// set the sensor to sleep (low-power) mode.
     pub fn set_sleep(&mut self) -> Result<String> {
-        let _response = self.sensor.set_sleep()
-            .chain_err(|| ErrorKind::CommandRequest)?;
+        let _sleep = SleepCommand.run(self)?;
         Ok("sleeping".to_string())
     }
 }
