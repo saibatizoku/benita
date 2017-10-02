@@ -81,9 +81,9 @@ pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()
     let _connect_ph = neuras::utils::connect_socket(&req_ph, config.rep_ph_url)?;
 
     // This is the client that will send commands to the `Conductivity` sensor.
-    let mut ec_client = ConductivityClient::new(req_ec)?;
+    let ec_client = ConductivityClient::new(req_ec)?;
     // This is the client that will send commands to the `pH` sensor.
-    let mut ph_client = PhClient::new(req_ph)?;
+    let ph_client = PhClient::new(req_ph)?;
 
     // Continued program logic goes here...
     println!("Collecting updates from weather server...");

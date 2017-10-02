@@ -54,7 +54,8 @@ fn run_client(rep_url: &str) -> Result<()> {
     let req_socket = zmq_req(&context)?;
     let _connect = connect_socket(&req_socket, rep_url)?;
 
-    let mut ec_client = ConductivityClient::new(req_socket)?;
+    let ec_client = ConductivityClient::new(req_socket)?;
+
     {
         println!("Requesting 'get_output_params'");
         let output_params = ec_client.get_output_params()?;
