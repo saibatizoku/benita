@@ -7,17 +7,11 @@
 
 extern crate benita;
 extern crate clap;
-extern crate neuras;
 
-use std::thread;
-use std::time::Duration;
-
-use benita::errors::{Result, ResultExt};
-use benita::network::conductivity::REPCommand;
-use benita::sensors::conductivity::ConductivitySensor;
+use benita::errors::*;
+use benita::network::services::run_conductivity_server;
 
 use clap::{App, Arg};
-use neuras::utils::bind_socket;
 
 const I2C_BUS_ID: u8 = 1;
 const EZO_SENSOR_ADDR: u16 = 100; // could be specified as 0x64
@@ -47,65 +41,12 @@ fn parse_cli_arguments() -> Result<()> {
         rep_url = String::from(c);
     }
 
-    run(&rep_url)?;
+    let device_path = format!("/dev/i2c-{}", I2C_BUS_ID);
+
+    let _run = run_conductivity_server(&rep_url, &device_path, EZO_SENSOR_ADDR)?;
 
     // Never reach this line...
     Ok(())
-}
-
-fn run(rep_url: &str) -> Result<()> {
-    // We initialize our I2C device connection.
-    let device_path = format!("/dev/i2c-{}", I2C_BUS_ID);
-    let mut ec_sensor = ConductivitySensor::new(&device_path, EZO_SENSOR_ADDR)
-        .chain_err(|| "Could not open I2C device")?;
-
-    // We start our ZMQ context.
-    let context = neuras::utils::create_context();
-
-    // We configure our socket as REP, for accepting requests
-    // and providing REsPonses.
-    let responder = neuras::utils::zmq_rep(&context)?;
-    // We bind our socket to REP_URL.
-    let _bind_socket = bind_socket(&responder, rep_url).chain_err(|| "problems binding to socket")?;
-    // We initialize our ZMQ message. It will be reused throughout.
-    let mut msg = neuras::utils::create_message()?;
-
-    // This is the main loop, it will run for as long as the program runs.
-    loop {
-        // We start by recieving the command request from the client.
-        responder.recv(&mut msg, 0).unwrap();
-
-        // The command as a str.
-        let msg_str = msg.as_str().unwrap();
-
-        // Parse and process the command.
-        let command_response = match REPCommand::parse(msg_str) {
-            Ok(REPCommand::Calibrate(temp)) => match ec_sensor.set_compensation_temperature(temp) {
-                Ok(_) => format!("temperature-compensation {}", temp),
-                Err(e) => format!("error {}", e),
-            },
-            Ok(REPCommand::GetParams) => match ec_sensor.get_output_string_status() {
-                Ok(output_state) => output_state.to_string(),
-                Err(e) => format!("error {}", e),
-            },
-            Ok(REPCommand::Read) => match ec_sensor.get_reading() {
-                Ok(sensor_output) => format!("{:?}", sensor_output),
-                Err(e) => format!("error {}", e),
-            },
-            Ok(REPCommand::Sleep) => match ec_sensor.set_sleep() {
-                Ok(_) => "sleeping".to_string(),
-                Err(e) => format!("error {}", e),
-            },
-            // Respond with the given error
-            Err(e) => format!("error {}", e),
-        };
-
-        // Send response to the client.
-        responder.send(command_response.as_bytes(), 0).unwrap();
-
-        // No work left, so we sleep.
-        thread::sleep(Duration::from_millis(1));
-    }
 }
 
 fn main() {

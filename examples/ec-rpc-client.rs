@@ -10,6 +10,8 @@ extern crate clap;
 extern crate neuras;
 
 use benita::errors::{ErrorKind, Result};
+use benita::network::conductivity::ConductivityClient;
+
 use clap::{App, Arg};
 use neuras::utils::{connect_socket, create_context, create_message, zmq_req};
 
@@ -41,38 +43,30 @@ fn parse_cli_arguments() -> Result<()> {
         _ => return Err(ErrorKind::ConfigParse.into()),
     };
 
-    let _run = run_requester(&rep_url)?;
+    let _run = run_client(&rep_url)?;
 
     // Never reach this line...
     Ok(())
 }
 
-fn run_requester(rep_url: &str) -> Result<()> {
+fn run_client(rep_url: &str) -> Result<()> {
     let context = create_context();
-    let requester = zmq_req(&context)?;
+    let req_socket = zmq_req(&context)?;
+    let _connect = connect_socket(&req_socket, rep_url)?;
 
-    let _connect = connect_socket(&requester, rep_url)?;
-
-    let mut msg = create_message()?;
-
+    let mut ec_client = ConductivityClient::new(req_socket)?;
     {
         println!("Requesting 'get_output_params'");
-        requester.send("get_params".as_bytes(), 0).unwrap();
-
-        requester.recv(&mut msg, 0).unwrap();
-        println!("{}", msg.as_str().unwrap());
+        let output_params = ec_client.get_output_params()?;
+        println!("{}", output_params);
 
         println!("Requesting 'read'");
-        requester.send("read".as_bytes(), 0).unwrap();
-
-        requester.recv(&mut msg, 0).unwrap();
-        println!("{}", msg.as_str().unwrap());
+        let read = ec_client.send_read()?;
+        println!("{}", read);
 
         println!("Requesting 'sleep'");
-        requester.send("sleep".as_bytes(), 0).unwrap();
-
-        requester.recv(&mut msg, 0).unwrap();
-        println!("{}", msg.as_str().unwrap());
+        let sleep = ec_client.send_sleep()?;
+        println!("{}", sleep);
     }
     Ok(())
 }
