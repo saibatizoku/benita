@@ -113,21 +113,27 @@ impl ConductivitySensorServer {
             .chain_err(|| ErrorKind::CommandRequest)?;
         Ok(format!("temperature-compensated {}", t))
     }
+}
 
+impl ConductivitySensorServer {
     /// get the output string parameters for sensor readings.
     pub fn get_output_params(&mut self) -> Result<String> {
         let response = self.sensor.get_output_string_status()
             .chain_err(|| ErrorKind::CommandRequest)?;
         Ok(response.to_string())
     }
+}
 
+impl ConductivitySensorServer {
     /// get the output string with sensor readings.
     pub fn get_reading(&mut self) -> Result<String> {
         let response = self.sensor.get_reading()
             .chain_err(|| ErrorKind::CommandRequest)?;
         Ok(format!("{:?}", response))
     }
+}
 
+impl ConductivitySensorServer {
     /// set the sensor to sleep (low-power) mode.
     pub fn set_sleep(&mut self) -> Result<String> {
         let _response = self.sensor.set_sleep()
