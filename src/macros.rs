@@ -6,6 +6,7 @@
 /// Create and define a sensor available through `i2cdev`.
 #[macro_export]
 macro_rules! sensor_i2cdev {
+    // Name identifier and documentation for the new I2C sensor struct.
     ($name:ident , $doc:tt) => {
         #[ doc = $doc ]
         pub struct $name {
@@ -30,6 +31,7 @@ macro_rules! sensor_i2cdev {
 /// Create and define a network socket compatible with the `benita` network.
 #[macro_export]
 macro_rules! network_socket {
+    // Name identifier and documentation for the new network socket struct.
     ($name:ident , $doc:tt) => {
         #[ doc = $doc ]
         pub struct $name {

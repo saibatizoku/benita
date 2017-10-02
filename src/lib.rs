@@ -27,7 +27,7 @@ extern crate serde_derive;
 extern crate toml;
 
 #[macro_use]
-/// Useful macros.
+// Useful macros.
 mod macros;
 
 /// Command-line utilities and applications.
