@@ -41,7 +41,7 @@ impl ConductivityClient {
 
     /// set the sensor to sleep (low-power) mode.
     pub fn send_sleep(&mut self) -> Result<String> {
-        let _read = self.send("read".as_bytes())
+        let _read = self.send("sleep".as_bytes())
             .chain_err(|| ErrorKind::CommandRequest)?;
         let response = self.recv()
             .chain_err(|| ErrorKind::CommandResponse)?;

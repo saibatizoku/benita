@@ -13,7 +13,7 @@ use benita::errors::{ErrorKind, Result};
 use benita::network::conductivity::ConductivityClient;
 
 use clap::{App, Arg};
-use neuras::utils::{connect_socket, create_context, create_message, zmq_req};
+use neuras::utils::{connect_socket, create_context, zmq_req};
 
 fn parse_cli_arguments() -> Result<()> {
     let matches = App::new("benita-subscriber")
