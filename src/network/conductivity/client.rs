@@ -16,8 +16,7 @@ impl ConductivityClient {
     pub fn get_output_params(&self) -> Result<String> {
         let _read = self.send("get_params".as_bytes())
             .chain_err(|| ErrorKind::CommandRequest)?;
-        let response = self.recv()
-            .chain_err(|| ErrorKind::CommandResponse)?;
+        let response = self.recv().chain_err(|| ErrorKind::CommandResponse)?;
         Ok(response)
     }
 
@@ -26,8 +25,7 @@ impl ConductivityClient {
         let calibrate = format!("calibrate {:.*}", 3, t);
         let _read = self.send(calibrate.as_bytes())
             .chain_err(|| ErrorKind::CommandRequest)?;
-        let response = self.recv()
-            .chain_err(|| ErrorKind::CommandResponse)?;
+        let response = self.recv().chain_err(|| ErrorKind::CommandResponse)?;
         Ok(response)
     }
 
@@ -35,8 +33,7 @@ impl ConductivityClient {
     pub fn send_read(&self) -> Result<String> {
         let _read = self.send("read".as_bytes())
             .chain_err(|| ErrorKind::CommandRequest)?;
-        let response = self.recv()
-            .chain_err(|| ErrorKind::CommandResponse)?;
+        let response = self.recv().chain_err(|| ErrorKind::CommandResponse)?;
         Ok(response)
     }
 
@@ -44,8 +41,7 @@ impl ConductivityClient {
     pub fn send_sleep(&self) -> Result<String> {
         let _read = self.send("sleep".as_bytes())
             .chain_err(|| ErrorKind::CommandRequest)?;
-        let response = self.recv()
-            .chain_err(|| ErrorKind::CommandResponse)?;
+        let response = self.recv().chain_err(|| ErrorKind::CommandResponse)?;
         Ok(response)
     }
 }

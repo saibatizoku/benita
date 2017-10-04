@@ -24,23 +24,23 @@ impl ConductivityServerApp {
             .settings(&[AppSettings::DisableHelpSubcommand])
             .arg(
                 Arg::with_name("config")
-                .short("c")
-                .long("config")
-                .value_name("FILE")
-                .help("Sets a custom config file")
-                .takes_value(true),
-                )
+                    .short("c")
+                    .long("config")
+                    .value_name("FILE")
+                    .help("Sets a custom config file")
+                    .takes_value(true),
+            )
             .arg(
                 Arg::with_name("rep-server-url")
-                .short("r")
-                .long("rep-server")
-                .value_name("REP_URL")
-                .help("Sets the url for the REP server")
-                .takes_value(true)
-                .index(1)
-                .required(true)
-                .conflicts_with_all(&["config"]),
-                )
+                    .short("r")
+                    .long("rep-server")
+                    .value_name("REP_URL")
+                    .help("Sets the url for the REP server")
+                    .takes_value(true)
+                    .index(1)
+                    .required(true)
+                    .conflicts_with_all(&["config"]),
+            )
     }
 }
 

@@ -1,7 +1,7 @@
 //! Server for Conductivity sensing.
 pub mod commands {
     use errors::*;
-    use super::{SocketCommand, ConductivitySensorServer};
+    use super::{ConductivitySensorServer, SocketCommand};
 
     macro_rules! conductivity_command {
         ( $name:ident , $response:ty ,
@@ -90,19 +90,19 @@ impl ConductivitySensorServer {
             REPCommand::Calibrate(temp) => match self.set_compensation(temp) {
                 Ok(_) => format!("temperature-compensation {}", temp),
                 Err(e) => format!("error {}", e),
-            }
+            },
             REPCommand::GetParams => match self.get_output_params() {
                 Ok(output_state) => output_state.to_string(),
                 Err(e) => format!("error {}", e),
-            }
+            },
             REPCommand::Read => match self.get_reading() {
                 Ok(sensor_output) => format!("{:?}", sensor_output),
                 Err(e) => format!("error {}", e),
-            }
+            },
             REPCommand::Sleep => match self.set_sleep() {
                 Ok(_) => "sleeping".to_string(),
                 Err(e) => format!("error {}", e),
-            }
+            },
         };
         Ok(parsed)
     }
@@ -111,7 +111,8 @@ impl ConductivitySensorServer {
 impl ConductivitySensorServer {
     /// set the compensation temperature for sensor readings.
     pub fn set_compensation(&mut self, t: f64) -> Result<String> {
-        let _response = self.sensor.set_compensation_temperature(t)
+        let _response = self.sensor
+            .set_compensation_temperature(t)
             .chain_err(|| ErrorKind::CommandRequest)?;
         Ok(format!("temperature-compensated {}", t))
     }
@@ -120,7 +121,8 @@ impl ConductivitySensorServer {
 impl ConductivitySensorServer {
     /// get the output string parameters for sensor readings.
     pub fn get_output_params(&mut self) -> Result<String> {
-        let response = self.sensor.get_output_string_status()
+        let response = self.sensor
+            .get_output_string_status()
             .chain_err(|| ErrorKind::CommandRequest)?;
         Ok(response.to_string())
     }

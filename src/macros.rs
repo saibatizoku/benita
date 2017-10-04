@@ -135,7 +135,6 @@ mod tests {
     use neuras::utils::{create_context, zmq_req};
 
     #[allow(unused)]
-
     #[test]
     fn macro_creates_a_network_socket() {
         network_socket!(NewSocket, "NewSocket docs.");

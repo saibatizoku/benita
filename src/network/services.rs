@@ -22,8 +22,8 @@ type TemperatureScale = String;
 /// the `i2c_address` location.
 pub fn run_conductivity_server(rep_url: &str, i2c_path: &str, i2c_address: u16) -> Result<()> {
     // We initialize our I2C device connection.
-    let ec_sensor = ConductivitySensor::new(&i2c_path, i2c_address)
-        .chain_err(|| "Could not open I2C device")?;
+    let ec_sensor =
+        ConductivitySensor::new(&i2c_path, i2c_address).chain_err(|| "Could not open I2C device")?;
 
     // We start our ZMQ context.
     let context = neuras::utils::create_context();

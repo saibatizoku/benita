@@ -3,4 +3,4 @@ pub mod client;
 pub mod server;
 
 pub use self::client::ConductivityClient;
-pub use self::server::{REPCommand, ConductivitySensorServer};
+pub use self::server::{ConductivitySensorServer, REPCommand};

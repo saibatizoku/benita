@@ -30,7 +30,10 @@ use self::responses::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceSt
                       ProtocolLockStatus};
 
 // Use macro to define `ConductivitySensor`
-sensor_i2cdev!(ConductivitySensor, "EZO-EC Submersible Electrical Conductivity Sensor.");
+sensor_i2cdev!(
+    ConductivitySensor,
+    "EZO-EC Submersible Electrical Conductivity Sensor."
+);
 
 impl ConductivitySensor {
     /// Change the EZO EC chip to UART mode.
