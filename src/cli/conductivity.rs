@@ -1,6 +1,13 @@
 //! Command-line parsers for `Conductivity` services.
 use clap::{App, AppSettings, Arg, SubCommand};
 
+fn is_float(v: String) -> Result<(), String> {
+    match v.parse::<f64>() {
+        Ok(_) => Ok(()),
+        _ => Err("The value is not numeric.".to_string()),
+    }
+}
+
 /// Main command-line interface.
 pub struct ConductivityApp;
 
@@ -41,34 +48,173 @@ impl ConductivityServerApp {
                     .required(true)
                     .conflicts_with_all(&["config"]),
             )
+            .subcommand(ConductivityCompensationCommand::new())
     }
 }
 
 /// Parses the command for temperature compensation of Conductivity readings.
-pub struct ConductivitySetCompensateCommand;
+pub struct ConductivityCompensationCommand;
 
-impl ConductivitySetCompensateCommand {
+impl ConductivityCompensationCommand {
     pub fn new<'a, 'b>() -> App<'a, 'b> {
-        SubCommand::with_name("compensate")
+        SubCommand::with_name("compensation")
             .about("Compensation temperature used for reading calibration.")
-            .settings(&[AppSettings::DisableHelpSubcommand])
-            .arg(
-                Arg::with_name("TEMP")
-                    .help("Numeric value up to 3 decimals.")
-                    .takes_value(true)
-                    .index(1)
-                    .required(true)
+            .settings(&[
+                AppSettings::DisableHelpSubcommand,
+                AppSettings::SubcommandRequired,
+            ])
+            .subcommand(
+                SubCommand::with_name("set")
+                    .about("Sets all parameters off.")
+                    .settings(&[AppSettings::DisableHelpSubcommand])
+                    .arg(
+                        Arg::with_name("TEMP")
+                            .help("Numeric value up to 3 decimals.")
+                            .takes_value(true)
+                            .index(1)
+                            .validator(is_float)
+                            .required(true),
+                    ),
+            )
+            .subcommand(
+                SubCommand::with_name("get")
+                    .about("Sets all parameters off.")
+                    .settings(&[AppSettings::DisableHelpSubcommand]),
             )
     }
 }
 
+/// Parses the command for enabling "Find" mode on the Conductivity sensor.
+pub struct ConductivitySetFindCommand;
+
+impl ConductivitySetFindCommand {
+    pub fn new<'a, 'b>() -> App<'a, 'b> {
+        SubCommand::with_name("find")
+            .about("Set the sensor in FIND mode.")
+            .settings(&[AppSettings::DisableHelpSubcommand])
+    }
+}
+
+/// Parses the command for setting the LED on or off on the Conductivity sensor.
+pub struct ConductivityLedCommand;
+
+impl ConductivityLedCommand {
+    pub fn new<'a, 'b>() -> App<'a, 'b> {
+        SubCommand::with_name("led")
+            .about("Set LED on|off command.")
+            .settings(&[AppSettings::DisableHelpSubcommand])
+            .arg(
+                Arg::with_name("led-status")
+                    .help("Sets the LED on or off; gets current status.")
+                    .takes_value(true)
+                    .possible_values(&["off", "on", "status"])
+                    .required(true),
+            )
+    }
+}
+
+/// Parses the command for setting the protocol lock on or off on the Conductivity sensor.
+pub struct ConductivityProtocolLockCommand;
+
+impl ConductivityProtocolLockCommand {
+    pub fn new<'a, 'b>() -> App<'a, 'b> {
+        SubCommand::with_name("protocol-lock")
+            .about("Set protocol lock on|off command.")
+            .settings(&[AppSettings::DisableHelpSubcommand])
+            .arg(
+                Arg::with_name("plock-status")
+                    .help("Sets the plock-status on or off.")
+                    .takes_value(true)
+                    .possible_values(&["off", "on", "status"])
+                    .required(true),
+            )
+    }
+}
+
+/// Parses the command for configuring the output string on the Conductivity sensor.
+pub struct ConductivitySetOutputParamsCommand;
+
+impl ConductivitySetOutputParamsCommand {
+    pub fn new<'a, 'b>() -> App<'a, 'b> {
+        SubCommand::with_name("output")
+            .about("Set the parameters printed in the Output string.")
+            .settings(&[
+                AppSettings::DisableHelpSubcommand,
+                AppSettings::SubcommandRequired,
+            ])
+            .subcommand(
+                SubCommand::with_name("all")
+                    .about("Sets all parameters on.")
+                    .settings(&[AppSettings::DisableHelpSubcommand]),
+            )
+            .subcommand(
+                SubCommand::with_name("none")
+                    .about("Sets all parameters off.")
+                    .settings(&[AppSettings::DisableHelpSubcommand]),
+            )
+            .subcommand(
+                SubCommand::with_name("ec")
+                    .about(
+                        "Enables/disables the electric-conductivity in the output string.",
+                    )
+                    .settings(&[AppSettings::DisableHelpSubcommand])
+                    .arg(
+                        Arg::with_name("ec-output")
+                            .help("Sets the ec-status on or off.")
+                            .takes_value(true)
+                            .possible_values(&["off", "on"])
+                            .required(true),
+                    ),
+            )
+            .subcommand(
+                SubCommand::with_name("salinity")
+                    .about("Enables/disables the salinity in the output string.")
+                    .settings(&[AppSettings::DisableHelpSubcommand])
+                    .arg(
+                        Arg::with_name("salinity-output")
+                            .help("Sets the salinity-status on or off.")
+                            .takes_value(true)
+                            .possible_values(&["off", "on"])
+                            .required(true),
+                    ),
+            )
+            .subcommand(
+                SubCommand::with_name("sg")
+                    .about(
+                        "Enables/disables the specific-gravity in the output string.",
+                    )
+                    .settings(&[AppSettings::DisableHelpSubcommand])
+                    .arg(
+                        Arg::with_name("specific-gravity-output")
+                            .help("Sets the specific-gravity-status on or off.")
+                            .takes_value(true)
+                            .possible_values(&["off", "on"])
+                            .required(true),
+                    ),
+            )
+            .subcommand(
+                SubCommand::with_name("tds")
+                    .about(
+                        "Enables/disables the total-dissolved solids in the output string.",
+                    )
+                    .settings(&[AppSettings::DisableHelpSubcommand])
+                    .arg(
+                        Arg::with_name("tds-output")
+                            .help("Sets the tds-status on or off.")
+                            .takes_value(true)
+                            .possible_values(&["off", "on"])
+                            .required(true),
+                    ),
+            )
+    }
+}
 /// Parses the command for taking a reading from the Conductivity sensor.
 pub struct ConductivitySetReadingCommand;
 
 impl ConductivitySetReadingCommand {
     pub fn new<'a, 'b>() -> App<'a, 'b> {
-        SubCommand::with_name("sleep")
-            .about("Sleep command.")
+        SubCommand::with_name("read")
+            .about("Read command.")
             .settings(&[AppSettings::DisableHelpSubcommand])
     }
 }
@@ -81,6 +227,61 @@ impl ConductivitySetSleepCommand {
         SubCommand::with_name("sleep")
             .about("Sleep command.")
             .settings(&[AppSettings::DisableHelpSubcommand])
+    }
+}
+
+/// Parses the command for getting the Conductivity sensor information.
+pub struct ConductivityProbeTypeCommand;
+
+impl ConductivityProbeTypeCommand {
+    pub fn new<'a, 'b>() -> App<'a, 'b> {
+        SubCommand::with_name("probe-type")
+            .about("Probe-type command.")
+            .settings(&[AppSettings::DisableHelpSubcommand])
+            .arg(
+                Arg::with_name("probe")
+                    .help("Sets/gets the sensor's probe type.")
+                    .takes_value(true)
+                    .possible_values(&["status", "0.1", "1.0", "10.0"])
+                    .required(true),
+            )
+    }
+}
+
+/// Parses the command for Conductivity sensor calibration.
+pub struct ConductivityCalibrationCommand;
+
+impl ConductivityCalibrationCommand {
+    pub fn new<'a, 'b>() -> App<'a, 'b> {
+        SubCommand::with_name("calibration")
+            .about("Sensor calibration.")
+            .settings(&[
+                AppSettings::DisableHelpSubcommand,
+                AppSettings::SubcommandRequired,
+            ])
+            .subcommand(
+                SubCommand::with_name("status")
+                    .about("Get the calibration status command.")
+                    .settings(&[AppSettings::DisableHelpSubcommand]),
+            )
+    }
+}
+
+/// Parses the command for getting the Conductivity sensor status.
+pub struct ConductivityDeviceCommand;
+
+impl ConductivityDeviceCommand {
+    pub fn new<'a, 'b>() -> App<'a, 'b> {
+        SubCommand::with_name("device")
+            .about("Device status/information command.")
+            .settings(&[AppSettings::DisableHelpSubcommand])
+            .arg(
+                Arg::with_name("param")
+                    .help("Get device status or information.")
+                    .takes_value(true)
+                    .possible_values(&["status", "info"])
+                    .required(true),
+            )
     }
 }
 
