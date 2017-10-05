@@ -1,4 +1,4 @@
-//! Command-line parsers for `Conductivity` services.
+//! Conductivity Subcommands
 use clap::{App, AppSettings, Arg, SubCommand};
 
 fn is_float(v: String) -> Result<(), String> {
@@ -8,47 +8,38 @@ fn is_float(v: String) -> Result<(), String> {
     }
 }
 
-/// Main command-line interface.
-pub struct ConductivityApp;
+/// Shared subcommands
 
-impl ConductivityApp {
+/// Set a parameter `off`.
+struct OffSubcommand;
+
+impl OffSubcommand {
     pub fn new<'a, 'b>() -> App<'a, 'b> {
-        App::new("conductivity")
-            .bin_name("conductivity")
-            .about("Control the conductivity sensor")
+        SubCommand::with_name("off")
+            .about("Sets parameter off.")
             .settings(&[AppSettings::DisableHelpSubcommand])
-            .subcommand(ConductivityServerApp::new())
     }
 }
 
-/// Conductivity Server command-line interface .
-pub struct ConductivityServerApp;
+/// Set a parameter `on`.
+struct OnSubcommand;
 
-impl ConductivityServerApp {
+impl OnSubcommand {
     pub fn new<'a, 'b>() -> App<'a, 'b> {
-        SubCommand::with_name("server")
-            .about("REP service instance")
+        SubCommand::with_name("on")
+            .about("Sets parameter on.")
             .settings(&[AppSettings::DisableHelpSubcommand])
-            .arg(
-                Arg::with_name("config")
-                    .short("c")
-                    .long("config")
-                    .value_name("FILE")
-                    .help("Sets a custom config file")
-                    .takes_value(true),
-            )
-            .arg(
-                Arg::with_name("rep-server-url")
-                    .short("r")
-                    .long("rep-server")
-                    .value_name("REP_URL")
-                    .help("Sets the url for the REP server")
-                    .takes_value(true)
-                    .index(1)
-                    .required(true)
-                    .conflicts_with_all(&["config"]),
-            )
-            .subcommand(ConductivityCompensationCommand::new())
+    }
+}
+
+/// Get the current parameter status.
+struct StatusSubcommand;
+
+impl StatusSubcommand {
+    pub fn new<'a, 'b>() -> App<'a, 'b> {
+        SubCommand::with_name("status")
+            .about("Gets parameter status.")
+            .settings(&[AppSettings::DisableHelpSubcommand])
     }
 }
 
@@ -65,7 +56,7 @@ impl ConductivityCompensationCommand {
             ])
             .subcommand(
                 SubCommand::with_name("set")
-                    .about("Sets all parameters off.")
+                    .about("Set compensation temperature value.")
                     .settings(&[AppSettings::DisableHelpSubcommand])
                     .arg(
                         Arg::with_name("TEMP")
@@ -73,21 +64,21 @@ impl ConductivityCompensationCommand {
                             .takes_value(true)
                             .index(1)
                             .validator(is_float)
-                            .required(true),
-                    ),
+                            .required(true)
+                    )
             )
             .subcommand(
                 SubCommand::with_name("get")
                     .about("Sets all parameters off.")
-                    .settings(&[AppSettings::DisableHelpSubcommand]),
+                    .settings(&[AppSettings::DisableHelpSubcommand])
             )
     }
 }
 
 /// Parses the command for enabling "Find" mode on the Conductivity sensor.
-pub struct ConductivitySetFindCommand;
+pub struct ConductivityFindCommand;
 
-impl ConductivitySetFindCommand {
+impl ConductivityFindCommand {
     pub fn new<'a, 'b>() -> App<'a, 'b> {
         SubCommand::with_name("find")
             .about("Set the sensor in FIND mode.")
@@ -101,15 +92,14 @@ pub struct ConductivityLedCommand;
 impl ConductivityLedCommand {
     pub fn new<'a, 'b>() -> App<'a, 'b> {
         SubCommand::with_name("led")
-            .about("Set LED on|off command.")
-            .settings(&[AppSettings::DisableHelpSubcommand])
-            .arg(
-                Arg::with_name("led-status")
-                    .help("Sets the LED on or off; gets current status.")
-                    .takes_value(true)
-                    .possible_values(&["off", "on", "status"])
-                    .required(true),
-            )
+            .about("LED on|off|status command.")
+            .settings(&[
+                AppSettings::DisableHelpSubcommand,
+                AppSettings::SubcommandRequired,
+            ])
+            .subcommand(OffSubcommand::new())
+            .subcommand(OnSubcommand::new())
+            .subcommand(StatusSubcommand::new())
     }
 }
 
@@ -119,22 +109,21 @@ pub struct ConductivityProtocolLockCommand;
 impl ConductivityProtocolLockCommand {
     pub fn new<'a, 'b>() -> App<'a, 'b> {
         SubCommand::with_name("protocol-lock")
-            .about("Set protocol lock on|off command.")
-            .settings(&[AppSettings::DisableHelpSubcommand])
-            .arg(
-                Arg::with_name("plock-status")
-                    .help("Sets the plock-status on or off.")
-                    .takes_value(true)
-                    .possible_values(&["off", "on", "status"])
-                    .required(true),
-            )
+            .about("Protocol lock on|off|status command.")
+            .settings(&[
+                AppSettings::DisableHelpSubcommand,
+                AppSettings::SubcommandRequired,
+            ])
+            .subcommand(OffSubcommand::new())
+            .subcommand(OnSubcommand::new())
+            .subcommand(StatusSubcommand::new())
     }
 }
 
 /// Parses the command for configuring the output string on the Conductivity sensor.
-pub struct ConductivitySetOutputParamsCommand;
+pub struct ConductivityOutputParamsCommand;
 
-impl ConductivitySetOutputParamsCommand {
+impl ConductivityOutputParamsCommand {
     pub fn new<'a, 'b>() -> App<'a, 'b> {
         SubCommand::with_name("output")
             .about("Set the parameters printed in the Output string.")
@@ -145,73 +134,65 @@ impl ConductivitySetOutputParamsCommand {
             .subcommand(
                 SubCommand::with_name("all")
                     .about("Sets all parameters on.")
-                    .settings(&[AppSettings::DisableHelpSubcommand]),
+                    .settings(&[AppSettings::DisableHelpSubcommand])
             )
             .subcommand(
                 SubCommand::with_name("none")
                     .about("Sets all parameters off.")
-                    .settings(&[AppSettings::DisableHelpSubcommand]),
+                    .settings(&[AppSettings::DisableHelpSubcommand])
             )
             .subcommand(
                 SubCommand::with_name("ec")
                     .about(
                         "Enables/disables the electric-conductivity in the output string.",
                     )
-                    .settings(&[AppSettings::DisableHelpSubcommand])
-                    .arg(
-                        Arg::with_name("ec-output")
-                            .help("Sets the ec-status on or off.")
-                            .takes_value(true)
-                            .possible_values(&["off", "on"])
-                            .required(true),
-                    ),
+                    .settings(&[
+                        AppSettings::DisableHelpSubcommand,
+                        AppSettings::SubcommandRequired,
+                    ])
+                    .subcommand(OffSubcommand::new())
+                    .subcommand(OnSubcommand::new())
             )
             .subcommand(
                 SubCommand::with_name("salinity")
                     .about("Enables/disables the salinity in the output string.")
-                    .settings(&[AppSettings::DisableHelpSubcommand])
-                    .arg(
-                        Arg::with_name("salinity-output")
-                            .help("Sets the salinity-status on or off.")
-                            .takes_value(true)
-                            .possible_values(&["off", "on"])
-                            .required(true),
-                    ),
+                    .settings(&[
+                        AppSettings::DisableHelpSubcommand,
+                        AppSettings::SubcommandRequired,
+                    ])
+                    .subcommand(OffSubcommand::new())
+                    .subcommand(OnSubcommand::new())
             )
             .subcommand(
                 SubCommand::with_name("sg")
                     .about(
                         "Enables/disables the specific-gravity in the output string.",
                     )
-                    .settings(&[AppSettings::DisableHelpSubcommand])
-                    .arg(
-                        Arg::with_name("specific-gravity-output")
-                            .help("Sets the specific-gravity-status on or off.")
-                            .takes_value(true)
-                            .possible_values(&["off", "on"])
-                            .required(true),
-                    ),
+                    .settings(&[
+                        AppSettings::DisableHelpSubcommand,
+                        AppSettings::SubcommandRequired,
+                    ])
+                    .subcommand(OffSubcommand::new())
+                    .subcommand(OnSubcommand::new())
             )
             .subcommand(
                 SubCommand::with_name("tds")
                     .about(
                         "Enables/disables the total-dissolved solids in the output string.",
                     )
-                    .settings(&[AppSettings::DisableHelpSubcommand])
-                    .arg(
-                        Arg::with_name("tds-output")
-                            .help("Sets the tds-status on or off.")
-                            .takes_value(true)
-                            .possible_values(&["off", "on"])
-                            .required(true),
-                    ),
+                    .settings(&[
+                        AppSettings::DisableHelpSubcommand,
+                        AppSettings::SubcommandRequired,
+                    ])
+                    .subcommand(OffSubcommand::new())
+                    .subcommand(OnSubcommand::new())
             )
     }
 }
 /// Parses the command for taking a reading from the Conductivity sensor.
-pub struct ConductivitySetReadingCommand;
+pub struct ConductivityReadCommand;
 
-impl ConductivitySetReadingCommand {
+impl ConductivityReadCommand {
     pub fn new<'a, 'b>() -> App<'a, 'b> {
         SubCommand::with_name("read")
             .about("Read command.")
@@ -220,9 +201,9 @@ impl ConductivitySetReadingCommand {
 }
 
 /// Parses the command for putting the Conductivity sensor to sleep (low-power mode).
-pub struct ConductivitySetSleepCommand;
+pub struct ConductivitySleepCommand;
 
-impl ConductivitySetSleepCommand {
+impl ConductivitySleepCommand {
     pub fn new<'a, 'b>() -> App<'a, 'b> {
         SubCommand::with_name("sleep")
             .about("Sleep command.")
@@ -243,7 +224,7 @@ impl ConductivityProbeTypeCommand {
                     .help("Sets/gets the sensor's probe type.")
                     .takes_value(true)
                     .possible_values(&["status", "0.1", "1.0", "10.0"])
-                    .required(true),
+                    .required(true)
             )
     }
 }
@@ -262,7 +243,7 @@ impl ConductivityCalibrationCommand {
             .subcommand(
                 SubCommand::with_name("status")
                     .about("Get the calibration status command.")
-                    .settings(&[AppSettings::DisableHelpSubcommand]),
+                    .settings(&[AppSettings::DisableHelpSubcommand])
             )
     }
 }
@@ -280,7 +261,7 @@ impl ConductivityDeviceCommand {
                     .help("Get device status or information.")
                     .takes_value(true)
                     .possible_values(&["status", "info"])
-                    .required(true),
+                    .required(true)
             )
     }
 }
@@ -288,35 +269,6 @@ impl ConductivityDeviceCommand {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    // # SET commands
-    //
-    // Tests for the full CLI app.
-    #[test]
-    fn parsing_valid_server_cli_input() {
-        let cli_app = ConductivityApp::new();
-        let arg_vec = vec!["conductivity", "server", "ipc://server"];
-        let matches = cli_app.get_matches_from_safe(arg_vec);
-        println!("matches: {:?}", &matches);
-        assert!(matches.is_ok());
-    }
-
-    #[test]
-    fn parsing_invalid_server_cli_input_yields_err() {
-        let mut cli_app = ConductivityApp::new();
-
-        let arg_vec = vec!["server", "conductivity"];
-        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
-        assert!(matches.is_err());
-
-        let arg_vec = vec!["prefixed", "conductivity", "server"];
-        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
-        assert!(matches.is_err());
-
-        let arg_vec = vec!["conductivity", "server", "arg1", "arg2"];
-        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
-        assert!(matches.is_err());
-    }
 
     // Tests SetCompensation Command.
     #[test]
@@ -344,10 +296,10 @@ mod tests {
         assert!(matches.is_err());
     }
 
-    // Test SetSleep Command.
+    // Test Sleep Command.
     #[test]
     fn parsing_valid_sleep_command_input() {
-        let mut cli_app = ConductivitySetSleepCommand::new();
+        let mut cli_app = ConductivitySleepCommand::new();
         let arg_vec = vec!["sleep"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
         assert!(matches.is_ok());
@@ -355,16 +307,16 @@ mod tests {
 
     #[test]
     fn parsing_invalid_sleep_command_input_yields_err() {
-        let mut cli_app = ConductivitySetSleepCommand::new();
+        let mut cli_app = ConductivitySleepCommand::new();
         let arg_vec = vec!["sleep", "arg"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
         assert!(matches.is_err());
     }
 
-    // Test SetFind Command.
+    // Test Find Command.
     #[test]
     fn parsing_valid_set_find_command_input() {
-        let cli_app = ConductivitySetFindCommand::new();
+        let cli_app = ConductivityFindCommand::new();
         let arg_vec = vec!["find"];
         let matches = cli_app.get_matches_from_safe(arg_vec);
         assert!(matches.is_ok());
@@ -372,7 +324,7 @@ mod tests {
 
     #[test]
     fn parsing_invalid_set_find_command_input_yields_err() {
-        let mut cli_app = ConductivitySetFindCommand::new();
+        let mut cli_app = ConductivityFindCommand::new();
         let arg_vec = vec!["find", "arg"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
         assert!(matches.is_err());
@@ -464,10 +416,10 @@ mod tests {
         assert!(matches.is_err());
     }
 
-    // Test SetOutputParams Command.
+    // Test OutputParams Command.
     #[test]
     fn parsing_valid_set_output_params_command_input() {
-        let mut cli_app = ConductivitySetOutputParamsCommand::new();
+        let mut cli_app = ConductivityOutputParamsCommand::new();
 
         let arg_vec = vec!["output", "all"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
@@ -512,7 +464,7 @@ mod tests {
 
     #[test]
     fn parsing_invalid_set_output_params_command_input_yields_err() {
-        let mut cli_app = ConductivitySetOutputParamsCommand::new();
+        let mut cli_app = ConductivityOutputParamsCommand::new();
         let arg_vec = vec!["output"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
         println!("matches: {:?}", &matches);
@@ -533,7 +485,7 @@ mod tests {
     // Test GetReading Command.
     #[test]
     fn parsing_valid_read_command_input() {
-        let cli_app = ConductivitySetReadingCommand::new();
+        let cli_app = ConductivityReadCommand::new();
         let arg_vec = vec!["read"];
         let matches = cli_app.get_matches_from_safe(arg_vec);
         assert!(matches.is_ok());
@@ -541,7 +493,7 @@ mod tests {
 
     #[test]
     fn parsing_invalid_read_command_input_yields_err() {
-        let mut cli_app = ConductivitySetReadingCommand::new();
+        let mut cli_app = ConductivityReadCommand::new();
         let arg_vec = vec!["read", "arg"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
         assert!(matches.is_err());
