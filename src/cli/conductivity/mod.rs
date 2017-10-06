@@ -1,6 +1,7 @@
 //! Command-line parsers for `Conductivity` services.
 pub mod subcommands;
 
+use cli::shared::is_url;
 use self::subcommands::*;
 
 use clap::{App, AppSettings, Arg, SubCommand};
@@ -43,6 +44,7 @@ impl ConductivityServerApp {
                     .takes_value(true)
                     .index(1)
                     .required(true)
+                    .validator(is_url)
                     .conflicts_with_all(&["config"])
             )
             .subcommand(ConductivityCompensationCommand::new())
@@ -59,7 +61,6 @@ mod tests {
         let cli_app = ConductivityApp::new();
         let arg_vec = vec!["conductivity", "server", "ipc://server"];
         let matches = cli_app.get_matches_from_safe(arg_vec);
-        println!("matches: {:?}", &matches);
         assert!(matches.is_ok());
     }
 
@@ -75,7 +76,36 @@ mod tests {
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
         assert!(matches.is_err());
 
-        let arg_vec = vec!["conductivity", "server", "arg1", "arg2"];
+        let arg_vec = vec!["conductivity", "server", "not_url"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_err());
+    }
+
+    #[test]
+    fn parsing_valid_client_cli_input() {
+        let cli_app = ConductivityApp::new();
+        let arg_vec = vec!["conductivity", "client", "ipc://server", "read"];
+        let matches = cli_app.get_matches_from_safe(arg_vec);
+        assert!(matches.is_ok());
+    }
+
+    #[test]
+    fn parsing_invalid_client_cli_input_yields_err() {
+        let mut cli_app = ConductivityApp::new();
+
+        let arg_vec = vec!["client", "conductivity"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_err());
+
+        let arg_vec = vec!["prefixed", "conductivity", "client"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_err());
+
+        let arg_vec = vec!["conductivity", "client", "not_url"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_err());
+
+        let arg_vec = vec!["conductivity", "client", "not_url", "read"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
         assert!(matches.is_err());
     }
