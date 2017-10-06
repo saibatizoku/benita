@@ -16,6 +16,7 @@ impl ConductivityApp {
             .about("Control the conductivity sensor")
             .settings(&[AppSettings::DisableHelpSubcommand])
             .subcommand(ConductivityServerApp::new())
+            .subcommand(ConductivityClientApp::new())
     }
 }
 
@@ -47,7 +48,44 @@ impl ConductivityServerApp {
                     .validator(is_url)
                     .conflicts_with_all(&["config"])
             )
+    }
+}
+
+/// Conductivity Client command-line interface .
+pub struct ConductivityClientApp;
+
+impl ConductivityClientApp {
+    pub fn new<'a, 'b>() -> App<'a, 'b> {
+        SubCommand::with_name("client")
+            .about("REQ client instance")
+            .settings(&[AppSettings::DisableHelpSubcommand])
+            .arg(
+                Arg::with_name("config")
+                    .short("c")
+                    .long("config")
+                    .value_name("FILE")
+                    .help("Sets a custom config file")
+                    .takes_value(true)
+            )
+            .arg(
+                Arg::with_name("URL")
+                    .help("Sets the url for the client to connect to.")
+                    .takes_value(true)
+                    .index(1)
+                    .required(true)
+                    .validator(is_url)
+                    .conflicts_with_all(&["config"])
+            )
+            .subcommand(ConductivityCalibrationCommand::new())
             .subcommand(ConductivityCompensationCommand::new())
+            .subcommand(ConductivityOutputParamsCommand::new())
+            .subcommand(ConductivityProbeTypeCommand::new())
+            .subcommand(ConductivityDeviceCommand::new())
+            .subcommand(ConductivityFindCommand::new())
+            .subcommand(ConductivityLedCommand::new())
+            .subcommand(ConductivityProtocolLockCommand::new())
+            .subcommand(ConductivityReadCommand::new())
+            .subcommand(ConductivitySleepCommand::new())
     }
 }
 

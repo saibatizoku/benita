@@ -1,47 +1,11 @@
 //! Conductivity Subcommands
+use cli::shared::{OffSubcommand, OnSubcommand, StatusSubcommand};
+use cli::shared::{
+    DeviceCommand, FindCommand, LedCommand, ProtocolLockCommand, ReadCommand, SleepCommand,
+    is_float,
+};
+
 use clap::{App, AppSettings, Arg, SubCommand};
-
-fn is_float(v: String) -> Result<(), String> {
-    match v.parse::<f64>() {
-        Ok(_) => Ok(()),
-        _ => Err("The value is not numeric.".to_string()),
-    }
-}
-
-/// Shared subcommands
-
-/// Set a parameter `off`.
-struct OffSubcommand;
-
-impl OffSubcommand {
-    pub fn new<'a, 'b>() -> App<'a, 'b> {
-        SubCommand::with_name("off")
-            .about("Sets parameter off.")
-            .settings(&[AppSettings::DisableHelpSubcommand])
-    }
-}
-
-/// Set a parameter `on`.
-struct OnSubcommand;
-
-impl OnSubcommand {
-    pub fn new<'a, 'b>() -> App<'a, 'b> {
-        SubCommand::with_name("on")
-            .about("Sets parameter on.")
-            .settings(&[AppSettings::DisableHelpSubcommand])
-    }
-}
-
-/// Get the current parameter status.
-struct StatusSubcommand;
-
-impl StatusSubcommand {
-    pub fn new<'a, 'b>() -> App<'a, 'b> {
-        SubCommand::with_name("status")
-            .about("Gets parameter status.")
-            .settings(&[AppSettings::DisableHelpSubcommand])
-    }
-}
 
 /// Parses the command for temperature compensation of Conductivity readings.
 pub struct ConductivityCompensationCommand;
@@ -72,51 +36,6 @@ impl ConductivityCompensationCommand {
                     .about("Sets all parameters off.")
                     .settings(&[AppSettings::DisableHelpSubcommand])
             )
-    }
-}
-
-/// Parses the command for enabling "Find" mode on the Conductivity sensor.
-pub struct ConductivityFindCommand;
-
-impl ConductivityFindCommand {
-    pub fn new<'a, 'b>() -> App<'a, 'b> {
-        SubCommand::with_name("find")
-            .about("Set the sensor in FIND mode.")
-            .settings(&[AppSettings::DisableHelpSubcommand])
-    }
-}
-
-/// Parses the command for setting the LED on or off on the Conductivity sensor.
-pub struct ConductivityLedCommand;
-
-impl ConductivityLedCommand {
-    pub fn new<'a, 'b>() -> App<'a, 'b> {
-        SubCommand::with_name("led")
-            .about("LED on|off|status command.")
-            .settings(&[
-                AppSettings::DisableHelpSubcommand,
-                AppSettings::SubcommandRequired,
-            ])
-            .subcommand(OffSubcommand::new())
-            .subcommand(OnSubcommand::new())
-            .subcommand(StatusSubcommand::new())
-    }
-}
-
-/// Parses the command for setting the protocol lock on or off on the Conductivity sensor.
-pub struct ConductivityProtocolLockCommand;
-
-impl ConductivityProtocolLockCommand {
-    pub fn new<'a, 'b>() -> App<'a, 'b> {
-        SubCommand::with_name("protocol-lock")
-            .about("Protocol lock on|off|status command.")
-            .settings(&[
-                AppSettings::DisableHelpSubcommand,
-                AppSettings::SubcommandRequired,
-            ])
-            .subcommand(OffSubcommand::new())
-            .subcommand(OnSubcommand::new())
-            .subcommand(StatusSubcommand::new())
     }
 }
 
@@ -187,27 +106,7 @@ impl ConductivityOutputParamsCommand {
                     .subcommand(OffSubcommand::new())
                     .subcommand(OnSubcommand::new())
             )
-    }
-}
-/// Parses the command for taking a reading from the Conductivity sensor.
-pub struct ConductivityReadCommand;
-
-impl ConductivityReadCommand {
-    pub fn new<'a, 'b>() -> App<'a, 'b> {
-        SubCommand::with_name("read")
-            .about("Read command.")
-            .settings(&[AppSettings::DisableHelpSubcommand])
-    }
-}
-
-/// Parses the command for putting the Conductivity sensor to sleep (low-power mode).
-pub struct ConductivitySleepCommand;
-
-impl ConductivitySleepCommand {
-    pub fn new<'a, 'b>() -> App<'a, 'b> {
-        SubCommand::with_name("sleep")
-            .about("Sleep command.")
-            .settings(&[AppSettings::DisableHelpSubcommand])
+            .subcommand(StatusSubcommand::new())
     }
 }
 
@@ -249,22 +148,22 @@ impl ConductivityCalibrationCommand {
 }
 
 /// Parses the command for getting the Conductivity sensor status.
-pub struct ConductivityDeviceCommand;
+pub type ConductivityDeviceCommand = DeviceCommand;
 
-impl ConductivityDeviceCommand {
-    pub fn new<'a, 'b>() -> App<'a, 'b> {
-        SubCommand::with_name("device")
-            .about("Device status/information command.")
-            .settings(&[AppSettings::DisableHelpSubcommand])
-            .arg(
-                Arg::with_name("param")
-                    .help("Get device status or information.")
-                    .takes_value(true)
-                    .possible_values(&["status", "info"])
-                    .required(true)
-            )
-    }
-}
+/// Parses the command for enabling "Find" mode on the sensor.
+pub type ConductivityFindCommand = FindCommand;
+
+/// Parses the command for setting the LED on or off on the Conductivity sensor.
+pub type ConductivityLedCommand = LedCommand;
+
+/// Parses the command for setting the protocol lock on or off on the Conductivity sensor.
+pub type ConductivityProtocolLockCommand = ProtocolLockCommand;
+
+/// Parses the command for taking a reading from the Conductivity sensor.
+pub type ConductivityReadCommand = ReadCommand;
+
+/// Parses the command for putting the Conductivity sensor to sleep (low-power mode).
+pub type ConductivitySleepCommand = SleepCommand;
 
 #[cfg(test)]
 mod tests {
@@ -426,6 +325,10 @@ mod tests {
         assert!(matches.is_ok());
 
         let arg_vec = vec!["output", "none"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["output", "status"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
         assert!(matches.is_ok());
 
