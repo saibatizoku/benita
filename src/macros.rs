@@ -47,6 +47,7 @@ macro_rules! network_socket {
 
         network_socket_impl!($name);
     };
+    // Simple sensor socket.
     ($name:ident , $sensor:ident , $doc:tt) => {
         #[ doc = $doc ]
         pub struct $name {
