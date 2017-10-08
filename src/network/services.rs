@@ -2,9 +2,10 @@
 use std::thread;
 use std::time::Duration;
 
+use cli::conductivity::ConductivityCommandApp;
 use config::SensorServiceConfig;
 use errors::*;
-use network::conductivity::{ConductivityClient, ConductivitySensorServer, REPCommand};
+use network::conductivity::{ConductivityClient, ConductivitySensorServer};
 use network::ph::PhClient;
 use sensors::conductivity::ConductivitySensor;
 
@@ -16,6 +17,68 @@ use chrono::{DateTime, Local};
 type DeviceUuid = String;
 /// The Temperature Scale.
 type TemperatureScale = String;
+
+/// process_request
+fn process_request(server: &mut ConductivitySensorServer, command_args: &str) -> Result<String> {
+    let cli = ConductivityCommandApp::new();
+    let split: Vec<&str> = command_args.split(" ").collect();
+    let matches = cli.get_matches_from_safe(split.as_slice())
+        .chain_err(|| ErrorKind::CommandParse)?;
+    let response = match matches.subcommand() {
+        ("compensation", Some(_m)) => {
+            match _m.subcommand() {
+                ("get", None) => server.get_compensation()?,
+                ("set", Some(_m)) => {
+                    let temp = match _m.value_of("TEMP") {
+                        Some(t) => atof(t)?,
+                        _ => unreachable!(),
+                    };
+                    server.set_compensation(temp)?
+                }
+                _ => unreachable!(),
+            }
+        }
+        ("output", Some(_m)) => {
+            match _m.subcommand() {
+                ("status", None) => server.get_output_params()?,
+                ("ec", Some(_m)) => {
+                    match _m.subcommand() {
+                        ("off", None) => server.set_output_conductivity_off()?,
+                        ("on", None) => server.set_output_conductivity_on()?,
+                        _ => unreachable!(),
+                    }
+                }
+                ("salinity", Some(_m)) => {
+                    match _m.subcommand() {
+                        ("off", None) => server.set_output_salinity_off()?,
+                        ("on", None) => server.set_output_salinity_on()?,
+                        _ => unreachable!(),
+                    }
+                }
+                ("sg", Some(_m)) => {
+                    match _m.subcommand() {
+                        ("off", None) => server.set_output_specific_gravity_off()?,
+                        ("on", None) => server.set_output_specific_gravity_on()?,
+                        _ => unreachable!(),
+                    }
+                }
+                ("tds", Some(_m)) => {
+                    match _m.subcommand() {
+                        ("off", None) => server.set_output_tds_off()?,
+                        ("on", None) => server.set_output_tds_on()?,
+                        _ => unreachable!(),
+                    }
+                }
+                _ => unreachable!(),
+            }
+        }
+        ("read", None) => server.get_reading()?,
+        ("sleep", None) => server.set_sleep()?,
+        _ => "error".to_string(),
+    };
+
+    Ok(response)
+}
 
 /// Conductivity RESPONSE server. Handles requests from the given URL, and
 /// directly interfacing with the sensor at the `i2c_path`, located at
@@ -40,11 +103,9 @@ pub fn run_conductivity_server(rep_url: &str, i2c_path: &str, i2c_address: u16) 
     loop {
         // We start by recieving the command request from the client.
         {
-            let msg_str = sensor_server.recv()?;
-            // The command as a str.
-            let command_request: REPCommand = REPCommand::parse(msg_str.as_str())?;
+            let msg_cmd = sensor_server.recv()?;
             // Parse and process the command.
-            let command_response: String = sensor_server.process_request(command_request)?;
+            let command_response: String = process_request(&mut sensor_server, msg_cmd.as_str())?;
             // Send response to the client.
             let _respond = sensor_server.send(command_response.as_bytes())?;
         }
