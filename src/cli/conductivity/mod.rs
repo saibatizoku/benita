@@ -211,6 +211,50 @@ mod tests {
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
         assert!(matches.is_ok());
 
+        let arg_vec = vec!["conductivity", "output", "all"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "output", "none"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "output", "status"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "output", "ec", "off"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "output", "ec", "on"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "output", "salinity", "off"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "output", "salinity", "on"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "output", "sg", "off"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "output", "sg", "on"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "output", "tds", "off"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "output", "tds", "on"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
         let arg_vec = vec!["conductivity", "protocol-lock", "off"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
         assert!(matches.is_ok());
