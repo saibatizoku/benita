@@ -157,4 +157,75 @@ mod tests {
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
         assert!(matches.is_err());
     }
+
+    // Tests for the command-line app.
+    #[test]
+    fn parsing_valid_command_line_input() {
+        let mut cli_app = ConductivityCommandApp::new();
+
+        let arg_vec = vec!["conductivity", "compensation", "set", "12.42"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "compensation", "get"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "device", "info"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "device", "status"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "led", "off"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "led", "on"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "led", "status"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "protocol-lock", "off"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "protocol-lock", "on"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "protocol-lock", "status"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "read"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "sleep"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+    }
+
+    #[test]
+    fn parsing_invalid_command_line_input_yields_err() {
+        let mut cli_app = ConductivityCommandApp::new();
+
+        let arg_vec = vec!["client", "conductivity"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_err());
+
+        let arg_vec = vec!["prefixed", "conductivity", "client"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_err());
+
+        let arg_vec = vec!["conductivity", "client", "not_url"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_err());
+    }
 }
