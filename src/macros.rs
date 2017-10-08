@@ -32,7 +32,8 @@ macro_rules! sensor_i2cdev {
 #[macro_export]
 macro_rules! network_socket {
     // Name identifier and documentation for the new network socket struct.
-    ($name:ident , $doc:tt) => {
+    ($name:ident ,
+     $doc:tt) => {
         #[ doc = $doc ]
         pub struct $name {
             socket: neuras::zmq::Socket,
@@ -48,7 +49,9 @@ macro_rules! network_socket {
         network_socket_impl!($name);
     };
     // Simple sensor socket.
-    ($name:ident , $sensor:ident , $doc:tt) => {
+    ($name:ident ,
+     $sensor:ident ,
+     $doc:tt) => {
         #[ doc = $doc ]
         pub struct $name {
             socket: neuras::zmq::Socket,
@@ -108,6 +111,7 @@ macro_rules! network_socket_impl {
 /// Define a command sent over a network socket.
 #[macro_export]
 macro_rules! socket_command {
+    // Simple socket to send commands over.
     ( $name:ident , $trait:ty ,
       $socket:ty ,
       response: $response:ty ,
