@@ -1,6 +1,5 @@
 //! Server for Conductivity sensing.
 use errors::*;
-use network::SocketCommand;
 use sensors::conductivity::ConductivitySensor;
 
 use neuras;
