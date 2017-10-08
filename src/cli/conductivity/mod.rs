@@ -255,6 +255,22 @@ mod tests {
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
         assert!(matches.is_ok());
 
+        let arg_vec = vec!["conductivity", "probe-type", "status"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "probe-type", "0.1"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "probe-type", "1.0"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "probe-type", "10.0"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
         let arg_vec = vec!["conductivity", "protocol-lock", "off"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
         assert!(matches.is_ok());
