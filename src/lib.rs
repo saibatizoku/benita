@@ -32,11 +32,13 @@ mod macros;
 
 /// Command-line utilities and applications.
 pub mod cli;
-/// Configuration utilites and services.
+/// Configuration utilites.
 pub mod config;
 /// Error definitions.
 pub mod errors;
-/// Network utilities and services.
+/// Network utilities.
 pub mod network;
-/// Sensor utilities and services.
+/// Sensor utilities.
 pub mod sensors;
+/// Service utilities.
+pub mod services;

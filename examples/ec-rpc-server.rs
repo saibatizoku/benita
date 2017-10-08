@@ -9,7 +9,7 @@ extern crate benita;
 extern crate clap;
 
 use benita::errors::*;
-use benita::network::services::run_conductivity_server;
+use benita::services::run_conductivity_server;
 
 use clap::{App, Arg};
 
