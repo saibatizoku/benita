@@ -15,6 +15,15 @@ impl ConductivityApp {
             .bin_name("conductivity")
             .about("Control the conductivity sensor")
             .settings(&[AppSettings::DisableHelpSubcommand])
+    }
+}
+
+/// Main command-line interface.
+pub struct ConductivitySocketApp;
+
+impl ConductivitySocketApp {
+    pub fn new<'a, 'b>() -> App<'a, 'b> {
+        ConductivityApp::new()
             .subcommand(ConductivityServerApp::new())
             .subcommand(ConductivityClientApp::new())
     }
@@ -93,10 +102,10 @@ impl ConductivityClientApp {
 mod tests {
     use super::*;
 
-    // Tests for the full CLI app.
+    // Tests for the server socket app.
     #[test]
     fn parsing_valid_server_cli_input() {
-        let cli_app = ConductivityApp::new();
+        let cli_app = ConductivitySocketApp::new();
         let arg_vec = vec!["conductivity", "server", "ipc://server"];
         let matches = cli_app.get_matches_from_safe(arg_vec);
         assert!(matches.is_ok());
@@ -104,7 +113,7 @@ mod tests {
 
     #[test]
     fn parsing_invalid_server_cli_input_yields_err() {
-        let mut cli_app = ConductivityApp::new();
+        let mut cli_app = ConductivitySocketApp::new();
 
         let arg_vec = vec!["server", "conductivity"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
@@ -119,9 +128,10 @@ mod tests {
         assert!(matches.is_err());
     }
 
+    // Tests for the client socket app.
     #[test]
     fn parsing_valid_client_cli_input() {
-        let cli_app = ConductivityApp::new();
+        let cli_app = ConductivitySocketApp::new();
         let arg_vec = vec!["conductivity", "client", "ipc://server", "read"];
         let matches = cli_app.get_matches_from_safe(arg_vec);
         assert!(matches.is_ok());
@@ -129,7 +139,7 @@ mod tests {
 
     #[test]
     fn parsing_invalid_client_cli_input_yields_err() {
-        let mut cli_app = ConductivityApp::new();
+        let mut cli_app = ConductivitySocketApp::new();
 
         let arg_vec = vec!["client", "conductivity"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
