@@ -2,4 +2,5 @@
 pub mod benita;
 pub mod conductivity;
 pub mod ph;
+pub mod temperature;
 pub mod shared;
