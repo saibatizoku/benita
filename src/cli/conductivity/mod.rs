@@ -171,6 +171,26 @@ mod tests {
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
         assert!(matches.is_ok());
 
+        let arg_vec = vec!["conductivity", "calibration", "clear"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "calibration", "status"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "calibration", "high", "10400.420"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "calibration", "low", "1040.0"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
+        let arg_vec = vec!["conductivity", "calibration", "single", "140.0"];
+        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
+        assert!(matches.is_ok());
+
         let arg_vec = vec!["conductivity", "device", "info"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
         assert!(matches.is_ok());
