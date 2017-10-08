@@ -38,6 +38,9 @@ error_chain! {
         Neurotic {
             description ("our network has gone neurotic")
         }
+        NumberParse {
+            description ("this is not a number")
+        }
         ResponseParse {
             description ("could not parse response")
         }

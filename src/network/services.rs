@@ -145,8 +145,9 @@ pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()
 }
 
 // simple atof conversion.
-fn atof(s: &str) -> f64 {
-    s.parse().unwrap()
+fn atof(s: &str) -> Result<f64> {
+    let _float = s.parse().chain_err(|| ErrorKind::NumberParse)?;
+    Ok(_float)
 }
 
 // parse the subscription message as `(DeviceUuid, DateTime<Local>, f64, TemperatureScale)`.
@@ -175,7 +176,7 @@ fn parse_calibration_value_msg(
     };
     // The third string is the temperature value of the sample.
     let temperature = match split.next() {
-        Some(temp) => atof(&temp),
+        Some(temp) => atof(&temp)?,
         _ => {
             println!("NO valid date-time found");
             return Err(ErrorKind::ResponseParse.into());
