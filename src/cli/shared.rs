@@ -51,6 +51,15 @@ impl StatusSubcommand {
     }
 }
 
+pub struct ClearSubcommand;
+
+impl ClearSubcommand {
+    pub fn new<'a, 'b>() -> App<'a, 'b> {
+        SubCommand::with_name("clear")
+            .about("Clear calibration settings command.")
+            .settings(&[AppSettings::DisableHelpSubcommand])
+    }
+}
 /// Parses the command for getting the sensor status.
 pub struct DeviceCommand;
 

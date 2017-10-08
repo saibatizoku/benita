@@ -1,5 +1,5 @@
 //! Conductivity Subcommands
-use cli::shared::{OffSubcommand, OnSubcommand, StatusSubcommand};
+use cli::shared::{ClearSubcommand, OffSubcommand, OnSubcommand, StatusSubcommand};
 use cli::shared::{
     DeviceCommand, FindCommand, LedCommand, ProtocolLockCommand, ReadCommand, SleepCommand,
     is_float,
@@ -26,7 +26,6 @@ impl ConductivityCompensationCommand {
                         Arg::with_name("TEMP")
                             .help("Numeric value up to 3 decimals.")
                             .takes_value(true)
-                            .index(1)
                             .validator(is_float)
                             .required(true)
                     )
@@ -139,10 +138,43 @@ impl ConductivityCalibrationCommand {
                 AppSettings::DisableHelpSubcommand,
                 AppSettings::SubcommandRequired,
             ])
+            .subcommand(StatusSubcommand::new())
+            .subcommand(ClearSubcommand::new())
             .subcommand(
-                SubCommand::with_name("status")
-                    .about("Get the calibration status command.")
+                SubCommand::with_name("high")
+                    .about("Set the calibration high-point command.")
                     .settings(&[AppSettings::DisableHelpSubcommand])
+                    .arg(
+                        Arg::with_name("CAL")
+                            .help("Numeric value up to 3 decimals.")
+                            .takes_value(true)
+                            .validator(is_float)
+                            .required(true)
+                    )
+            )
+            .subcommand(
+                SubCommand::with_name("low")
+                    .about("Set the calibration low-point command.")
+                    .settings(&[AppSettings::DisableHelpSubcommand])
+                    .arg(
+                        Arg::with_name("CAL")
+                            .help("Numeric value up to 3 decimals.")
+                            .takes_value(true)
+                            .validator(is_float)
+                            .required(true)
+                    )
+            )
+            .subcommand(
+                SubCommand::with_name("single")
+                    .about("Set the calibration single-point command.")
+                    .settings(&[AppSettings::DisableHelpSubcommand])
+                    .arg(
+                        Arg::with_name("CAL")
+                            .help("Numeric value up to 3 decimals.")
+                            .takes_value(true)
+                            .validator(is_float)
+                            .required(true)
+                    )
             )
     }
 }
