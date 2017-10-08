@@ -93,7 +93,7 @@ fn run(rep_url: &str) -> Result<()> {
 
     // This is the main loop, it will run for as long as the program runs.
     loop {
-        // We start by recieving the command request from the client.
+        // We start by receiving the command request from the client.
         responder.recv(&mut msg, 0).unwrap();
 
         // The command as a str.

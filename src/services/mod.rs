@@ -101,7 +101,7 @@ pub fn run_conductivity_server(rep_url: &str, i2c_path: &str, i2c_address: u16) 
 
     // This is the main loop, it will run for as long as the program runs.
     loop {
-        // We start by recieving the command request from the client.
+        // We start by receiving the command request from the client.
         {
             let msg_cmd = sensor_server.recv()?;
             // Parse and process the command.
