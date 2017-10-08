@@ -50,16 +50,6 @@ impl ConductivityOutputParamsCommand {
                 AppSettings::SubcommandRequired,
             ])
             .subcommand(
-                SubCommand::with_name("all")
-                    .about("Sets all parameters on.")
-                    .settings(&[AppSettings::DisableHelpSubcommand])
-            )
-            .subcommand(
-                SubCommand::with_name("none")
-                    .about("Sets all parameters off.")
-                    .settings(&[AppSettings::DisableHelpSubcommand])
-            )
-            .subcommand(
                 SubCommand::with_name("ec")
                     .about(
                         "Enables/disables the electric-conductivity in the output string.",
@@ -351,14 +341,6 @@ mod tests {
     #[test]
     fn parsing_valid_set_output_params_command_input() {
         let mut cli_app = ConductivityOutputParamsCommand::new();
-
-        let arg_vec = vec!["output", "all"];
-        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
-        assert!(matches.is_ok());
-
-        let arg_vec = vec!["output", "none"];
-        let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
-        assert!(matches.is_ok());
 
         let arg_vec = vec!["output", "status"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
