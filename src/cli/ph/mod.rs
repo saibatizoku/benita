@@ -34,7 +34,7 @@ impl PhServerApp {
                     .long("config")
                     .value_name("FILE")
                     .help("Sets a custom config file")
-                    .takes_value(true)
+                    .takes_value(true),
             )
             .arg(
                 Arg::with_name("rep-server-url")
@@ -46,7 +46,7 @@ impl PhServerApp {
                     .index(1)
                     .required(true)
                     .validator(is_url)
-                    .conflicts_with_all(&["config"])
+                    .conflicts_with_all(&["config"]),
             )
     }
 }
@@ -65,7 +65,7 @@ impl PhClientApp {
                     .long("config")
                     .value_name("FILE")
                     .help("Sets a custom config file")
-                    .takes_value(true)
+                    .takes_value(true),
             )
             .arg(
                 Arg::with_name("URL")
@@ -74,18 +74,18 @@ impl PhClientApp {
                     .index(1)
                     .required(true)
                     .validator(is_url)
-                    .conflicts_with_all(&["config"])
+                    .conflicts_with_all(&["config"]),
             )
             .subcommands(vec![
-                         PhCalibrationCommand::new(),
-                         PhCompensationCommand::new(),
-                         PhDeviceCommand::new(),
-                         PhFindCommand::new(),
-                         PhLedCommand::new(),
-                         PhProtocolLockCommand::new(),
-                         PhReadCommand::new(),
-                         PhSleepCommand::new(),
-                         ])
+                PhCalibrationCommand::new(),
+                PhCompensationCommand::new(),
+                PhDeviceCommand::new(),
+                PhFindCommand::new(),
+                PhLedCommand::new(),
+                PhProtocolLockCommand::new(),
+                PhReadCommand::new(),
+                PhSleepCommand::new(),
+            ])
     }
 }
 
@@ -98,15 +98,15 @@ impl PhCommandApp {
         PhApp::new()
             .settings(&[AppSettings::DisableHelpSubcommand])
             .subcommands(vec![
-                         PhCalibrationCommand::new(),
-                         PhCompensationCommand::new(),
-                         PhDeviceCommand::new(),
-                         PhFindCommand::new(),
-                         PhLedCommand::new(),
-                         PhProtocolLockCommand::new(),
-                         PhReadCommand::new(),
-                         PhSleepCommand::new(),
-                         ])
+                PhCalibrationCommand::new(),
+                PhCompensationCommand::new(),
+                PhDeviceCommand::new(),
+                PhFindCommand::new(),
+                PhLedCommand::new(),
+                PhProtocolLockCommand::new(),
+                PhReadCommand::new(),
+                PhSleepCommand::new(),
+            ])
     }
 }
 

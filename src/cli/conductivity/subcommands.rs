@@ -1,9 +1,7 @@
 //! Conductivity Subcommands
 use cli::shared::{ClearSubcommand, OffSubcommand, OnSubcommand, StatusSubcommand};
-use cli::shared::{
-    DeviceCommand, FindCommand, LedCommand, ProtocolLockCommand, ReadCommand, SleepCommand,
-    is_float,
-};
+use cli::shared::{is_float, DeviceCommand, FindCommand, LedCommand, ProtocolLockCommand,
+                  ReadCommand, SleepCommand};
 
 use clap::{App, AppSettings, Arg, SubCommand};
 
@@ -27,13 +25,13 @@ impl ConductivityCompensationCommand {
                             .help("Numeric value up to 3 decimals.")
                             .takes_value(true)
                             .validator(is_float)
-                            .required(true)
-                    )
+                            .required(true),
+                    ),
             )
             .subcommand(
                 SubCommand::with_name("get")
                     .about("Sets all parameters off.")
-                    .settings(&[AppSettings::DisableHelpSubcommand])
+                    .settings(&[AppSettings::DisableHelpSubcommand]),
             )
     }
 }
@@ -51,15 +49,13 @@ impl ConductivityOutputParamsCommand {
             ])
             .subcommand(
                 SubCommand::with_name("ec")
-                    .about(
-                        "Enables/disables the electric-conductivity in the output string.",
-                    )
+                    .about("Enables/disables the electric-conductivity in the output string.")
                     .settings(&[
                         AppSettings::DisableHelpSubcommand,
                         AppSettings::SubcommandRequired,
                     ])
                     .subcommand(OffSubcommand::new())
-                    .subcommand(OnSubcommand::new())
+                    .subcommand(OnSubcommand::new()),
             )
             .subcommand(
                 SubCommand::with_name("salinity")
@@ -69,31 +65,27 @@ impl ConductivityOutputParamsCommand {
                         AppSettings::SubcommandRequired,
                     ])
                     .subcommand(OffSubcommand::new())
-                    .subcommand(OnSubcommand::new())
+                    .subcommand(OnSubcommand::new()),
             )
             .subcommand(
                 SubCommand::with_name("sg")
-                    .about(
-                        "Enables/disables the specific-gravity in the output string.",
-                    )
+                    .about("Enables/disables the specific-gravity in the output string.")
                     .settings(&[
                         AppSettings::DisableHelpSubcommand,
                         AppSettings::SubcommandRequired,
                     ])
                     .subcommand(OffSubcommand::new())
-                    .subcommand(OnSubcommand::new())
+                    .subcommand(OnSubcommand::new()),
             )
             .subcommand(
                 SubCommand::with_name("tds")
-                    .about(
-                        "Enables/disables the total-dissolved solids in the output string.",
-                    )
+                    .about("Enables/disables the total-dissolved solids in the output string.")
                     .settings(&[
                         AppSettings::DisableHelpSubcommand,
                         AppSettings::SubcommandRequired,
                     ])
                     .subcommand(OffSubcommand::new())
-                    .subcommand(OnSubcommand::new())
+                    .subcommand(OnSubcommand::new()),
             )
             .subcommand(StatusSubcommand::new())
     }
@@ -112,7 +104,7 @@ impl ConductivityProbeTypeCommand {
                     .help("Sets/gets the sensor's probe type.")
                     .takes_value(true)
                     .possible_values(&["status", "0.1", "1.0", "10.0"])
-                    .required(true)
+                    .required(true),
             )
     }
 }
@@ -133,7 +125,7 @@ impl ConductivityCalibrationCommand {
             .subcommand(
                 SubCommand::with_name("dry")
                     .about("Set the calibration dry-point command.")
-                    .settings(&[AppSettings::DisableHelpSubcommand])
+                    .settings(&[AppSettings::DisableHelpSubcommand]),
             )
             .subcommand(
                 SubCommand::with_name("high")
@@ -144,8 +136,8 @@ impl ConductivityCalibrationCommand {
                             .help("Numeric value up to 3 decimals.")
                             .takes_value(true)
                             .validator(is_float)
-                            .required(true)
-                    )
+                            .required(true),
+                    ),
             )
             .subcommand(
                 SubCommand::with_name("low")
@@ -156,8 +148,8 @@ impl ConductivityCalibrationCommand {
                             .help("Numeric value up to 3 decimals.")
                             .takes_value(true)
                             .validator(is_float)
-                            .required(true)
-                    )
+                            .required(true),
+                    ),
             )
             .subcommand(
                 SubCommand::with_name("single")
@@ -168,8 +160,8 @@ impl ConductivityCalibrationCommand {
                             .help("Numeric value up to 3 decimals.")
                             .takes_value(true)
                             .validator(is_float)
-                            .required(true)
-                    )
+                            .required(true),
+                    ),
             )
     }
 }

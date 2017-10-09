@@ -36,18 +36,18 @@ impl ConductivityCommandApp {
     pub fn new<'a, 'b>() -> App<'a, 'b> {
         ConductivityApp::new()
             .settings(&[AppSettings::DisableHelpSubcommand])
-            .subcommands( vec![
-                          ConductivityCalibrationCommand::new(),
-                          ConductivityCompensationCommand::new(),
-                          ConductivityOutputParamsCommand::new(),
-                          ConductivityProbeTypeCommand::new(),
-                          ConductivityDeviceCommand::new(),
-                          ConductivityFindCommand::new(),
-                          ConductivityLedCommand::new(),
-                          ConductivityProtocolLockCommand::new(),
-                          ConductivityReadCommand::new(),
-                          ConductivitySleepCommand::new(),
-                          ])
+            .subcommands(vec![
+                ConductivityCalibrationCommand::new(),
+                ConductivityCompensationCommand::new(),
+                ConductivityOutputParamsCommand::new(),
+                ConductivityProbeTypeCommand::new(),
+                ConductivityDeviceCommand::new(),
+                ConductivityFindCommand::new(),
+                ConductivityLedCommand::new(),
+                ConductivityProtocolLockCommand::new(),
+                ConductivityReadCommand::new(),
+                ConductivitySleepCommand::new(),
+            ])
     }
 }
 
@@ -65,7 +65,7 @@ impl ConductivityServerApp {
                     .long("config")
                     .value_name("FILE")
                     .help("Sets a custom config file")
-                    .takes_value(true)
+                    .takes_value(true),
             )
             .arg(
                 Arg::with_name("rep-server-url")
@@ -77,7 +77,7 @@ impl ConductivityServerApp {
                     .index(1)
                     .required(true)
                     .validator(is_url)
-                    .conflicts_with_all(&["config"])
+                    .conflicts_with_all(&["config"]),
             )
     }
 }
@@ -96,7 +96,7 @@ impl ConductivityClientApp {
                     .long("config")
                     .value_name("FILE")
                     .help("Sets a custom config file")
-                    .takes_value(true)
+                    .takes_value(true),
             )
             .arg(
                 Arg::with_name("URL")
@@ -105,20 +105,20 @@ impl ConductivityClientApp {
                     .index(1)
                     .required(true)
                     .validator(is_url)
-                    .conflicts_with_all(&["config"])
+                    .conflicts_with_all(&["config"]),
             )
-            .subcommands( vec![
-                          ConductivityCalibrationCommand::new(),
-                          ConductivityCompensationCommand::new(),
-                          ConductivityOutputParamsCommand::new(),
-                          ConductivityProbeTypeCommand::new(),
-                          ConductivityDeviceCommand::new(),
-                          ConductivityFindCommand::new(),
-                          ConductivityLedCommand::new(),
-                          ConductivityProtocolLockCommand::new(),
-                          ConductivityReadCommand::new(),
-                          ConductivitySleepCommand::new(),
-                          ])
+            .subcommands(vec![
+                ConductivityCalibrationCommand::new(),
+                ConductivityCompensationCommand::new(),
+                ConductivityOutputParamsCommand::new(),
+                ConductivityProbeTypeCommand::new(),
+                ConductivityDeviceCommand::new(),
+                ConductivityFindCommand::new(),
+                ConductivityLedCommand::new(),
+                ConductivityProtocolLockCommand::new(),
+                ConductivityReadCommand::new(),
+                ConductivitySleepCommand::new(),
+            ])
     }
 }
 

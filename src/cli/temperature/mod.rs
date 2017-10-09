@@ -34,7 +34,7 @@ impl TemperatureServerApp {
                     .long("config")
                     .value_name("FILE")
                     .help("Sets a custom config file")
-                    .takes_value(true)
+                    .takes_value(true),
             )
             .arg(
                 Arg::with_name("rep-server-url")
@@ -46,7 +46,7 @@ impl TemperatureServerApp {
                     .index(1)
                     .required(true)
                     .validator(is_url)
-                    .conflicts_with_all(&["config"])
+                    .conflicts_with_all(&["config"]),
             )
     }
 }
@@ -65,7 +65,7 @@ impl TemperatureClientApp {
                     .long("config")
                     .value_name("FILE")
                     .help("Sets a custom config file")
-                    .takes_value(true)
+                    .takes_value(true),
             )
             .arg(
                 Arg::with_name("URL")
@@ -74,17 +74,17 @@ impl TemperatureClientApp {
                     .index(1)
                     .required(true)
                     .validator(is_url)
-                    .conflicts_with_all(&["config"])
+                    .conflicts_with_all(&["config"]),
             )
             .subcommands(vec![
-                         TemperatureCalibrationCommand::new(),
-                         TemperatureDeviceCommand::new(),
-                         TemperatureFindCommand::new(),
-                         TemperatureLedCommand::new(),
-                         TemperatureProtocolLockCommand::new(),
-                         TemperatureReadCommand::new(),
-                         TemperatureSleepCommand::new(),
-                         ])
+                TemperatureCalibrationCommand::new(),
+                TemperatureDeviceCommand::new(),
+                TemperatureFindCommand::new(),
+                TemperatureLedCommand::new(),
+                TemperatureProtocolLockCommand::new(),
+                TemperatureReadCommand::new(),
+                TemperatureSleepCommand::new(),
+            ])
     }
 }
 
@@ -96,14 +96,14 @@ impl TemperatureCommandApp {
         TemperatureApp::new()
             .settings(&[AppSettings::DisableHelpSubcommand])
             .subcommands(vec![
-                         TemperatureCalibrationCommand::new(),
-                         TemperatureDeviceCommand::new(),
-                         TemperatureFindCommand::new(),
-                         TemperatureLedCommand::new(),
-                         TemperatureProtocolLockCommand::new(),
-                         TemperatureReadCommand::new(),
-                         TemperatureSleepCommand::new(),
-                        ])
+                TemperatureCalibrationCommand::new(),
+                TemperatureDeviceCommand::new(),
+                TemperatureFindCommand::new(),
+                TemperatureLedCommand::new(),
+                TemperatureProtocolLockCommand::new(),
+                TemperatureReadCommand::new(),
+                TemperatureSleepCommand::new(),
+            ])
     }
 }
 

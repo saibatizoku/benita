@@ -21,9 +21,7 @@ fn parse_cli_arguments() -> Result<()> {
     let matches = App::new("benita-ec-rep")
         .version("0.1.0")
         .author("Joaquin R. <globojorro@gmail.com>")
-        .about(
-            "Benita IoT. A response service for electrical conductivity data.",
-        )
+        .about("Benita IoT. A response service for electrical conductivity data.")
         .arg(
             Arg::with_name("URL")
                 .help("Sets the url for the response server")
@@ -57,8 +55,7 @@ fn parse_cli_arguments() -> Result<()> {
 
     let mut address = EZO_SENSOR_ADDR;
     if let Some(c) = matches.value_of("ADDRESS") {
-        address = c.parse()
-            .chain_err(|| "Bad Address")?;
+        address = c.parse().chain_err(|| "Bad Address")?;
     }
 
     // We initialize our service.
@@ -67,7 +64,8 @@ fn parse_cli_arguments() -> Result<()> {
 
     {
         // This is the main loop, it will run for as long as the program runs.
-        let _listen = service.listen()
+        let _listen = service
+            .listen()
             .chain_err(|| "Conductivity service stopped listening")?;
     }
 

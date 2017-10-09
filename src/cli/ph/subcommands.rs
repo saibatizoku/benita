@@ -1,9 +1,7 @@
 //! pH Subcommands
 use cli::shared::{ClearSubcommand, StatusSubcommand};
-use cli::shared::{
-    DeviceCommand, FindCommand, LedCommand, ProtocolLockCommand, ReadCommand, SleepCommand,
-    is_float,
-};
+use cli::shared::{is_float, DeviceCommand, FindCommand, LedCommand, ProtocolLockCommand,
+                  ReadCommand, SleepCommand};
 
 use clap::{App, AppSettings, Arg, SubCommand};
 
@@ -27,13 +25,13 @@ impl PhCompensationCommand {
                             .help("Numeric value up to 3 decimals.")
                             .takes_value(true)
                             .validator(is_float)
-                            .required(true)
-                    )
+                            .required(true),
+                    ),
             )
             .subcommand(
                 SubCommand::with_name("get")
                     .about("Sets all parameters off.")
-                    .settings(&[AppSettings::DisableHelpSubcommand])
+                    .settings(&[AppSettings::DisableHelpSubcommand]),
             )
     }
 }
@@ -60,8 +58,8 @@ impl PhCalibrationCommand {
                             .help("Numeric value up to 3 decimals.")
                             .takes_value(true)
                             .validator(is_float)
-                            .required(true)
-                    )
+                            .required(true),
+                    ),
             )
             .subcommand(
                 SubCommand::with_name("mid")
@@ -72,8 +70,8 @@ impl PhCalibrationCommand {
                             .help("Numeric value up to 3 decimals.")
                             .takes_value(true)
                             .validator(is_float)
-                            .required(true)
-                    )
+                            .required(true),
+                    ),
             )
             .subcommand(
                 SubCommand::with_name("low")
@@ -84,8 +82,8 @@ impl PhCalibrationCommand {
                             .help("Numeric value up to 3 decimals.")
                             .takes_value(true)
                             .validator(is_float)
-                            .required(true)
-                    )
+                            .required(true),
+                    ),
             )
     }
 }

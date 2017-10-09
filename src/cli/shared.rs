@@ -73,7 +73,7 @@ impl DeviceCommand {
                     .help("Get device status or information.")
                     .takes_value(true)
                     .possible_values(&["status", "info"])
-                    .required(true)
+                    .required(true),
             )
     }
 }

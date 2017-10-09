@@ -1,9 +1,7 @@
 //! Temperature Subcommands
 use cli::shared::{ClearSubcommand, StatusSubcommand};
-use cli::shared::{
-    DeviceCommand, FindCommand, LedCommand, ProtocolLockCommand, ReadCommand, SleepCommand,
-    is_float,
-};
+use cli::shared::{is_float, DeviceCommand, FindCommand, LedCommand, ProtocolLockCommand,
+                  ReadCommand, SleepCommand};
 
 use clap::{App, AppSettings, Arg, SubCommand};
 
@@ -29,8 +27,8 @@ impl TemperatureCalibrationCommand {
                             .help("Numeric value up to 3 decimals.")
                             .takes_value(true)
                             .validator(is_float)
-                            .required(true)
-                    )
+                            .required(true),
+                    ),
             )
     }
 }
