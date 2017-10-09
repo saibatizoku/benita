@@ -250,7 +250,7 @@ impl PhSensor {
     /// Get the current status of the pH Sensor.
     ///
     /// Returns a `DeviceStatus` result.
-    pub fn get_status(&mut self) -> Result<DeviceStatus> {
+    pub fn get_device_status(&mut self) -> Result<DeviceStatus> {
         let status = Status
             .run(&mut self.i2cdev)
             .chain_err(|| ErrorKind::SensorTrouble)?;
