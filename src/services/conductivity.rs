@@ -45,6 +45,42 @@ impl ConductivitySensorService {
         let matches = cli.get_matches_from_safe(split.as_slice())
             .chain_err(|| ErrorKind::CommandParse)?;
         let response = match matches.subcommand() {
+            ("calibration", Some(_m)) => {
+                match _m.subcommand() {
+                    ("status", None) => self.server.get_calibration_status()?,
+                    ("clear", None) => self.server.set_calibration_clear()?,
+                    ("dry", None) => self.server.set_calibration_dry()?,
+                    ("high", Some(_m)) => {
+                        let cal = match _m.value_of("CAL") {
+                            Some(_cal) => atof(_cal)?,
+                            _ => unreachable!(),
+                        };
+                        self.server.set_calibration_high(cal)?
+                    }
+                    ("low", Some(_m)) => {
+                        let cal = match _m.value_of("CAL") {
+                            Some(_cal) => atof(_cal)?,
+                            _ => unreachable!(),
+                        };
+                        self.server.set_calibration_low(cal)?
+                    }
+                    ("single", Some(_m)) => {
+                        let cal = match _m.value_of("CAL") {
+                            Some(_cal) => atof(_cal)?,
+                            _ => unreachable!(),
+                        };
+                        self.server.set_calibration_single(cal)?
+                    }
+                    _ => unreachable!(),
+                }
+            }
+            ("device", Some(_m)) => {
+                match _m.subcommand() {
+                    ("info", None) => self.server.get_device_info()?,
+                    ("status", None) => self.server.get_device_status()?,
+                    _ => unreachable!(),
+                }
+            }
             ("compensation", Some(_m)) => {
                 match _m.subcommand() {
                     ("get", None) => self.server.get_compensation()?,
