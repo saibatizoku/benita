@@ -112,7 +112,7 @@ pub type PhSleepCommand = SleepCommand;
 mod tests {
     use super::*;
 
-    // Tests SetCompensation Command.
+    // Tests Compensation Command.
     #[test]
     fn parsing_valid_compensation_command_input() {
         let mut cli_app = PhCompensationCommand::new();
