@@ -107,16 +107,18 @@ impl ConductivityClientApp {
                     .validator(is_url)
                     .conflicts_with_all(&["config"])
             )
-            .subcommand(ConductivityCalibrationCommand::new())
-            .subcommand(ConductivityCompensationCommand::new())
-            .subcommand(ConductivityOutputParamsCommand::new())
-            .subcommand(ConductivityProbeTypeCommand::new())
-            .subcommand(ConductivityDeviceCommand::new())
-            .subcommand(ConductivityFindCommand::new())
-            .subcommand(ConductivityLedCommand::new())
-            .subcommand(ConductivityProtocolLockCommand::new())
-            .subcommand(ConductivityReadCommand::new())
-            .subcommand(ConductivitySleepCommand::new())
+            .subcommands( vec![
+                          ConductivityCalibrationCommand::new(),
+                          ConductivityCompensationCommand::new(),
+                          ConductivityOutputParamsCommand::new(),
+                          ConductivityProbeTypeCommand::new(),
+                          ConductivityDeviceCommand::new(),
+                          ConductivityFindCommand::new(),
+                          ConductivityLedCommand::new(),
+                          ConductivityProtocolLockCommand::new(),
+                          ConductivityReadCommand::new(),
+                          ConductivitySleepCommand::new(),
+                          ])
     }
 }
 
