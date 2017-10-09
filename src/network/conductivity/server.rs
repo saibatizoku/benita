@@ -14,6 +14,56 @@ network_socket! {
 }
 
 impl ConductivitySensorServer {
+    /// get the calibration status.
+    pub fn get_calibration_status(&mut self) -> Result<String> {
+        let response = self.sensor
+            .get_calibration_status()
+            .chain_err(|| ErrorKind::CommandRequest)?;
+        Ok(format!("calibration-status {:?}", response))
+    }
+
+    /// clear calibration settings.
+    pub fn set_calibration_clear(&mut self) -> Result<String> {
+        let _response = self.sensor
+            .set_calibration_clear()
+            .chain_err(|| ErrorKind::CommandRequest)?;
+        Ok("calibration-set clear".to_string())
+    }
+
+    /// set dry calibration settings.
+    pub fn set_calibration_dry(&mut self) -> Result<String> {
+        let _response = self.sensor
+            .set_calibration_dry()
+            .chain_err(|| ErrorKind::CommandRequest)?;
+        Ok("calibration-set dry".to_string())
+    }
+
+    /// Set the calibration high-point for the sensor.
+    pub fn set_calibration_high(&mut self, c: f64) -> Result<String> {
+        let _response = self.sensor
+            .set_calibration_high(c)
+            .chain_err(|| ErrorKind::CommandRequest)?;
+        Ok(format!("calibration-high {}", c))
+    }
+
+    /// Set the calibration low-point for the sensor.
+    pub fn set_calibration_low(&mut self, c: f64) -> Result<String> {
+        let _response = self.sensor
+            .set_calibration_low(c)
+            .chain_err(|| ErrorKind::CommandRequest)?;
+        Ok(format!("calibration-low {}", c))
+    }
+
+    /// Set the calibration single-point for the sensor.
+    pub fn set_calibration_single(&mut self, c: f64) -> Result<String> {
+        let _response = self.sensor
+            .set_calibration_single(c)
+            .chain_err(|| ErrorKind::CommandRequest)?;
+        Ok(format!("calibration-single-point {}", c))
+    }
+}
+
+impl ConductivitySensorServer {
     /// get the compensation temperature for sensor readings.
     pub fn get_compensation(&mut self) -> Result<String> {
         let response = self.sensor
