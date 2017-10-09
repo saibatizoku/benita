@@ -1,4 +1,4 @@
-// Client for Conductivity sensing.
+//! Client for Conductivity sensing.
 use errors::*;
 
 // Needed by the network_socket! macro.
