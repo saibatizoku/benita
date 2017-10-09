@@ -76,13 +76,15 @@ impl TemperatureClientApp {
                     .validator(is_url)
                     .conflicts_with_all(&["config"])
             )
-            .subcommand(TemperatureCalibrationCommand::new())
-            .subcommand(TemperatureDeviceCommand::new())
-            .subcommand(TemperatureFindCommand::new())
-            .subcommand(TemperatureLedCommand::new())
-            .subcommand(TemperatureProtocolLockCommand::new())
-            .subcommand(TemperatureReadCommand::new())
-            .subcommand(TemperatureSleepCommand::new())
+            .subcommands(vec![
+                         TemperatureCalibrationCommand::new(),
+                         TemperatureDeviceCommand::new(),
+                         TemperatureFindCommand::new(),
+                         TemperatureLedCommand::new(),
+                         TemperatureProtocolLockCommand::new(),
+                         TemperatureReadCommand::new(),
+                         TemperatureSleepCommand::new(),
+                         ])
     }
 }
 
