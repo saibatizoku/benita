@@ -10,6 +10,7 @@ macro_rules! sensor_i2cdev {
     ($name:ident , $doc:tt) => {
         #[ doc = $doc ]
         pub struct $name {
+            path: String,
             i2cdev: LinuxI2CDevice,
         }
 
@@ -19,10 +20,18 @@ macro_rules! sensor_i2cdev {
             ///
             /// This device uses a file-descriptor through `i2cdev`. To use it, the path
             /// to the I2C bus, and the `u16` address location, are needed.
-            pub fn new(i2c_path: &str, i2c_address: u16) -> Result<$name> {
-                let i2cdev = LinuxI2CDevice::new(i2c_path, i2c_address)
+            pub fn new(path: &str, address: u16) -> Result<$name> {
+                let i2cdev = LinuxI2CDevice::new(path, address)
                     .chain_err(|| ErrorKind::SensorTrouble)?;
-                Ok( $name { i2cdev: i2cdev } )
+                let path = path.to_string();
+                Ok( $name { path, i2cdev: i2cdev } )
+            }
+            /// Update the sensor's I2C address.
+            pub fn update_address(&mut self, address: u16) -> Result<()> {
+                let i2cdev = LinuxI2CDevice::new(&self.path, address)
+                    .chain_err(|| ErrorKind::SensorTrouble)?;
+                self.i2cdev = i2cdev;
+                Ok( () )
             }
         }
     };
