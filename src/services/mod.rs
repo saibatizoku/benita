@@ -1,119 +1,22 @@
 //! Network services for sensors.
+pub mod conductivity;
+
 use std::thread;
 use std::time::Duration;
 
-use cli::conductivity::ConductivityCommandApp;
 use config::SensorServiceConfig;
 use errors::*;
-use network::conductivity::{ConductivityClient, ConductivitySensorServer};
+use network::conductivity::ConductivityClient;
 use network::ph::PhClient;
-use sensors::conductivity::ConductivitySensor;
 
-use neuras;
-use neuras::utils::bind_socket;
 use chrono::{DateTime, Local};
+use neuras;
 
 /// The device's UUID.
 type DeviceUuid = String;
 /// The Temperature Scale.
 type TemperatureScale = String;
 
-/// process_request
-fn process_request(server: &mut ConductivitySensorServer, command_args: &str) -> Result<String> {
-    let cli = ConductivityCommandApp::new();
-    let split: Vec<&str> = command_args.split(" ").collect();
-    let matches = cli.get_matches_from_safe(split.as_slice())
-        .chain_err(|| ErrorKind::CommandParse)?;
-    let response = match matches.subcommand() {
-        ("compensation", Some(_m)) => {
-            match _m.subcommand() {
-                ("get", None) => server.get_compensation()?,
-                ("set", Some(_m)) => {
-                    let temp = match _m.value_of("TEMP") {
-                        Some(t) => atof(t)?,
-                        _ => unreachable!(),
-                    };
-                    server.set_compensation(temp)?
-                }
-                _ => unreachable!(),
-            }
-        }
-        ("output", Some(_m)) => {
-            match _m.subcommand() {
-                ("status", None) => server.get_output_params()?,
-                ("ec", Some(_m)) => {
-                    match _m.subcommand() {
-                        ("off", None) => server.set_output_conductivity_off()?,
-                        ("on", None) => server.set_output_conductivity_on()?,
-                        _ => unreachable!(),
-                    }
-                }
-                ("salinity", Some(_m)) => {
-                    match _m.subcommand() {
-                        ("off", None) => server.set_output_salinity_off()?,
-                        ("on", None) => server.set_output_salinity_on()?,
-                        _ => unreachable!(),
-                    }
-                }
-                ("sg", Some(_m)) => {
-                    match _m.subcommand() {
-                        ("off", None) => server.set_output_specific_gravity_off()?,
-                        ("on", None) => server.set_output_specific_gravity_on()?,
-                        _ => unreachable!(),
-                    }
-                }
-                ("tds", Some(_m)) => {
-                    match _m.subcommand() {
-                        ("off", None) => server.set_output_tds_off()?,
-                        ("on", None) => server.set_output_tds_on()?,
-                        _ => unreachable!(),
-                    }
-                }
-                _ => unreachable!(),
-            }
-        }
-        ("read", None) => server.get_reading()?,
-        ("sleep", None) => server.set_sleep()?,
-        _ => "error".to_string(),
-    };
-
-    Ok(response)
-}
-
-/// Conductivity RESPONSE server. Handles requests from the given URL, and
-/// directly interfacing with the sensor at the `i2c_path`, located at
-/// the `i2c_address` location.
-pub fn run_conductivity_server(rep_url: &str, i2c_path: &str, i2c_address: u16) -> Result<()> {
-    // We initialize our I2C device connection.
-    let ec_sensor =
-        ConductivitySensor::new(&i2c_path, i2c_address).chain_err(|| "Could not open I2C device")?;
-
-    // We start our ZMQ context.
-    let context = neuras::utils::create_context();
-
-    // We configure our socket as REP, for accepting requests
-    // and providing REsPonses.
-    let responder = neuras::utils::zmq_rep(&context)?;
-    // We bind our socket to REP_URL.
-    let _bind_socket = bind_socket(&responder, rep_url).chain_err(|| "problems binding to socket")?;
-    // Setup our sensor server
-    let mut sensor_server = ConductivitySensorServer::new(responder, ec_sensor)?;
-
-    // This is the main loop, it will run for as long as the program runs.
-    loop {
-        // We start by receiving the command request from the client.
-        {
-            let msg_cmd = sensor_server.recv()?;
-            // Parse and process the command.
-            let command_response: String = process_request(&mut sensor_server, msg_cmd.as_str())?;
-            // Send response to the client.
-            let _respond = sensor_server.send(command_response.as_bytes())?;
-        }
-
-        // No work left, so we sleep.
-        thread::sleep(Duration::from_millis(1));
-    }
-}
 
 /// Run a calibrated sensor service.
 ///
