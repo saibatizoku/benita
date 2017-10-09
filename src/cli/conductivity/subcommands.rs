@@ -131,6 +131,11 @@ impl ConductivityCalibrationCommand {
             .subcommand(StatusSubcommand::new())
             .subcommand(ClearSubcommand::new())
             .subcommand(
+                SubCommand::with_name("dry")
+                    .about("Set the calibration dry-point command.")
+                    .settings(&[AppSettings::DisableHelpSubcommand])
+            )
+            .subcommand(
                 SubCommand::with_name("high")
                     .about("Set the calibration high-point command.")
                     .settings(&[AppSettings::DisableHelpSubcommand])
