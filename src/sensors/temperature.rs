@@ -155,7 +155,7 @@ impl TemperatureSensor {
     ///
     /// __NOTE:__ using this command will make the current `self` obsolete. It is up to you to
     /// create a new `TemperatureSensor` that is properly configured.
-    pub fn set_i2c_address(&mut self, address: u16) -> Result<()> {
+    pub fn set_device_address(&mut self, address: u16) -> Result<()> {
         let _set = DeviceAddress(address)
             .run(&mut self.i2cdev)
             .chain_err(|| ErrorKind::SensorTrouble)?;
