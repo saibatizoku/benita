@@ -158,7 +158,7 @@ dependencies = [
 [[package]]
 name = "ezo_ec"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/ezo-ec-rs.git#ceb3a4ae196a7a2167a5ffd049e022de9ce375e8"
+source = "git+https://github.com/saibatizoku/ezo-ec-rs.git#23860d0c473603a26945cc262bf106ecab5a6d67"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -169,7 +169,7 @@ dependencies = [
 [[package]]
 name = "ezo_ph"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/ezo-ph-rs.git#897d8e9add8c5620afa01fb333fb9a2aa3f30a54"
+source = "git+https://github.com/saibatizoku/ezo-ph-rs.git#7b15e681ac7effaf5bf1fb1e6560d63817d33600"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -180,7 +180,7 @@ dependencies = [
 [[package]]
 name = "ezo_rtd"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/ezo-rtd-rs.git#92ed5aa9b97217eaa106df02fd6b57406a5dffe1"
+source = "git+https://github.com/saibatizoku/ezo-rtd-rs.git#b050b8d75546ce2f60fef502d2b5f04dff2dd206"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
