@@ -18,6 +18,7 @@ macro_rules! sensor_commands {
             Ok(cal)
         }
     };
+
     ( device_common ) => {
         /// Change the sensor to UART mode.
         ///
@@ -51,8 +52,8 @@ macro_rules! sensor_commands {
         }
 
         /// Import a calibration string to the sensor.
-        pub fn set_import_line(&mut self, import: String) -> Result<()> {
-            let _import = Import(import)
+        pub fn set_import_line(&mut self, import: &str) -> Result<()> {
+            let _import = Import(import.to_string())
                 .run(&mut self.i2cdev)
                 .chain_err(|| ErrorKind::SensorTrouble)?;
             Ok(())
@@ -174,6 +175,7 @@ macro_rules! sensor_commands {
             Ok(())
         }
     };
+
     ( temperature_compensation ) => {
         /// Set the compensation temperature.
         pub fn set_compensation_temperature(&mut self, value: f64) -> Result<()> {
