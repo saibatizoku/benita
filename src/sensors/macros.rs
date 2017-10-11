@@ -1,4 +1,5 @@
 //! Common sensor command methods
+/// Common sensor command methods
 #[macro_export]
 macro_rules! sensor_commands {
     ( calibration_common ) => {

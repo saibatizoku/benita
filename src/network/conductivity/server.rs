@@ -64,7 +64,7 @@ impl ConductivitySensorServer {
         let response = self.sensor
             .get_output_string_status()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("output-params {}", response.to_string()))
+        Ok(format!("output-params {}", response))
     }
 
     /// set the `ec` output string parameter on.
@@ -129,5 +129,36 @@ impl ConductivitySensorServer {
             .set_output_tds_off()
             .chain_err(|| ErrorKind::CommandRequest)?;
         Ok("output-tds off".to_string())
+    }
+}
+
+impl ConductivitySensorServer {
+    /// set the probe type to `1.0`
+    pub fn set_probe_type_one(&mut self) -> Result<String> {
+        let _response = self.sensor
+            .set_probe_type_one()
+            .chain_err(|| ErrorKind::CommandRequest)?;
+        Ok("probe-type 1.0".to_string())
+    }
+    /// set the probe type to `0.1`
+    pub fn set_probe_type_point_one(&mut self) -> Result<String> {
+        let _response = self.sensor
+            .set_probe_type_point_one()
+            .chain_err(|| ErrorKind::CommandRequest)?;
+        Ok("probe-type 0.1".to_string())
+    }
+    /// set the probe type to `10`
+    pub fn set_probe_type_ten(&mut self) -> Result<String> {
+        let _response = self.sensor
+            .set_probe_type_ten()
+            .chain_err(|| ErrorKind::CommandRequest)?;
+        Ok("probe-type 10".to_string())
+    }
+    /// set the probe type to `10`
+    pub fn get_probe_type_status(&mut self) -> Result<String> {
+        let response = self.sensor
+            .get_probe_type_status()
+            .chain_err(|| ErrorKind::CommandRequest)?;
+        Ok(format!("probe-type {}", response))
     }
 }

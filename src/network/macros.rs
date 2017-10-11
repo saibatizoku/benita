@@ -1,6 +1,6 @@
 //! Common network command macros
 
-/// Network socket command
+/// Common network commands
 #[macro_export]
 macro_rules! sensor_socket_commands {
     ( calibration_common ) => {
