@@ -14,21 +14,12 @@ network_socket! {
 }
 
 impl ConductivitySensorServer {
-    /// get the calibration status.
-    pub fn get_calibration_status(&mut self) -> Result<String> {
-        let response = self.sensor
-            .get_calibration_status()
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("calibration-status {:?}", response))
-    }
+    sensor_socket_commands!(device_common);
+}
 
-    /// clear calibration settings.
-    pub fn set_calibration_clear(&mut self) -> Result<String> {
-        let _response = self.sensor
-            .set_calibration_clear()
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("calibration-set clear".to_string())
-    }
+impl ConductivitySensorServer {
+
+    sensor_socket_commands!(calibration_common);
 
     /// set dry calibration settings.
     pub fn set_calibration_dry(&mut self) -> Result<String> {
@@ -64,39 +55,7 @@ impl ConductivitySensorServer {
 }
 
 impl ConductivitySensorServer {
-    /// get the compensation temperature for sensor readings.
-    pub fn get_compensation(&mut self) -> Result<String> {
-        let response = self.sensor
-            .get_compensated_temperature_value()
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("compensation-value {}", response.0))
-    }
-
-    /// set the compensation temperature for sensor readings.
-    pub fn set_compensation(&mut self, t: f64) -> Result<String> {
-        let _response = self.sensor
-            .set_compensation_temperature(t)
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("compensation-set {}", t))
-    }
-}
-
-impl ConductivitySensorServer {
-    /// get the sensor information.
-    pub fn get_device_info(&mut self) -> Result<String> {
-        let response = self.sensor
-            .get_device_info()
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("device-info {:?}", response))
-    }
-
-    /// get the sensor status.
-    pub fn get_device_status(&mut self) -> Result<String> {
-        let response = self.sensor
-            .get_device_status()
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("device-status {:?}", response))
-    }
+    sensor_socket_commands!(temperature_compensation);
 }
 
 impl ConductivitySensorServer {
@@ -170,25 +129,5 @@ impl ConductivitySensorServer {
             .set_output_tds_off()
             .chain_err(|| ErrorKind::CommandRequest)?;
         Ok("output-tds off".to_string())
-    }
-}
-
-impl ConductivitySensorServer {
-    /// get the output string with sensor readings.
-    pub fn get_reading(&mut self) -> Result<String> {
-        let response = self.sensor
-            .get_reading()
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("reading {}", response))
-    }
-}
-
-impl ConductivitySensorServer {
-    /// set the sensor to sleep (low-power) mode.
-    pub fn set_sleep(&mut self) -> Result<String> {
-        let _sleep = self.sensor
-            .set_sleep()
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("sleeping".to_string())
     }
 }
