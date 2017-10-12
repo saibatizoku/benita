@@ -5,15 +5,12 @@ use config::{SensorConfig, SocketConfig};
 use errors::*;
 use network::conductivity::ConductivitySensorServer;
 use sensors::conductivity::ConductivitySensor;
-use utilities::atof;
+use utilities::{atof, create_and_bind_responder};
 
 use clap::ArgMatches;
 
 use std::thread;
 use std::time::Duration;
-
-use neuras;
-use neuras::utils::bind_socket;
 
 /// Conductivity sensor server.
 pub struct ConductivitySensorService {
@@ -30,15 +27,9 @@ impl ConductivitySensorService {
         let conductivity_sensor = ConductivitySensor::new(sensor.path, sensor.address)
             .chain_err(|| "Could not open I2C device")?;
 
-        // We start our ZMQ context.
-        let context = neuras::utils::create_context();
         // We configure our socket as REP, for accepting requests
         // and providing REsPonses.
-        let responder = neuras::utils::zmq_rep(&context)?;
-        // We bind our socket to REP_URL.
-        let _bind_socket =
-            bind_socket(&responder, rep_url).chain_err(|| "problems binding to socket")?;
-        // Setup our sensor server
+        let responder = create_and_bind_responder(socket.url)?;
         let server = ConductivitySensorServer::new(responder, conductivity_sensor)?;
 
         Ok(ConductivitySensorService { server })
