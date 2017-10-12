@@ -37,8 +37,9 @@ impl<'a> ProxyConfig<'a> {
 mod tests {
     use super::*;
 
+    // SensorServiceConfig for valid use cases
     #[test]
-    fn reads_and_parses_sensor_config_toml() {
+    fn reads_and_parses_sensor_service_config_toml() {
         // Files with correct fields parse
         let config_str = r#"
             pub_url = "ipc://tmp/benita.temp.ipc"
@@ -79,8 +80,9 @@ mod tests {
         );
     }
 
+    // SensorServiceConfig for invalid use cases.
     #[test]
-    fn reads_and_parses_invalid_sensor_config_toml_yielding_err() {
+    fn reads_and_parses_invalid_sensor_service_config_toml_yielding_err() {
         // Files with no known fields yield error
         let config_str = r#""#;
 
@@ -97,6 +99,104 @@ mod tests {
         assert!(config.is_err());
     }
 
+    // SensorConfig for valid use cases
+    #[test]
+    fn reads_and_parses_sensor_config_toml() {
+        // Files with correct fields parse
+        let config_str = r#"
+            path = "/dev/i2c-0"
+            address = 100
+            "#;
+
+        let config = SensorConfig::from_str(config_str).unwrap();
+        assert_eq!(
+            config,
+            SensorConfig {
+                path: "/dev/i2c-0",
+                address: 100,
+            }
+        );
+    }
+
+    // SensorConfig for invalid use cases
+    #[test]
+    fn reads_and_parses_invalid_sensor_config_toml_yielding_err() {
+        // empty toml
+        let config_str = r#""#;
+
+        let config: Result<SensorConfig> = SensorConfig::from_str(config_str);
+        assert!(config.is_err());
+
+        // empty fields
+        let config_str = r#"
+            path =
+            address =
+            "#;
+
+        let config: Result<SensorConfig> = SensorConfig::from_str(config_str);
+        assert!(config.is_err());
+
+        // Address is not a valid `u16`
+        let config_str = r#"
+            path = "/dev/i2c-0"
+            address = 1000000
+            "#;
+
+        let config: Result<SensorConfig> = SensorConfig::from_str(config_str);
+        assert!(config.is_err());
+    }
+
+    // SocketConfig for valid use cases
+    #[test]
+    fn reads_and_parses_socket_config_toml() {
+        // Files with correct fields parse
+        let config_str = r#"
+            url = "ipc://temp.ipc"
+            "#;
+
+        let config = SocketConfig::from_str(config_str).unwrap();
+        assert_eq!(
+            config,
+            SocketConfig {
+                url: "ipc://temp.ipc",
+                socket_connection: SocketConnection::Bind,
+            }
+        );
+
+        let config_str = r#"
+            url = "ipc://temp.ipc"
+            socket_connection = "connect"
+            "#;
+
+        let config = SocketConfig::from_str(config_str).unwrap();
+        assert_eq!(
+            config,
+            SocketConfig {
+                url: "ipc://temp.ipc",
+                socket_connection: SocketConnection::Connect,
+            }
+        );
+    }
+    //
+    // SocketConfig for invalid use cases
+    #[test]
+    fn reads_and_parses_invalid_socket_config_toml_yielding_err() {
+        // Files with no known fields yield error
+        let config_str = r#""#;
+
+        let config: Result<SocketConfig> = SocketConfig::from_str(config_str);
+        assert!(config.is_err());
+
+        // Files with invalid field values yield error
+        let config_str = r#"
+            socket_connection = "bind"
+            "#;
+
+        let config: Result<SocketConfig> = SocketConfig::from_str(config_str);
+        assert!(config.is_err());
+    }
+
+    // ProxyConfig for valid use cases
     #[test]
     fn reads_and_parses_proxy_config_toml() {
         // Files with correct fields parse
@@ -131,6 +231,7 @@ mod tests {
         );
     }
 
+    // ProxyConfig for invalid use cases
     #[test]
     fn reads_and_parses_invalid_proxy_config_toml_yielding_err() {
         // Files with no known fields yield error
