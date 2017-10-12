@@ -1,4 +1,4 @@
-//! Errors.
+//! Error definitions.
 use std::io;
 use neuras;
 use ezo_common;

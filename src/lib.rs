@@ -1,14 +1,15 @@
 //! # benita
 //!
-//! Benita provides a network client to interact with sensors using `i2cdev`.
-//! It is designed for usage on embedded devices with SoC (Systems On Chip)
-//! with Linux, and personal computers in the network.
+//! A collection of sensors and network sockets, deployed as services.
 //!
-//! The included aquatic sensors are:
+//! The main goal is to generate a fast, memory safe, and concurrent environmental metrics
+//! monitor.
 //!
-//! * pH
-//! * Electrical Conductivity
-//! * Temperature
+//! The _current_ included (aquatic) sensors are:
+//!
+//! * pH (made by Atlas Scientific: EZO PH)
+//! * Electrical Conductivity (made by Atlas Scientific: EZO EC)
+//! * Temperature (made by Atlas Scientific: EZO RTD)
 
 #![recursion_limit = "1024"]
 
@@ -30,15 +31,10 @@ extern crate toml;
 // Useful macros.
 mod macros;
 
-/// Command-line utilities and applications.
 pub mod cli;
-/// Configuration utilites.
 pub mod config;
-/// Error definitions.
 pub mod errors;
-/// Network utilities.
 pub mod network;
-/// Sensor utilities.
 pub mod sensors;
-/// Service utilities.
 pub mod services;
+pub mod utilities;

@@ -1,4 +1,4 @@
-//! Network services for sensors.
+//! Configured services for command-line execution.
 pub mod conductivity;
 
 use std::thread;

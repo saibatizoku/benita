@@ -1,4 +1,4 @@
-//! Configure sensor and network settings in `toml`.
+//! Configuration settings for sensors and network sockets, using `toml`.
 //!
 //! `benita` sets up sensors and network configurations using `toml` and `serde`.
 use errors::*;

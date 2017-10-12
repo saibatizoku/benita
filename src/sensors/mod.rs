@@ -1,4 +1,4 @@
-//! A collection of available I2C sensors.
+//! Collection of I2C sensors.
 #[macro_use]
 mod macros;
 pub mod conductivity;

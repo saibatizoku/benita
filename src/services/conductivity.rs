@@ -5,7 +5,7 @@ use config::{SensorConfig, SocketConfig};
 use errors::*;
 use network::conductivity::ConductivitySensorServer;
 use sensors::conductivity::ConductivitySensor;
-use services::atof;
+use utilities::atof;
 
 use clap::ArgMatches;
 
