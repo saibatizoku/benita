@@ -50,19 +50,6 @@ impl<'a> SensorConfig<'a> {
     }
 }
 
-// /// Configuration settings for networked sensors.
-// #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
-// pub struct SensorSocketServiceConfig<'a> {
-//     pub sensor: SensorConfig<'a>,
-//     pub socket: SocketConfig<'a>,
-// }
-// 
-// impl<'a> SensorSocketServiceConfig<'a> {
-//     pub fn from_str(config_str: &str) -> Result<SensorSocketServiceConfig> {
-//         toml::from_str(config_str).chain_err(|| ErrorKind::ConfigParse)
-//     }
-// }
-
 /// Configuration settings for the calibrated sensors service.
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
 pub struct SensorServiceConfig<'a> {
