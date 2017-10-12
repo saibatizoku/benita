@@ -1,6 +1,7 @@
 //! Network services for Conductivity sensors.
 
 use cli::conductivity::ConductivityCommandApp;
+use config::{SensorConfig, SocketConfig};
 use errors::*;
 use network::conductivity::ConductivitySensorServer;
 use sensors::conductivity::ConductivitySensor;
@@ -22,12 +23,11 @@ pub struct ConductivitySensorService {
 impl ConductivitySensorService {
     /// Create a new Conductivity Sensor Service.
     pub fn new(
-        rep_url: &str,
-        i2c_path: &str,
-        i2c_address: u16,
+        socket: SocketConfig,
+        sensor: SensorConfig,
     ) -> Result<ConductivitySensorService> {
         // We initialize our I2C device connection.
-        let sensor = ConductivitySensor::new(&i2c_path, i2c_address)
+        let conductivity_sensor = ConductivitySensor::new(sensor.path, sensor.address)
             .chain_err(|| "Could not open I2C device")?;
 
         // We start our ZMQ context.
@@ -39,7 +39,7 @@ impl ConductivitySensorService {
         let _bind_socket =
             bind_socket(&responder, rep_url).chain_err(|| "problems binding to socket")?;
         // Setup our sensor server
-        let server = ConductivitySensorServer::new(responder, sensor)?;
+        let server = ConductivitySensorServer::new(responder, conductivity_sensor)?;
 
         Ok(ConductivitySensorService { server })
     }

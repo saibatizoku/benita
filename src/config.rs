@@ -1,9 +1,67 @@
 //! Configure sensor and network settings in `toml`.
 //!
 //! `benita` sets up sensors and network configurations using `toml` and `serde`.
-
 use errors::*;
 use toml;
+
+/// Socket connection type. Can be `Bind` or `Connect`.
+#[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+pub enum SocketConnection {
+    #[serde( rename="bind" )]
+    Bind,
+    #[serde( rename="connect" )]
+    Connect,
+}
+
+impl SocketConnection {
+    pub fn from_str(config_str: &str) -> Result<SocketConnection> {
+        toml::from_str(config_str).chain_err(|| ErrorKind::ConfigParse)
+    }
+}
+
+impl Default for SocketConnection {
+    fn default() -> SocketConnection { SocketConnection::Bind }
+}
+
+/// Configuration settings for network sockets.
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
+pub struct SocketConfig<'a> {
+    pub url: &'a str,
+    #[serde(default)]
+    pub socket_connection: SocketConnection,
+}
+
+impl<'a> SocketConfig<'a> {
+    pub fn from_str(config_str: &str) -> Result<SocketConfig> {
+        toml::from_str(config_str).chain_err(|| ErrorKind::ConfigParse)
+    }
+}
+
+/// Configuration settings for I2C sensors.
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
+pub struct SensorConfig<'a> {
+    pub path: &'a str,
+    pub address: u16,
+}
+
+impl<'a> SensorConfig<'a> {
+    pub fn from_str(config_str: &str) -> Result<SensorConfig> {
+        toml::from_str(config_str).chain_err(|| ErrorKind::ConfigParse)
+    }
+}
+
+// /// Configuration settings for networked sensors.
+// #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
+// pub struct SensorSocketServiceConfig<'a> {
+//     pub sensor: SensorConfig<'a>,
+//     pub socket: SocketConfig<'a>,
+// }
+// 
+// impl<'a> SensorSocketServiceConfig<'a> {
+//     pub fn from_str(config_str: &str) -> Result<SensorSocketServiceConfig> {
+//         toml::from_str(config_str).chain_err(|| ErrorKind::ConfigParse)
+//     }
+// }
 
 /// Configuration settings for the calibrated sensors service.
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]

@@ -9,14 +9,13 @@ extern crate benita;
 extern crate clap;
 
 use benita::cli::shared::is_url;
+use benita::config::{SensorConfig, SocketConfig};
 use benita::errors::*;
 use benita::services::conductivity::ConductivitySensorService;
 
 use clap::{App, Arg};
 
-const I2C_BUS_ID: u8 = 1;
-const EZO_SENSOR_ADDR: u16 = 100; // could be specified as 0x64
-
+// Parse the command-line arguments and execute.
 fn parse_cli_arguments() -> Result<()> {
     let matches = App::new("benita-ec-rep")
         .version("0.1.0")
@@ -43,23 +42,24 @@ fn parse_cli_arguments() -> Result<()> {
         )
         .get_matches();
 
-    let mut rep_url = String::new();
+    let mut socket_cfg = SocketConfig::default();
+
     if let Some(c) = matches.value_of("URL") {
-        rep_url = c.to_string();
+        socket_cfg.url = c;
     }
 
-    let mut device_path = format!("/dev/i2c-{}", I2C_BUS_ID);
+    let mut sensor_cfg = SensorConfig::default();
+
     if let Some(c) = matches.value_of("I2C") {
-        device_path = c.to_string();
+        sensor_cfg.path = c;
     }
 
-    let mut address = EZO_SENSOR_ADDR;
     if let Some(c) = matches.value_of("ADDRESS") {
-        address = c.parse().chain_err(|| "Bad Address")?;
+        sensor_cfg.address = c.parse().chain_err(|| "Bad Address")?;
     }
 
     // We initialize our service.
-    let mut service = ConductivitySensorService::new(&rep_url, &device_path, address)
+    let mut service = ConductivitySensorService::new(socket_cfg, sensor_cfg)
         .chain_err(|| "Could not create Conductivity service")?;
 
     {
