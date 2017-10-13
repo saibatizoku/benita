@@ -12,72 +12,31 @@ use clap::ArgMatches;
 use std::thread;
 use std::time::Duration;
 
-/// Conductivity sensor server.
-pub struct ConductivitySensorService {
-    pub server: ConductivitySensorServer,
+// Conductivity sensor server.
+responder_service! {
+    "Conductivity sensor server.",
+    ConductivitySensorService: {
+        ConductivitySensor, ConductivitySensorServer
+    }
 }
 
 impl ConductivitySensorService {
-    /// Create a new Conductivity Sensor Service.
-    pub fn new(
-        socket: SocketConfig,
-        sensor: SensorConfig,
-    ) -> Result<ConductivitySensorService> {
-        // We initialize our I2C device connection.
-        let conductivity_sensor = ConductivitySensor::new(sensor.path, sensor.address)
-            .chain_err(|| "Could not open I2C device")?;
+    // `fn process_request()`
+    responder_service_process_request_functions!(ConductivityCommandApp);
 
-        // We configure our socket as REP, for accepting requests
-        // and providing REsPonses.
-        let responder = create_and_bind_responder(socket.url)?;
-        let server = ConductivitySensorServer::new(responder, conductivity_sensor)?;
-
-        Ok(ConductivitySensorService { server })
-    }
-
-    /// Parse and execute incoming requests.
-    pub fn process_request(&mut self) -> Result<String> {
-        // Receive the incoming request
-        let request = self.server.recv()?;
-        let cmd_args: Vec<&str> = request.as_str().split(" ").collect();
-
-        // Start the command-line interpreter
-        let cli = ConductivityCommandApp::new();
-        let matches = cli.get_matches_from_safe(cmd_args.as_slice())
-            .chain_err(|| ErrorKind::CommandParse)?;
-
-        // Match the request subcommands to the service API.
-        let response = match matches.subcommand() {
-            ("calibration", Some(_m)) => self.process_calibration_request(_m)?,
-            ("compensation", Some(_m)) => self.process_compensation_request(_m)?,
-            ("device", Some(_m)) => self.process_device_request(_m)?,
-            ("find", None) => self.server.set_find_mode()?,
-            ("led", Some(_m)) => self.process_led_request(_m)?,
-            ("output", Some(_m)) => self.process_output_request(_m)?,
-            ("protocol-lock", Some(_m)) => self.process_protocol_lock_request(_m)?,
-            ("read", None) => self.server.get_reading()?,
-            ("sleep", None) => self.server.set_sleep()?,
+    // Run the request and return the [`String`] output.
+    fn run_request(&mut self, matched: &ArgMatches) -> Result<String> {
+        match matched.subcommand() {
+            ("calibration", Some(_m)) => self.process_calibration_request(_m),
+            ("compensation", Some(_m)) => self.process_compensation_request(_m),
+            ("device", Some(_m)) => self.process_device_request(_m),
+            ("find", None) => self.server.set_find_mode(),
+            ("led", Some(_m)) => self.process_led_request(_m),
+            ("output", Some(_m)) => self.process_output_request(_m),
+            ("protocol-lock", Some(_m)) => self.process_protocol_lock_request(_m),
+            ("read", None) => self.server.get_reading(),
+            ("sleep", None) => self.server.set_sleep(),
             _ => return Err(ErrorKind::CommandParse.into()),
-        };
-
-        // Return the response string.
-        Ok(response)
-    }
-
-    // Process device request commands.
-    fn process_device_request(&mut self, matches: &ArgMatches) -> Result<String> {
-        match matches.subcommand() {
-            ("address", Some(_m)) => {
-                let val = match _m.value_of("ADDRESS") {
-                    Some(_val) => _val.parse::<u16>().chain_err(|| "not a number")?,
-                    _ => unreachable!(),
-                };
-                self.server.set_device_address(val)
-            }
-            ("info", None) => self.server.get_device_info(),
-            ("factory", None) => self.server.set_factory_reset(),
-            ("status", None) => self.server.get_device_status(),
-            _ => unreachable!(),
         }
     }
 
@@ -127,26 +86,6 @@ impl ConductivitySensorService {
         }
     }
 
-    // Process LED request commands.
-    fn process_led_request(&mut self, matches: &ArgMatches) -> Result<String> {
-        match matches.subcommand() {
-            ("off", None) => self.server.set_led_off(),
-            ("on", None) => self.server.set_led_on(),
-            ("status", None) => self.server.get_led_status(),
-            _ => unreachable!(),
-        }
-    }
-
-    // Process protocol-lock request commands.
-    fn process_protocol_lock_request(&mut self, matches: &ArgMatches) -> Result<String> {
-        match matches.subcommand() {
-            ("off", None) => self.server.set_protocol_lock_off(),
-            ("on", None) => self.server.set_protocol_lock_on(),
-            ("status", None) => self.server.get_protocol_lock_status(),
-            _ => unreachable!(),
-        }
-    }
-
     // Process output parameters request commands.
     fn process_output_request(&mut self, matches: &ArgMatches) -> Result<String> {
         match matches.subcommand() {
@@ -172,24 +111,6 @@ impl ConductivitySensorService {
                 _ => unreachable!(),
             },
             _ => unreachable!(),
-        }
-    }
-
-    /// Listen for incoming command requests.
-    pub fn listen(&mut self) -> Result<()> {
-        loop {
-            {
-                // Parse and process the command.
-                let command_response: String = match self.process_request() {
-                    Ok(response) => response,
-                    _ => "error".to_string(),
-                };
-                // Send response to the client.
-                let _respond = self.server.send(command_response.as_bytes())?;
-            }
-
-            // No work left, so we sleep.
-            thread::sleep(Duration::from_millis(1));
         }
     }
 }
