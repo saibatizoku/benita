@@ -23,7 +23,7 @@ impl TemperatureCalibrationCommand {
                     .about("Set the calibration point command.")
                     .settings(&[AppSettings::DisableHelpSubcommand])
                     .arg(
-                        Arg::with_name("TEMP")
+                        Arg::with_name("CAL")
                             .help("Numeric value up to 3 decimals.")
                             .takes_value(true)
                             .validator(is_float)
