@@ -22,7 +22,6 @@ responder_service! {
 }
 
 impl PhSensorService {
-
     responder_service_process_request_functions!(PhCommandApp);
 
     fn run_request(&mut self, matched: &ArgMatches) -> Result<String> {

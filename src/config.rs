@@ -7,10 +7,8 @@ use toml;
 /// Socket connection type. Can be `Bind` or `Connect`.
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
 pub enum SocketConnection {
-    #[serde( rename="bind" )]
-    Bind,
-    #[serde( rename="connect" )]
-    Connect,
+    #[serde(rename = "bind")] Bind,
+    #[serde(rename = "connect")] Connect,
 }
 
 impl SocketConnection {
@@ -20,15 +18,16 @@ impl SocketConnection {
 }
 
 impl Default for SocketConnection {
-    fn default() -> SocketConnection { SocketConnection::Bind }
+    fn default() -> SocketConnection {
+        SocketConnection::Bind
+    }
 }
 
 /// Configuration settings for network sockets.
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
 pub struct SocketConfig<'a> {
     pub url: &'a str,
-    #[serde(default)]
-    pub socket_connection: SocketConnection,
+    #[serde(default)] pub socket_connection: SocketConnection,
 }
 
 impl<'a> SocketConfig<'a> {

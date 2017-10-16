@@ -18,7 +18,6 @@ impl ConductivitySensorServer {
 }
 
 impl ConductivitySensorServer {
-
     sensor_socket_commands!(calibration_common);
 
     /// set dry calibration settings.

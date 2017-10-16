@@ -22,7 +22,6 @@ responder_service! {
 }
 
 impl TemperatureSensorService {
-
     responder_service_process_request_functions!(TemperatureCommandApp);
 
     fn run_request(&mut self, matched: &ArgMatches) -> Result<String> {

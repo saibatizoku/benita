@@ -59,8 +59,8 @@ fn parse_cli_arguments() -> Result<()> {
     }
 
     // We initialize our service.
-    let mut service = PhSensorService::new(socket_cfg, sensor_cfg)
-        .chain_err(|| "Could not create pH service")?;
+    let mut service =
+        PhSensorService::new(socket_cfg, sensor_cfg).chain_err(|| "Could not create pH service")?;
 
     {
         // This is the main loop, it will run for as long as the program runs.

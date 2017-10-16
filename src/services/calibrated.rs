@@ -150,4 +150,3 @@ fn parse_calibration_value_msg(
 
     Ok((uuid, dt, temperature, scale))
 }
-
