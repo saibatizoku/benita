@@ -1,11 +1,13 @@
 //! Conductivity Subcommands
-use cli::shared::{ClearSubcommand, OffSubcommand, OnSubcommand, StatusSubcommand};
+use cli::shared::{ClearSubcommand, GetSubcommand, OffSubcommand, OnSubcommand, SetSubcommand,
+                  StatusSubcommand};
 use cli::shared::{is_float, DeviceCommand, FindCommand, LedCommand, ProtocolLockCommand,
                   ReadCommand, SleepCommand};
 
 use clap::{App, AppSettings, Arg, SubCommand};
 
-/// Parses the command for temperature compensation of Conductivity readings.
+
+/// Top-level `conductivity` command.
 pub struct ConductivityCompensationCommand;
 
 impl ConductivityCompensationCommand {
@@ -16,23 +18,8 @@ impl ConductivityCompensationCommand {
                 AppSettings::DisableHelpSubcommand,
                 AppSettings::SubcommandRequired,
             ])
-            .subcommand(
-                SubCommand::with_name("set")
-                    .about("Set compensation temperature value.")
-                    .settings(&[AppSettings::DisableHelpSubcommand])
-                    .arg(
-                        Arg::with_name("TEMP")
-                            .help("Numeric value up to 3 decimals.")
-                            .takes_value(true)
-                            .validator(is_float)
-                            .required(true),
-                    ),
-            )
-            .subcommand(
-                SubCommand::with_name("get")
-                    .about("Sets all parameters off.")
-                    .settings(&[AppSettings::DisableHelpSubcommand]),
-            )
+            .subcommand(SetSubcommand::new())
+            .subcommand(GetSubcommand::new())
     }
 }
 

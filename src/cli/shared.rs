@@ -1,9 +1,14 @@
 //! Shared subcommands and utility functions.
-use clap::{App, AppSettings, Arg, SubCommand};
+use std;
+
+use errors::*;
+use utilities::atof;
+
+use clap::{App, AppSettings, Arg, ArgMatches, SubCommand};
 use neuras::url::Url;
 
 /// Validator function for URLs.
-pub fn is_url(v: String) -> Result<(), String> {
+pub fn is_url(v: String) -> std::result::Result<(), String> {
     match Url::parse(&v) {
         Ok(_) => Ok(()),
         _ => Err("Invalid URL".to_string()),
@@ -11,10 +16,67 @@ pub fn is_url(v: String) -> Result<(), String> {
 }
 
 /// Validator function for floating point numbers.
-pub fn is_float(v: String) -> Result<(), String> {
+pub fn is_float(v: String) -> std::result::Result<(), String> {
     match v.parse::<f64>() {
         Ok(_) => Ok(()),
         _ => Err("The value is not numeric.".to_string()),
+    }
+}
+
+/// `compensation set <TEMP>` command
+pub struct SetSubcommand(pub f64);
+
+impl SetSubcommand {
+    /// Command-line matcher for setting temperature compensation of readings.
+    pub fn new<'a, 'b>() -> App<'a, 'b> {
+        SubCommand::with_name("set")
+            .about("Set compensation temperature value.")
+            .settings(&[AppSettings::DisableHelpSubcommand])
+            .arg(
+                Arg::with_name("TEMP")
+                    .help("Numeric value up to 3 decimals.")
+                    .takes_value(true)
+                    .validator(is_float)
+                    .required(true),
+            )
+    }
+
+    /// Parses the `ArgMatches` and returns a `SetSubcommand` instance.
+    pub fn parse_args(cli: &mut App, args: &[&str]) -> Result<SetSubcommand> {
+        let matches = cli.get_matches_from_safe_borrow(args)
+            .chain_err(|| "no match")?;
+        let temp = match matches.value_of("TEMP") {
+            Some(t) => atof(t)?,
+            _ => unreachable!(),
+        };
+        Ok(SetSubcommand(temp))
+    }
+
+    /// Returns the command as a `String`.
+    pub fn to_string(&self) -> String {
+        format!("set {:.*}", 3, self.0)
+    }
+}
+
+/// `compensation get` command
+pub struct GetSubcommand;
+
+impl GetSubcommand {
+    /// Command-line matcher for setting temperature compensation of readings.
+    pub fn new<'a, 'b>() -> App<'a, 'b> {
+        SubCommand::with_name("get")
+            .about("Set compensation temperature value.")
+            .settings(&[AppSettings::DisableHelpSubcommand])
+    }
+
+    /// Parses the `ArgMatches` and returns a `GetSubcommand` instance.
+    pub fn parse_args(_matches: &ArgMatches) -> Result<GetSubcommand> {
+        Ok(GetSubcommand)
+    }
+
+    /// Returns the command as a `&str`.
+    pub fn to_string(&self) -> String {
+        "get".to_string()
     }
 }
 
