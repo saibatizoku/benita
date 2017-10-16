@@ -180,7 +180,7 @@ macro_rules! sensor_commands {
     ( temperature_compensation ) => {
         /// Set the compensation temperature.
         pub fn set_compensation_temperature(&mut self, value: f64) -> Result<()> {
-            let _cmd = TemperatureCompensation(value)
+            let _cmd = CompensationSet(value)
                 .run(&mut self.i2cdev)
                 .chain_err(|| ErrorKind::SensorTrouble)?;
             Ok(())
@@ -188,11 +188,10 @@ macro_rules! sensor_commands {
 
         /// Get the current compensated temperature value.
         pub fn get_compensated_temperature_value(&mut self) -> Result<CompensationValue> {
-            let value = CompensatedTemperatureValue
+            let value = CompensationGet
                 .run(&mut self.i2cdev)
                 .chain_err(|| ErrorKind::SensorTrouble)?;
             Ok(value)
         }
     };
 }
-

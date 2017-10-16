@@ -2,12 +2,29 @@
 
 pub mod commands {
     //! Commands from EZO EC chipset.
-    pub use ezo_ec::command::*;
+    pub use ezo_ec::command::Command;
+    pub use ezo_ec::command::Baud;
+    pub use ezo_ec::command::{CalibrationClear, CalibrationDry, CalibrationHigh, CalibrationLow,
+                              CalibrationOnePoint, CalibrationState};
+    pub use ezo_ec::command::{CompensatedTemperatureValue as CompensationGet,
+                              TemperatureCompensation as CompensationSet};
+    pub use ezo_ec::command::{DeviceAddress, DeviceInformation, Factory, Find, Reading, Sleep,
+                              Status};
+    pub use ezo_ec::command::{Export, ExportInfo, Import};
+    pub use ezo_ec::command::{LedOff, LedOn, LedState};
+    pub use ezo_ec::command::{OutputDisableConductivity, OutputDisableSalinity,
+                              OutputDisableSpecificGravity, OutputDisableTds,
+                              OutputEnableConductivity, OutputEnableSalinity,
+                              OutputEnableSpecificGravity, OutputEnableTds, OutputState};
+    pub use ezo_ec::command::{ProbeTypeOne, ProbeTypePointOne, ProbeTypeState, ProbeTypeTen};
+    pub use ezo_ec::command::{ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState};
 }
 
 pub mod responses {
     //! Responses from EZO EC chipset.
-    pub use ezo_ec::response::*;
+    pub use ezo_ec::response::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus,
+                               Exported, ExportedInfo, LedStatus, OutputStringStatus,
+                               ProbeReading, ProbeType, ProtocolLockStatus};
 }
 
 use errors::*;
@@ -15,19 +32,9 @@ use errors::*;
 use ezo_common::BpsRate;
 use i2cdev::linux::LinuxI2CDevice;
 
-use self::commands::{Baud, CalibrationClear, CalibrationDry, CalibrationHigh, CalibrationLow,
-                     CalibrationOnePoint, CalibrationState, Command, CompensatedTemperatureValue,
-                     DeviceAddress, DeviceInformation, Export, ExportInfo, Factory, Find, Import,
-                     LedOff, LedOn, LedState, OutputDisableConductivity, OutputDisableSalinity,
-                     OutputDisableSpecificGravity, OutputDisableTds, OutputEnableConductivity,
-                     OutputEnableSalinity, OutputEnableSpecificGravity, OutputEnableTds,
-                     OutputState, ProbeTypeOne, ProbeTypePointOne, ProbeTypeState, ProbeTypeTen,
-                     ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState, Reading, Sleep,
-                     Status, TemperatureCompensation};
+use self::commands::*;
 
-use self::responses::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus, Exported,
-                      ExportedInfo, LedStatus, OutputStringStatus, ProbeReading, ProbeType,
-                      ProtocolLockStatus};
+use self::responses::*;
 
 pub type SensorReading = ProbeReading;
 

@@ -2,12 +2,24 @@
 
 pub mod commands {
     //! Commands from EZO PH chipset.
-    pub use ezo_ph::command::*;
+    pub use ezo_ph::command::Baud;
+    pub use ezo_ph::command::Command;
+    pub use ezo_ph::command::{CalibrationClear, CalibrationHigh, CalibrationLow, CalibrationMid,
+                              CalibrationState};
+    pub use ezo_ph::command::{CompensatedTemperatureValue as CompensationGet, DeviceAddress,
+                              TemperatureCompensation as CompensationSet};
+    pub use ezo_ph::command::{DeviceInformation, Factory, Find, Reading, Sleep, Status};
+    pub use ezo_ph::command::{Export, ExportInfo, Import};
+    pub use ezo_ph::command::{LedOff, LedOn, LedState};
+    pub use ezo_ph::command::{ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState};
+    pub use ezo_ph::command::Slope;
 }
 
 pub mod responses {
     //! Responses from EZO PH chipset.
-    pub use ezo_ph::response::*;
+    pub use ezo_ph::response::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus,
+                               Exported, ExportedInfo, LedStatus, ProbeSlope, ProtocolLockStatus,
+                               SensorReading};
 }
 
 use errors::*;
@@ -15,14 +27,9 @@ use errors::*;
 use ezo_common::BpsRate;
 use i2cdev::linux::LinuxI2CDevice;
 
-use self::commands::{Baud, CalibrationClear, CalibrationHigh, CalibrationLow, CalibrationMid,
-                     CalibrationState, Command, CompensatedTemperatureValue, DeviceAddress,
-                     DeviceInformation, Export, ExportInfo, Factory, Find, Import, LedOff, LedOn,
-                     LedState, ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState,
-                     Reading, Sleep, Slope, Status, TemperatureCompensation};
+use self::commands::*;
 
-use self::responses::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus, Exported,
-                      ExportedInfo, LedStatus, ProbeSlope, ProtocolLockStatus, SensorReading};
+use self::responses::*;
 
 // Use macro to define `PhSensor`
 sensor_i2cdev!(PhSensor, "EZO-EC Submersible pH Sensor.");
