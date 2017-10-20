@@ -27,6 +27,9 @@ pub mod responses {
                                ProbeReading, ProbeType, ProtocolLockStatus};
 }
 
+use std::fmt;
+
+use config::SensorConfig;
 use errors::*;
 
 use ezo_common::BpsRate;

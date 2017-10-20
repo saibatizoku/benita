@@ -8,6 +8,8 @@
 extern crate benita;
 extern crate clap;
 
+use std::path::PathBuf;
+
 use benita::cli::shared::is_url;
 use benita::config::{SensorConfig, SocketConfig};
 use benita::errors::*;
@@ -51,7 +53,7 @@ fn parse_cli_arguments() -> Result<()> {
     let mut sensor_cfg = SensorConfig::default();
 
     if let Some(c) = matches.value_of("I2C") {
-        sensor_cfg.path = c;
+        sensor_cfg.path = PathBuf::from(c);
     }
 
     if let Some(c) = matches.value_of("ADDRESS") {

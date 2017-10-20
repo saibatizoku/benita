@@ -22,6 +22,9 @@ pub mod responses {
                                SensorReading};
 }
 
+use std::fmt;
+
+use config::SensorConfig;
 use errors::*;
 
 use ezo_common::BpsRate;

@@ -1,6 +1,8 @@
 //! Configuration settings for sensors and network sockets, using `toml`.
 //!
 //! `benita` sets up sensors and network configurations using `toml` and `serde`.
+use std::path::PathBuf;
+
 use errors::*;
 use toml;
 
@@ -38,12 +40,17 @@ impl<'a> SocketConfig<'a> {
 
 /// Configuration settings for I2C sensors.
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
-pub struct SensorConfig<'a> {
-    pub path: &'a str,
+pub struct SensorConfig {
+    pub path: PathBuf,
     pub address: u16,
 }
 
-impl<'a> SensorConfig<'a> {
+impl SensorConfig {
+    pub fn new(path_str: &str, address: u16) -> SensorConfig {
+        let path = PathBuf::from(path_str);
+        SensorConfig { path, address }
+    }
+
     pub fn from_str(config_str: &str) -> Result<SensorConfig> {
         toml::from_str(config_str).chain_err(|| ErrorKind::ConfigParse)
     }
@@ -156,7 +163,7 @@ mod tests {
         assert_eq!(
             config,
             SensorConfig {
-                path: "/dev/i2c-0",
+                path: PathBuf::from("/dev/i2c-0"),
                 address: 100,
             }
         );

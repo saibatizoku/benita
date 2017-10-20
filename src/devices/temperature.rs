@@ -22,6 +22,9 @@ pub mod responses {
                                 ProtocolLockStatus, SensorReading, Temperature, TemperatureScale};
 }
 
+use std::fmt;
+
+use config::SensorConfig;
 use errors::*;
 use i2cdev::linux::LinuxI2CDevice;
 use ezo_common::BpsRate;

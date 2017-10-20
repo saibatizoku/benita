@@ -14,7 +14,11 @@ macro_rules! responder_service {
                   sensor_cfg: SensorConfig,
                   ) -> Result<$name> {
                       // We initialize our I2C device connection.
-                      let sensor = $sensor::new(sensor_cfg.path, sensor_cfg.address)
+                      let sensor_path = match sensor_cfg.path.to_str() {
+                          Some(path) => path,
+                          _ => bail!("Invalid device path"),
+                      };
+                      let sensor = $sensor::new(sensor_path, sensor_cfg.address)
                           .chain_err(|| "Could not open I2C device")?;
 
                       // We configure our socket as REP, for accepting requests
