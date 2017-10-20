@@ -1,34 +1,65 @@
 benita
 ======
 
-Utilería de software, escrita en Rust, para la gestión de cultivos acuáticos de pequeña escala.
+# Talk directly to your sensor, via `i2cdev`.
 
-La compilación para Raspberry Pi 3 (arquitectura ARM 64-bits), se realiza con instalando [con rustup](https://www.rust-lang.org/es-ES/install.html) normalmente desde el dispositivo. También es posible usar [rust-on-raspberry-docker](https://github.com/Ragnaroek/rust-on-raspberry-docker), siguiendo los pasos ahí establecidos desde otro equipo para compilación cruzada.
+Run `benita` on your `Raspberry Pi` (currently tested on RPi 3), hookup your sensors to the I2C bus, and start coding!
 
-Para el funcionamiento correcto del software, es necesario que I2C esté habilitado en el dispositivo que lo ejecutará.
+## Quickstart
 
-## Uso
+Initialize pre-configured sensors, just say which `i2cdev` path, and which `I2C Address` to call on.
 
-Ésta versión requiere compilación con _nightly_, puesto que hace uso de `unstable features` de Rust.
+At the moment, _conductivity_, _temperature_, and _ph_ sensors are available.
 
-La carpeta de ejemplos ilustra cómo utilizar esta librería.
+The simplest way to start talking to a sensor is to use the `new(path, address)` associated function on the device.
 
-### ADVERTENCIA
+### A Simple pH sensor
 
-> **benita** está aún en desarrollo, el API seguramente variará hasta que esta advertencia desaparezca.
+```norun
+extern crate benita;
+
+use benita::config::SensorConfig;
+use benita::errors::*;
+use benita::sensors::ph::PhSensor;
+
+fn main() {
+    // Create a sensor directly with the i2cdev path, and the integer value
+    // of the I2C address for our sensor. It must be mutable
+    // to write to the I2C bus.
+    let mut ph_sensor = PhSensor::new("/dev/i2cdev-0", 100)?;
+
+    // use the sensor to issue a command request and display the response.
+    let response = ph_sensor.get_device_info()?;
+    println!("Sensor Info: {}", response);
+
+    // custom code goes here...
+}
+```
+
+### pH Sensor with typed configuration
+```norun
+extern crate benita;
+
+use benita::config::SensorConfig;
+use benita::errors::*;
+use benita::sensors::conductivity::ConductivitySensor;
 
 
-## Arquitectura del hardware
+fn main() {
 
-*   `Single-board computer (SBC)` - Raspberry Pi 3
-*   Sensores sumergibles - Chips EZO (Atlas Scientific)
-    *   `I2C address: 0x63` - pH
-    *   `I2C address: 0x64` - Conductividad eléctrica
-    *   `I2C address: 0x65` - Temperatura
-*   Sensores atmosféricos (Raspberry Pi Sense Hat )
-    * `I2C address: 0x5c` - Barómetro
-        1. Barómetro
-        2. Temperatura
-    * `I2C address: 0x5f` - Humedad relativa
-        1. Humedad relativa
-        2. Temperatura
+    // Same goes for...
+    // First, create a sensor configuration with the i2cdev path, and the
+    // integer value of the I2C address for our sensor.
+    let ph_config = PhSensor::new("/dev/i2cdev-0", 99)?;
+
+    // Second, we can start working with our sensor device. It must be mutable
+    // to write to the I2C bus.
+    let mut ph_sensor = PhSensor::from_config(ph_config)?;
+
+    // use the sensor to issue a command request and display the response.
+    let response = ph_sensor.get_reading()?;
+    println!("Current pH: {}", response);
+
+    // custom code goes here...
+}
+```
