@@ -17,10 +17,11 @@ use benita::services::conductivity::ConductivitySensorService;
 
 use clap::{App, Arg};
 
-// Parse the command-line arguments and execute.
-fn parse_cli_arguments() -> Result<()> {
-    let matches = App::new("benita-ec-rep")
-        .version("0.1.0")
+// Main code. Parse the command-line arguments and execute.
+fn run_main_code() -> Result<()> {
+    // Match the command-line arguments from std::io and start the service.
+    let matches = App::new("conductivity-command-server")
+        .version("0.2.0")
         .author("Joaquin R. <globojorro@gmail.com>")
         .about("Benita IoT. A response service for electrical conductivity data.")
         .arg(
@@ -44,12 +45,15 @@ fn parse_cli_arguments() -> Result<()> {
         )
         .get_matches();
 
+    // Blank socket configuration.
     let mut socket_cfg = SocketConfig::default();
 
+    // next, add it the `url` from the command-line
     if let Some(c) = matches.value_of("URL") {
         socket_cfg.url = c;
     }
 
+    // Blank socket configuration.
     let mut sensor_cfg = SensorConfig::default();
 
     // next, add it the `I2CDEV` path from the command-line
@@ -57,16 +61,18 @@ fn parse_cli_arguments() -> Result<()> {
         sensor_cfg.path = PathBuf::from(c);
     }
 
+    // next, add it the `I2C ADDRESS` from the command-line
     if let Some(c) = matches.value_of("ADDRESS") {
         sensor_cfg.address = c.parse().chain_err(|| "Bad Address")?;
     }
 
-    // We initialize our service.
+    // We initialize the conductivity sensor service.
     let mut service = ConductivitySensorService::new(socket_cfg, sensor_cfg)
         .chain_err(|| "Could not create Conductivity service")?;
 
+    // This is the main loop, it will run for as long as the program runs.
     {
-        // This is the main loop, it will run for as long as the program runs.
+        // Start listening on the specified `URL` for incoming requests.
         let _listen = service
             .listen()
             .chain_err(|| "Conductivity service stopped listening")?;
@@ -77,7 +83,8 @@ fn parse_cli_arguments() -> Result<()> {
 }
 
 fn main() {
-    if let Err(ref e) = parse_cli_arguments() {
+    // Standard setup to catch any errors.
+    if let Err(ref e) = run_main_code() {
         println!("error: {}", e);
 
         for e in e.iter().skip(1) {
