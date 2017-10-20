@@ -20,7 +20,7 @@ extern crate benita;
 
 use benita::config::SensorConfig;
 use benita::errors::*;
-use benita::sensors::ph::PhSensor;
+use benita::devices::ph::PhSensor;
 
 fn main() {
     // Create a sensor directly with the i2cdev path, and the integer value
@@ -42,7 +42,7 @@ extern crate benita;
 
 use benita::config::SensorConfig;
 use benita::errors::*;
-use benita::sensors::conductivity::ConductivitySensor;
+use benita::devices::ph::PhSensor;
 
 
 fn main() {

@@ -4,7 +4,7 @@ use cli::conductivity::ConductivityCommandApp;
 use config::{SensorConfig, SocketConfig};
 use errors::*;
 use network::conductivity::ConductivitySensorServer;
-use sensors::conductivity::ConductivitySensor;
+use devices::conductivity::ConductivitySensor;
 use utilities::{atof, create_and_bind_responder};
 
 use clap::ArgMatches;

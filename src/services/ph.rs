@@ -4,7 +4,7 @@ use cli::ph::PhCommandApp;
 use config::{SensorConfig, SocketConfig};
 use errors::*;
 use network::ph::PhSensorServer;
-use sensors::ph::PhSensor;
+use devices::ph::PhSensor;
 use utilities::{atof, create_and_bind_responder};
 
 use clap::ArgMatches;

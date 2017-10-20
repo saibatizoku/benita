@@ -4,7 +4,7 @@ use cli::temperature::TemperatureCommandApp;
 use config::{SensorConfig, SocketConfig};
 use errors::*;
 use network::temperature::TemperatureSensorServer;
-use sensors::temperature::TemperatureSensor;
+use devices::temperature::TemperatureSensor;
 use utilities::{atof, create_and_bind_responder};
 
 use clap::ArgMatches;

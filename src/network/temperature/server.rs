@@ -1,6 +1,6 @@
 //! Server for Temperature sensing.
 use errors::*;
-use sensors::temperature::TemperatureSensor;
+use devices::temperature::TemperatureSensor;
 
 use neuras;
 

@@ -33,8 +33,8 @@ mod macros;
 
 pub mod cli;
 pub mod config;
+pub mod devices;
 pub mod errors;
 pub mod network;
-pub mod sensors;
 pub mod services;
 pub mod utilities;

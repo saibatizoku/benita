@@ -1,6 +1,6 @@
 //! Server for pH sensing.
 use errors::*;
-use sensors::ph::PhSensor;
+use devices::ph::PhSensor;
 
 use neuras;
 
