@@ -3,6 +3,7 @@
 use cli::conductivity::ConductivityCommandApp;
 use config::{SensorConfig, SocketConfig};
 use errors::*;
+use network::Endpoint;
 use network::conductivity::ConductivitySensorServer;
 use devices::conductivity::ConductivitySensor;
 use utilities::{atof, create_and_bind_responder};

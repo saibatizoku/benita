@@ -3,6 +3,7 @@
 use cli::temperature::TemperatureCommandApp;
 use config::{SensorConfig, SocketConfig};
 use errors::*;
+use network::Endpoint;
 use network::temperature::TemperatureSensorServer;
 use devices::temperature::TemperatureSensor;
 use utilities::{atof, create_and_bind_responder};

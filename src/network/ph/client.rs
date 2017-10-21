@@ -1,5 +1,6 @@
 //! Client for pH sensing.
 use errors::*;
+use network::Endpoint;
 
 use neuras;
 

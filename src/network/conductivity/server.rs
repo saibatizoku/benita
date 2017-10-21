@@ -1,6 +1,7 @@
 //! Server for Conductivity sensing.
 use errors::*;
 use devices::conductivity::ConductivitySensor;
+use network::Endpoint;
 
 use neuras;
 

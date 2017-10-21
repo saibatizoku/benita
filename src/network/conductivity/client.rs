@@ -1,5 +1,6 @@
 //! Client for Conductivity sensing.
 use errors::*;
+use network::Endpoint;
 
 // Needed by the device_socket! macro.
 use neuras;

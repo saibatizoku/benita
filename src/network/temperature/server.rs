@@ -1,6 +1,7 @@
 //! Server for Temperature sensing.
 use errors::*;
 use devices::temperature::TemperatureSensor;
+use network::Endpoint;
 
 use neuras;
 

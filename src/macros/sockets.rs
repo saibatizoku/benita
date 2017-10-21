@@ -104,6 +104,7 @@ macro_rules! socket_command {
 #[cfg(test)]
 mod tests {
     use errors::*;
+    use network::Endpoint;
 
     use neuras;
     use neuras::utils::{create_context, zmq_req};

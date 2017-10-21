@@ -3,6 +3,7 @@
 use cli::ph::PhCommandApp;
 use config::{SensorConfig, SocketConfig};
 use errors::*;
+use network::Endpoint;
 use network::ph::PhSensorServer;
 use devices::ph::PhSensor;
 use utilities::{atof, create_and_bind_responder};
