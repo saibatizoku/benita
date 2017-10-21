@@ -1,7 +1,39 @@
-//! Common network command macros
+//! Common network items.
+use std;
+use errors::*;
 
-/// Common network commands
-#[macro_export]
+/// A response sent over a socket
+pub trait Endpoint where Self: std::marker::Sized {
+    /// bind the endpoint to the given `url`. Listens for incoming messages.
+    fn bind(&self, url: &str) -> Result<()>;
+    /// connect the endpoint to the given `url`. Sends outgoing messages.
+    fn connect(&self, url: &str) -> Result<()>;
+    /// Send a slice of bytes to the endpoint.
+    fn send(&self, msg: &[u8]) -> Result<()>;
+    /// Receive a `String` from the endpoint.
+    fn recv(&self) -> Result<String>;
+}
+
+/// A request sent over a socket
+pub trait SocketRequest where Self: std::marker::Sized {
+    /// The expected response type.
+    type Response: SocketResponse;
+
+    /// Create a new instance from `&str`.
+    fn from_str(req_str: &str) -> Result<Self>;
+    /// Return the instance as a `String`.
+    fn to_string(&self) -> String;
+    /// Execute the request over the socket, and return the corresponding response.
+    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<Self::Response>;
+}
+
+/// A response sent over a socket
+pub trait SocketResponse where Self: std::marker::Sized {
+    /// Create a new instance from `&str`.
+    fn parse_response(rep_str: &str) -> Result<Self>;
+}
+
+// Common network commands
 macro_rules! sensor_socket_commands {
     ( calibration_common ) => {
         /// clear calibration settings.
