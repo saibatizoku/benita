@@ -7,7 +7,7 @@ use neuras;
 
 // Define the network server socket for directly interacting with the
 // pH sensor via I2C.
-network_socket! {
+device_socket! {
     PhSensorServer,
     PhSensor,
     "Socket that responds to pH sensor commands."

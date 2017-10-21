@@ -42,7 +42,7 @@ use self::responses::*;
 pub type SensorReading = ProbeReading;
 
 // Use macro to define `ConductivitySensor`
-sensor_i2cdev!(
+device_i2cdev!(
     ConductivitySensor,
     "EZO-EC Submersible Electrical Conductivity Sensor."
 );

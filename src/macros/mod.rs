@@ -1,7 +1,7 @@
 //! Exported macros.
 //!
-//! *   sensor_i2cdev!
-//! *   network_socket!
+//! *   device_i2cdev!
+//! *   device_socket!
 #[macro_use]
 mod devices;
 #[macro_use]

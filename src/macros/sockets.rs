@@ -1,6 +1,6 @@
-/// Create and define a network socket compatible with the `benita` network.
+/// Create and define a device network socket compatible with the `benita` network.
 #[macro_export]
-macro_rules! network_socket {
+macro_rules! device_socket {
     // Name identifier and documentation for the new network socket struct.
     ($name:ident ,
      $doc:tt) => {
@@ -16,7 +16,7 @@ macro_rules! network_socket {
             }
         }
 
-        network_socket_impl!($name);
+        endpoint_trait_impl!($name);
     };
     // Simple sensor socket.
     ($name:ident ,
@@ -35,36 +35,36 @@ macro_rules! network_socket {
             }
         }
 
-        network_socket_impl!($name);
+        endpoint_trait_impl!($name);
     };
 }
 
-macro_rules! network_socket_impl {
+macro_rules! endpoint_trait_impl {
     ($name:ident) => {
-        impl $name {
+        impl Endpoint for $name {
             /// Binds the socket to the given URL.
-            pub fn bind(&self, url: &str) -> Result<()> {
+            fn bind(&self, url: &str) -> Result<()> {
                 let _bind = neuras::utils::bind_socket(&self.socket, url)
                     .chain_err(|| ErrorKind::SocketBind)?;
                 Ok(())
             }
 
             /// Connects the socket to the given URL.
-            pub fn connect(&self, url: &str) -> Result<()> {
+            fn connect(&self, url: &str) -> Result<()> {
                 let _connect = neuras::utils::connect_socket(&self.socket, url)
                     .chain_err(|| ErrorKind::SocketConnect)?;
                 Ok(())
             }
 
             /// Sends a message over the network socket.
-            pub fn send(&self, msg: &[u8]) -> Result<()> {
+            fn send(&self, msg: &[u8]) -> Result<()> {
                 let _send = self.socket.send(msg, 0)
                     .chain_err(|| ErrorKind::SocketSend)?;
                 Ok(())
             }
 
             /// Receives a message from the network socket.
-            pub fn recv(&self) -> Result<String> {
+            fn recv(&self) -> Result<String> {
                 let received_result = self.socket.recv_string(0)
                     .chain_err(|| ErrorKind::SocketReceive)?;
                 // We match against the resulting `Resulṭ<String, Vec<u8>>`
@@ -78,8 +78,7 @@ macro_rules! network_socket_impl {
     };
 }
 
-/// Define a command sent over a network socket.
-#[macro_export]
+// Define a command sent over a network socket.
 macro_rules! socket_command {
     // Simple socket to send commands over.
     ( $name:ident , $trait:ty ,
@@ -94,7 +93,7 @@ macro_rules! socket_command {
             type Socket = $socket;
             type Response = $response;
 
-            fn run(&self, socket: &mut $socket) -> Result<$response> {
+            fn run(&self, socket: &$socket) -> Result<$response> {
                 let $resp = socket;
                 $runfn
             }
@@ -111,8 +110,8 @@ mod tests {
 
     #[allow(unused)]
     #[test]
-    fn macro_creates_a_network_socket() {
-        network_socket!(NewSocket, "NewSocket docs.");
+    fn macro_creates_a_device_network_socket() {
+        device_socket!(NewSocket, "NewSocket docs.");
 
         let context = create_context();
         let requester = zmq_req(&context).unwrap();

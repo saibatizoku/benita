@@ -7,7 +7,7 @@ use neuras;
 
 // Define the network server socket for directly interacting with the
 // Conductivity sensor via I2C.
-network_socket! {
+device_socket! {
     ConductivitySensorServer,
     ConductivitySensor,
     "Socket that responds to Conductivity sensor commands."

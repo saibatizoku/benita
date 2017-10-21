@@ -1,12 +1,12 @@
 //! Client for Conductivity sensing.
 use errors::*;
 
-// Needed by the network_socket! macro.
+// Needed by the device_socket! macro.
 use neuras;
 
 // Define the network client socket for sending requests to the
 // `ConductivitySensorServer`.
-network_socket! {
+device_socket! {
     ConductivityClient,
     "Socket that makes requests to the Conductivity sensor server."
 }

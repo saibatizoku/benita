@@ -7,7 +7,7 @@ use neuras;
 
 // Define the network server socket for directly interacting with the
 // Temperature sensor via I2C.
-network_socket! {
+device_socket! {
     TemperatureSensorServer,
     TemperatureSensor,
     "Socket that responds to Temperature sensor commands."

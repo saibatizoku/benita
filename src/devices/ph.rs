@@ -35,7 +35,7 @@ use self::commands::*;
 use self::responses::*;
 
 // Use macro to define `PhSensor`
-sensor_i2cdev!(PhSensor, "EZO-EC Submersible pH Sensor.");
+device_i2cdev!(PhSensor, "EZO-EC Submersible pH Sensor.");
 
 impl PhSensor {
     sensor_commands!(device_common);

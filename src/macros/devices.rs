@@ -1,6 +1,6 @@
 /// Create and define a sensor available through `i2cdev`.
 #[macro_export]
-macro_rules! sensor_i2cdev {
+macro_rules! device_i2cdev {
     // Name identifier and documentation for the new I2C sensor struct.
     ($name:ident , $doc:tt) => {
         #[ doc = $doc ]
@@ -47,7 +47,6 @@ macro_rules! sensor_i2cdev {
 }
 
 /// Common sensor command methods
-#[macro_export]
 macro_rules! sensor_commands {
     ( calibration_common ) => {
         /// Clear the sensor's calibration settings.

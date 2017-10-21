@@ -34,7 +34,7 @@ use self::responses::*;
 
 
 // Use macro to define `TemperatureSensor`
-sensor_i2cdev!(TemperatureSensor, "EZO-RTD Submersible Temperature Sensor");
+device_i2cdev!(TemperatureSensor, "EZO-RTD Submersible Temperature Sensor");
 
 impl TemperatureSensor {
     sensor_commands!(device_common);
