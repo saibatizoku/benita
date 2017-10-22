@@ -20,9 +20,9 @@ pub trait SocketRequest where Self: std::marker::Sized {
     type Response: SocketResponse;
 
     /// Create a new instance from `&str`.
-    fn from_str(req_str: &str) -> Result<Self>;
+    fn from_request_str(req_str: &str) -> Result<Self>;
     /// Return the instance as a `String`.
-    fn to_string(&self) -> String;
+    fn request_string(&self) -> String;
     /// Execute the request over the socket, and return the corresponding response.
     fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<Self::Response>;
 }
@@ -31,6 +31,7 @@ pub trait SocketRequest where Self: std::marker::Sized {
 pub trait SocketResponse where Self: std::marker::Sized {
     /// Create a new instance from `&str`.
     fn parse_response(rep_str: &str) -> Result<Self>;
+    fn response_from<T: Endpoint>(endpoint: &T) -> Result<Self>;
 }
 
 // Common network commands
