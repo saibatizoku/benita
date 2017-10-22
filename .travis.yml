@@ -1,6 +1,10 @@
 language: rust
 rust:
     - nightly
+before_install:
+    - sudo apt-get -qq update
+    - sudo apt-get install -y libzmq-dev
+cache: cargo
 script:
     - cargo build --verbose --all
     - cargo test --verbose --all
