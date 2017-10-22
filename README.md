@@ -1,4 +1,4 @@
-benita
+benita [![Build Status](https://travis-ci.org/saibatizoku/benita.svg?branch=master)](https://travis-ci.org/saibatizoku/benita)
 ======
 
 # Talk directly to your sensor, via `i2cdev`.
