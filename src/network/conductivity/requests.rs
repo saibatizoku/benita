@@ -121,6 +121,38 @@ impl SocketRequest for Sleep {
 mod tests {
     use super::*;
 
+    fn assert_valid_baud_request(test_str: &str, bps: BpsRate) {
+        let request = Baud::from_request_str(test_str).unwrap();
+        assert_eq!(test_str, &request.request_string());
+        assert_eq!(bps, request.0);
+    }
+    #[test]
+    fn parse_conductivity_baud_request_from_valid_str() {
+        assert_valid_baud_request("baud 300", BpsRate::Bps300);
+        assert_valid_baud_request("baud 1200", BpsRate::Bps1200);
+        assert_valid_baud_request("baud 2400", BpsRate::Bps2400);
+        assert_valid_baud_request("baud 9600", BpsRate::Bps9600);
+        assert_valid_baud_request("baud 19200", BpsRate::Bps19200);
+        assert_valid_baud_request("baud 38400", BpsRate::Bps38400);
+        assert_valid_baud_request("baud 57600", BpsRate::Bps57600);
+        assert_valid_baud_request("baud 115200", BpsRate::Bps115200);
+    }
+
+    #[test]
+    fn parse_conductivity_baud_request_from_invalid_str_yields_err() {
+        let request = Baud::from_request_str("baud");
+        assert!(request.is_err());
+
+        let request = Baud::from_request_str("bauds 300");
+        assert!(request.is_err());
+
+        let request = Baud::from_request_str("baud 0");
+        assert!(request.is_err());
+
+        let request = Baud::from_request_str("baud 10.5829");
+        assert!(request.is_err());
+    }
+
     #[test]
     fn parse_conductivity_compensation_get_request_from_valid_str() {
         let request = CompensationGet::from_request_str("compensation-get").unwrap();
