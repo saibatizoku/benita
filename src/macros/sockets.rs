@@ -78,29 +78,6 @@ macro_rules! endpoint_trait_impl {
     };
 }
 
-// Define a command sent over a network socket.
-macro_rules! socket_command {
-    // Simple socket to send commands over.
-    ( $name:ident , $trait:ty ,
-      $socket:ty ,
-      response: $response:ty ,
-      $resp:ident : $runfn:block,
-      $doc:tt ) => {
-        #[ doc = $doc ]
-        pub struct $name;
-
-        impl $trait for $name {
-            type Socket = $socket;
-            type Response = $response;
-
-            fn run(&self, socket: &$socket) -> Result<$response> {
-                let $resp = socket;
-                $runfn
-            }
-        }
-    };
-}
-
 #[cfg(test)]
 mod tests {
     use errors::*;
