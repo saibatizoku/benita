@@ -258,3 +258,26 @@ macro_rules! impl_SocketRequest_for {
         }
     };
 }
+
+macro_rules! fn_response_from {
+    ($name:ident) => {
+            fn response_from<T: Endpoint>(endpoint: &T) -> Result<$name> {
+                let rep_string = endpoint.recv()?;
+                let response = $name::parse_response(&rep_string)?;
+                Ok(response)
+            }
+    };
+}
+
+macro_rules! impl_SocketReply_for {
+    ( $name:ident ) => {
+        impl SocketReply for $name {
+            fn parse_response(rep_str: &str) -> Result<$name> {
+                $name::parse(rep_str)
+                    .chain_err(|| ErrorKind::CommandReply)
+            }
+
+            fn_response_from!($name);
+        }
+    };
+}
