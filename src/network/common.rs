@@ -17,7 +17,7 @@ pub trait Endpoint where Self: std::marker::Sized {
 /// A request sent over a socket
 pub trait SocketRequest where Self: std::marker::Sized {
     /// The expected response type.
-    type Response: SocketResponse;
+    type Response: SocketReply;
 
     /// Create a new instance from `&str`.
     fn from_request_str(req_str: &str) -> Result<Self>;
@@ -28,10 +28,28 @@ pub trait SocketRequest where Self: std::marker::Sized {
 }
 
 /// A response sent over a socket
-pub trait SocketResponse where Self: std::marker::Sized {
+pub trait SocketReply where Self: std::marker::Sized {
     /// Create a new instance from `&str`.
     fn parse_response(rep_str: &str) -> Result<Self>;
     fn response_from<T: Endpoint>(endpoint: &T) -> Result<Self>;
+}
+
+// Implements SocketRequest for commands
+pub struct OkReply;
+
+impl SocketReply for OkReply {
+    fn parse_response(rep_str: &str) -> Result<OkReply> {
+        match rep_str {
+            "ok" => Ok(OkReply),
+            _ => Err(ErrorKind::CommandReply.into()),
+        }
+    }
+
+    fn response_from<T: Endpoint>(endpoint: &T) -> Result<OkReply> {
+        let rep_string = endpoint.recv()?;
+        let response = OkReply::parse_response(&rep_string)?;
+        Ok(response)
+    }
 }
 
 // Common network commands
@@ -198,6 +216,36 @@ macro_rules! sensor_socket_commands {
                 .set_compensation_temperature(t)
                 .chain_err(|| ErrorKind::CommandRequest)?;
             Ok(format!("compensation-set {}", t))
+        }
+    };
+}
+
+// Implements SocketRequest for commands
+macro_rules! impl_SocketRequest_for {
+    (
+        $request:ident : $response: ident ,
+        $reqvalue:ident : $fromstr:block ,
+        $self:ident : $tostring:block
+    ) => {
+        impl SocketRequest for $request {
+            type Response = $response;
+
+            fn from_request_str(req_str: &str) -> Result<$request> {
+                let $reqvalue = req_str;
+                $fromstr
+            }
+
+            fn request_string(&self) -> String {
+                let $self = self;
+                $tostring
+            }
+
+            fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<$response> {
+                let _read = endpoint.send(self.request_string().as_bytes())
+                    .chain_err(|| ErrorKind::CommandRequest)?;
+                let response = $response::response_from(endpoint)?;
+                Ok(response)
+            }
         }
     };
 }

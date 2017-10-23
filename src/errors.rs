@@ -17,6 +17,9 @@ error_chain! {
         CommandRequest {
             description ("command request failed")
         }
+        CommandReply {
+            description ("command reply failed")
+        }
         CommandResponse {
             description ("command response failed")
         }

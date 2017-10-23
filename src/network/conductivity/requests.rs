@@ -1,8 +1,8 @@
 //! Requests for the conductivity sensor. Requests are sent to a conductivity `Endpoint`.
 use errors::*;
 
-use network::{Endpoint, SocketRequest, SocketResponse};
-use network::common::OkResponse;
+use network::{Endpoint, SocketRequest, SocketReply};
+use network::common::OkReply;
 
 pub use devices::conductivity::commands::Baud;
 pub use devices::conductivity::commands::{CalibrationClear, CalibrationDry, CalibrationHigh, CalibrationLow,
@@ -25,7 +25,7 @@ use ezo_common::BpsRate;
 
 // Implements SocketRequest for commands
 impl SocketRequest for CompensationGet {
-    type Response = ProbeReading;
+    type Response = CompensationValue;
 
     fn from_request_str(req_str: &str) -> Result<CompensationGet> {
         match req_str {
@@ -38,17 +38,17 @@ impl SocketRequest for CompensationGet {
         "compensation-get".to_string()
     }
 
-    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<ProbeReading> {
+    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<CompensationValue> {
         let _read = endpoint.send(self.request_string().as_bytes())
             .chain_err(|| ErrorKind::CommandRequest)?;
-        let response = ProbeReading::response_from(endpoint)?;
+        let response = CompensationValue::response_from(endpoint)?;
         Ok(response)
     }
 }
 
 // Implements SocketRequest for commands
 impl SocketRequest for CompensationSet {
-    type Response = ProbeReading;
+    type Response = OkReply;
 
     fn from_request_str(req_str: &str) -> Result<CompensationSet> {
         if req_str.starts_with("compensation-set ") {
@@ -63,17 +63,17 @@ impl SocketRequest for CompensationSet {
         format!("compensation-set {:.*}", 3, self.0)
     }
 
-    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<ProbeReading> {
+    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<OkReply> {
         let _read = endpoint.send(self.request_string().as_bytes())
             .chain_err(|| ErrorKind::CommandRequest)?;
-        let response = ProbeReading::response_from(endpoint)?;
+        let response = OkReply::response_from(endpoint)?;
         Ok(response)
     }
 }
 
 // Implements SocketRequest for commands
 impl SocketRequest for Reading {
-    type Response = ProbeReading;
+    type Response = OkReply;
 
     fn from_request_str(req_str: &str) -> Result<Reading> {
         match req_str {
@@ -86,17 +86,17 @@ impl SocketRequest for Reading {
         "read".to_string()
     }
 
-    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<ProbeReading> {
+    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<OkReply> {
         let _read = endpoint.send(self.request_string().as_bytes())
             .chain_err(|| ErrorKind::CommandRequest)?;
-        let response = ProbeReading::response_from(endpoint)?;
+        let response = OkReply::response_from(endpoint)?;
         Ok(response)
     }
 }
 
 // Implements SocketRequest for commands
 impl SocketRequest for Sleep {
-    type Response = ProbeReading;
+    type Response = OkReply;
 
     fn from_request_str(req_str: &str) -> Result<Sleep> {
         match req_str {
@@ -109,10 +109,10 @@ impl SocketRequest for Sleep {
         "sleep".to_string()
     }
 
-    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<ProbeReading> {
+    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<OkReply> {
         let _read = endpoint.send(self.request_string().as_bytes())
             .chain_err(|| ErrorKind::CommandRequest)?;
-        let response = ProbeReading::response_from(endpoint)?;
+        let response = OkReply::response_from(endpoint)?;
         Ok(response)
     }
 }

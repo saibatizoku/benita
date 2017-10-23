@@ -1,6 +1,6 @@
-//! Responses from the conductivity sensor. `Response`s are received after a `Request`.
+//! Replies from the conductivity sensor. `Reply`s are received after a `Request`.
 use errors::*;
-use network::{Endpoint, SocketResponse};
+use network::{Endpoint, SocketReply};
 use devices::conductivity::responses::{CalibrationStatus, CompensationValue, DeviceInfo,
                     DeviceStatus, Exported, ExportedInfo, LedStatus, OutputStringStatus,
                     ProbeReading, ProbeType, ProtocolLockStatus};
@@ -15,12 +15,12 @@ macro_rules! fn_response_from {
     };
 }
 
-macro_rules! impl_SocketResponse_for {
+macro_rules! impl_SocketReply_for {
     ( $name:ident ) => {
-        impl SocketResponse for $name {
+        impl SocketReply for $name {
             fn parse_response(rep_str: &str) -> Result<$name> {
                 $name::parse(rep_str)
-                    .chain_err(|| ErrorKind::CommandResponse)
+                    .chain_err(|| ErrorKind::CommandReply)
             }
 
             fn_response_from!($name);
@@ -29,14 +29,14 @@ macro_rules! impl_SocketResponse_for {
 }
 
 // Basically, wrap existing responses from the original sensor crate.
-impl_SocketResponse_for!(CalibrationStatus);
-impl_SocketResponse_for!(CompensationValue);
-impl_SocketResponse_for!(DeviceInfo);
-impl_SocketResponse_for!(DeviceStatus);
-impl_SocketResponse_for!(Exported);
-impl_SocketResponse_for!(ExportedInfo);
-impl_SocketResponse_for!(LedStatus);
-impl_SocketResponse_for!(OutputStringStatus);
-impl_SocketResponse_for!(ProbeReading);
-impl_SocketResponse_for!(ProbeType);
-impl_SocketResponse_for!(ProtocolLockStatus);
+impl_SocketReply_for!(CalibrationStatus);
+impl_SocketReply_for!(CompensationValue);
+impl_SocketReply_for!(DeviceInfo);
+impl_SocketReply_for!(DeviceStatus);
+impl_SocketReply_for!(Exported);
+impl_SocketReply_for!(ExportedInfo);
+impl_SocketReply_for!(LedStatus);
+impl_SocketReply_for!(OutputStringStatus);
+impl_SocketReply_for!(ProbeReading);
+impl_SocketReply_for!(ProbeType);
+impl_SocketReply_for!(ProtocolLockStatus);
