@@ -44,6 +44,9 @@ error_chain! {
         NumberParse {
             description ("this is not a number")
         }
+        RequestParse {
+            description ("could not parse request")
+        }
         ResponseParse {
             description ("could not parse response")
         }
