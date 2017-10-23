@@ -1,5 +1,6 @@
 //! Networked services for Temperature sensing.
 pub mod replies;
+pub mod requests;
 
 mod server;
 
