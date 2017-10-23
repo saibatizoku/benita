@@ -23,7 +23,8 @@ use utilities::atof;
 
 use ezo_common::BpsRate;
 
-// Implements SocketRequest for commands
+        }
+}
 impl SocketRequest for CompensationGet {
     type Response = CompensationValue;
 
