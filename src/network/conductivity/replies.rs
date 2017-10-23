@@ -1,10 +1,10 @@
 //! Replies from the conductivity sensor. `Reply`s are received after a `Request`.
 use errors::*;
 use network::{Endpoint, SocketReply};
-use devices::conductivity::responses::{CalibrationStatus, CompensationValue, DeviceInfo,
-                                       DeviceStatus, Exported, ExportedInfo, LedStatus,
-                                       OutputStringStatus, ProbeReading, ProbeType,
-                                       ProtocolLockStatus};
+pub use devices::conductivity::responses::{CalibrationStatus, CompensationValue, DeviceInfo,
+                                           DeviceStatus, Exported, ExportedInfo, LedStatus,
+                                           OutputStringStatus, ProbeReading, ProbeType,
+                                           ProtocolLockStatus};
 
 // Basically, wrap existing responses from the original sensor crate.
 impl_SocketReply_for!(CalibrationStatus);
