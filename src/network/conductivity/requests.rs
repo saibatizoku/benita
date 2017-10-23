@@ -1,23 +1,27 @@
 //! Requests for the conductivity sensor. Requests are sent to a conductivity `Endpoint`.
 use errors::*;
+
 use network::{Endpoint, SocketRequest, SocketResponse};
-use devices::conductivity::responses::ProbeReading;
-use devices::conductivity::commands::Command;
-use devices::conductivity::commands::Baud;
-use devices::conductivity::commands::{CalibrationClear, CalibrationDry, CalibrationHigh, CalibrationLow,
+use network::common::OkResponse;
+
+pub use devices::conductivity::commands::Baud;
+pub use devices::conductivity::commands::{CalibrationClear, CalibrationDry, CalibrationHigh, CalibrationLow,
                               CalibrationOnePoint, CalibrationState};
-use devices::conductivity::commands::{CompensationGet, CompensationSet};
-use devices::conductivity::commands::{DeviceAddress, DeviceInformation, Factory, Find, Reading, Sleep,
+pub use devices::conductivity::commands::{CompensationGet, CompensationSet};
+pub use devices::conductivity::commands::{DeviceAddress, DeviceInformation, Factory, Find, Reading, Sleep,
                               Status};
-use devices::conductivity::commands::{Export, ExportInfo, Import};
-use devices::conductivity::commands::{LedOff, LedOn, LedState};
-use devices::conductivity::commands::{OutputDisableConductivity, OutputDisableSalinity,
+pub use devices::conductivity::commands::{Export, ExportInfo, Import};
+pub use devices::conductivity::commands::{LedOff, LedOn, LedState};
+pub use devices::conductivity::commands::{OutputDisableConductivity, OutputDisableSalinity,
                               OutputDisableSpecificGravity, OutputDisableTds,
                               OutputEnableConductivity, OutputEnableSalinity,
                               OutputEnableSpecificGravity, OutputEnableTds, OutputState};
-use devices::conductivity::commands::{ProbeTypeOne, ProbeTypePointOne, ProbeTypeState, ProbeTypeTen};
-use devices::conductivity::commands::{ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState};
+pub use devices::conductivity::commands::{ProbeTypeOne, ProbeTypePointOne, ProbeTypeState, ProbeTypeTen};
+pub use devices::conductivity::commands::{ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState};
+pub use devices::conductivity::responses::CompensationValue;
 use utilities::atof;
+
+use ezo_common::BpsRate;
 
 // Implements SocketRequest for commands
 impl SocketRequest for CompensationGet {
