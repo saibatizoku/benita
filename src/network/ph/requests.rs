@@ -1,0 +1,429 @@
+//! Requests for the pH sensor. Requests are sent to a pH `Endpoint`.
+use errors::*;
+
+use network::{Endpoint, SocketReply, SocketRequest};
+use network::common::OkReply;
+
+pub use devices::ph::commands::Baud;
+pub use devices::ph::commands::Command;
+pub use devices::ph::commands::{CalibrationClear, CalibrationHigh, CalibrationLow, CalibrationMid,
+                                CalibrationState};
+pub use devices::ph::commands::{CompensationGet, DeviceAddress, CompensationSet};
+pub use devices::ph::commands::{DeviceInformation, Factory, Find, Reading, Sleep, Status};
+pub use devices::ph::commands::{Export, ExportInfo, Import};
+pub use devices::ph::commands::{LedOff, LedOn, LedState};
+pub use devices::ph::commands::{ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState};
+pub use devices::ph::commands::Slope;
+
+use devices::ph::responses::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus,
+                             Exported, ExportedInfo, LedStatus, ProbeSlope, ProtocolLockStatus,
+                             SensorReading};
+
+use utilities::atof;
+
+use ezo_common::BpsRate;
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn assert_valid_baud_request(test_str: &str, bps: BpsRate) {
+        let request = Baud::from_request_str(test_str).unwrap();
+        assert_eq!(test_str, &request.request_string());
+        assert_eq!(bps, request.0);
+    }
+    #[test]
+    fn parse_ph_baud_request_from_valid_str() {
+        assert_valid_baud_request("baud 300", BpsRate::Bps300);
+        assert_valid_baud_request("baud 1200", BpsRate::Bps1200);
+        assert_valid_baud_request("baud 2400", BpsRate::Bps2400);
+        assert_valid_baud_request("baud 9600", BpsRate::Bps9600);
+        assert_valid_baud_request("baud 19200", BpsRate::Bps19200);
+        assert_valid_baud_request("baud 38400", BpsRate::Bps38400);
+        assert_valid_baud_request("baud 57600", BpsRate::Bps57600);
+        assert_valid_baud_request("baud 115200", BpsRate::Bps115200);
+    }
+
+    #[test]
+    fn parse_ph_baud_request_from_invalid_str_yields_err() {
+        let request = Baud::from_request_str("baud");
+        assert!(request.is_err());
+
+        let request = Baud::from_request_str("bauds 300");
+        assert!(request.is_err());
+
+        let request = Baud::from_request_str("baud 0");
+        assert!(request.is_err());
+
+        let request = Baud::from_request_str("baud 10.5829");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_calibration_clear_request_from_valid_str() {
+        let request = CalibrationClear::from_request_str("calibration-clear").unwrap();
+        assert_eq!("calibration-clear", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_calibration_clear_request_from_invalid_str_yields_err() {
+        let request = CalibrationClear::from_request_str("calibration-clearEXTRA");
+        assert!(request.is_err());
+
+        let request = CalibrationClear::from_request_str("calibration-clear 123");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_calibration_high_request_from_valid_str() {
+        let request = CalibrationHigh::from_request_str("calibration-high 1000.3324").unwrap();
+        assert_eq!("calibration-high 1000.332", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_calibration_high_request_from_invalid_str_yields_err() {
+        let request = CalibrationHigh::from_request_str("calibration-high");
+        assert!(request.is_err());
+
+        let request = CalibrationHigh::from_request_str("calibration-highs");
+        assert!(request.is_err());
+
+        let request = CalibrationHigh::from_request_str("calibration-high 123 2342");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_calibration_low_request_from_valid_str() {
+        let request = CalibrationLow::from_request_str("calibration-low 1000.3324").unwrap();
+        assert_eq!("calibration-low 1000.332", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_calibration_low_request_from_invalid_str_yields_err() {
+        let request = CalibrationLow::from_request_str("calibration-low");
+        assert!(request.is_err());
+
+        let request = CalibrationLow::from_request_str("calibration-lows");
+        assert!(request.is_err());
+
+        let request = CalibrationLow::from_request_str("calibration-low 123 2342");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_calibration_mid_request_from_valid_str() {
+        let request =
+            CalibrationMid::from_request_str("calibration-mid 1000.3324").unwrap();
+        assert_eq!("calibration-mid 1000.332", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_calibration_mid_request_from_invalid_str_yields_err() {
+        let request = CalibrationMid::from_request_str("calibration-mid");
+        assert!(request.is_err());
+
+        let request = CalibrationMid::from_request_str("calibration-mids");
+        assert!(request.is_err());
+
+        let request = CalibrationMid::from_request_str("calibration-mid 123 2342");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_calibration_status_request_from_valid_str() {
+        let request = CalibrationState::from_request_str("calibration-status").unwrap();
+        assert_eq!("calibration-status", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_calibration_status_request_from_invalid_str_yields_err() {
+        let request = CalibrationState::from_request_str("calibration-statuss");
+        assert!(request.is_err());
+
+        let request = CalibrationState::from_request_str("calibration-status 123");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_compensation_get_request_from_valid_str() {
+        let request = CompensationGet::from_request_str("compensation-get").unwrap();
+        assert_eq!("compensation-get", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_compensation_get_request_from_invalid_str_yields_err() {
+        let request = CompensationGet::from_request_str("ompensation-get");
+        assert!(request.is_err());
+
+        let request = CompensationGet::from_request_str("compensation-get 10.5829");
+        assert!(request.is_err());
+
+        let request = CompensationGet::from_request_str("compensation-get,10.5869");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_compensation_set_request_from_valid_str() {
+        let request = CompensationSet::from_request_str("compensation-set 10.5829").unwrap();
+        assert_eq!("compensation-set 10.583", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_compensation_set_request_from_invalid_str_yields_err() {
+        let request = CompensationSet::from_request_str("compensation-set");
+        assert!(request.is_err());
+
+        let request = CompensationSet::from_request_str("compensation-set,10.5869");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_device_address_request_from_valid_str() {
+        let request = DeviceAddress::from_request_str("device-address 90").unwrap();
+        assert_eq!("device-address 90", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_device_address_request_from_invalid_str_yields_err() {
+        let request = DeviceAddress::from_request_str("device-address");
+        assert!(request.is_err());
+
+        let request = DeviceAddress::from_request_str("device-address10.5");
+        assert!(request.is_err());
+
+        let request = DeviceAddress::from_request_str("device-address 10.5");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_device_info_request_from_valid_str() {
+        let request = DeviceInformation::from_request_str("device-info").unwrap();
+        assert_eq!("device-info", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_device_info_request_from_invalid_str_yields_err() {
+        let request = DeviceInformation::from_request_str("device-infoo");
+        assert!(request.is_err());
+
+        let request = DeviceInformation::from_request_str("device-info 10");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_export_request_from_valid_str() {
+        let request = Export::from_request_str("export").unwrap();
+        assert_eq!("export", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_export_request_from_invalid_str_yields_err() {
+        let request = Export::from_request_str("exporto");
+        assert!(request.is_err());
+
+        let request = Export::from_request_str("export 10");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_export_info_request_from_valid_str() {
+        let request = ExportInfo::from_request_str("export-info").unwrap();
+        assert_eq!("export-info", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_export_info_request_from_invalid_str_yields_err() {
+        let request = ExportInfo::from_request_str("export-infoo");
+        assert!(request.is_err());
+
+        let request = ExportInfo::from_request_str("export-info 10");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_import_request_from_valid_str() {
+        let request = Import::from_request_str("import 123456789012").unwrap();
+        assert_eq!("import 123456789012", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_import_request_from_invalid_str_yields_err() {
+        let request = Import::from_request_str("import");
+        assert!(request.is_err());
+
+        let request = Import::from_request_str("import ");
+        assert!(request.is_err());
+
+        let request = Import::from_request_str("import 1234567890123");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_factory_request_from_valid_str() {
+        let request = Factory::from_request_str("factory").unwrap();
+        assert_eq!("factory", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_factory_request_from_invalid_str_yields_err() {
+        let request = Factory::from_request_str("factoryo");
+        assert!(request.is_err());
+
+        let request = Factory::from_request_str("factory 10");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_find_request_from_valid_str() {
+        let request = Find::from_request_str("find").unwrap();
+        assert_eq!("find", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_find_request_from_invalid_str_yields_err() {
+        let request = Find::from_request_str("findo");
+        assert!(request.is_err());
+
+        let request = Find::from_request_str("find 10");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_led_off_request_from_valid_str() {
+        let request = LedOff::from_request_str("led-off").unwrap();
+        assert_eq!("led-off", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_led_off_request_from_invalid_str_yields_err() {
+        let request = LedOff::from_request_str("led-offo");
+        assert!(request.is_err());
+
+        let request = LedOff::from_request_str("led-off 10");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_led_on_request_from_valid_str() {
+        let request = LedOn::from_request_str("led-on").unwrap();
+        assert_eq!("led-on", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_led_on_request_from_invalid_str_yields_err() {
+        let request = LedOn::from_request_str("led-ono");
+        assert!(request.is_err());
+
+        let request = LedOn::from_request_str("led-on 10");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_led_status_request_from_valid_str() {
+        let request = LedState::from_request_str("led-status").unwrap();
+        assert_eq!("led-status", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_led_status_request_from_invalid_str_yields_err() {
+        let request = LedState::from_request_str("led-statuso");
+        assert!(request.is_err());
+
+        let request = LedState::from_request_str("led-status 10");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_protocol_lock_off_request_from_valid_str() {
+        let request = ProtocolLockDisable::from_request_str("protocol-lock-off").unwrap();
+        assert_eq!("protocol-lock-off", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_protocol_lock_off_request_from_invalid_str_yields_err() {
+        let request = ProtocolLockDisable::from_request_str("protocol-lock-offo");
+        assert!(request.is_err());
+
+        let request = ProtocolLockDisable::from_request_str("protocol-lock-off 10");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_protocol_lock_on_request_from_valid_str() {
+        let request = ProtocolLockEnable::from_request_str("protocol-lock-on").unwrap();
+        assert_eq!("protocol-lock-on", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_protocol_lock_on_request_from_invalid_str_yields_err() {
+        let request = ProtocolLockEnable::from_request_str("protocol-lock-ono");
+        assert!(request.is_err());
+
+        let request = ProtocolLockEnable::from_request_str("protocol-lock-on 10");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_protocol_lock_status_request_from_valid_str() {
+        let request = ProtocolLockState::from_request_str("protocol-lock-status").unwrap();
+        assert_eq!("protocol-lock-status", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_protocol_lock_status_request_from_invalid_str_yields_err() {
+        let request = ProtocolLockState::from_request_str("protocol-lock-statuso");
+        assert!(request.is_err());
+
+        let request = ProtocolLockState::from_request_str("protocol-lock-status 10");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_read_request_from_valid_str() {
+        let request = Reading::from_request_str("read").unwrap();
+        assert_eq!("read", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_read_request_from_invalid_str_yields_err() {
+        let request = Reading::from_request_str("reading");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_sleep_request_from_valid_str() {
+        let request = Sleep::from_request_str("sleep").unwrap();
+        assert_eq!("sleep", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_sleep_request_from_invalid_str_yields_err() {
+        let request = Sleep::from_request_str("sleeping");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_slope_request_from_valid_str() {
+        let request = Slope::from_request_str("slope").unwrap();
+        assert_eq!("slope", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_slope_request_from_invalid_str_yields_err() {
+        let request = Slope::from_request_str("slopeing");
+        assert!(request.is_err());
+    }
+
+    #[test]
+    fn parse_ph_status_request_from_valid_str() {
+        let request = Status::from_request_str("status").unwrap();
+        assert_eq!("status", &request.request_string());
+    }
+
+    #[test]
+    fn parse_ph_status_request_from_invalid_str_yields_err() {
+        let request = Status::from_request_str("statusing");
+        assert!(request.is_err());
+    }
+}
