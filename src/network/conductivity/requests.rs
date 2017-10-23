@@ -18,13 +18,116 @@ pub use devices::conductivity::commands::{OutputDisableConductivity, OutputDisab
                               OutputEnableSpecificGravity, OutputEnableTds, OutputState};
 pub use devices::conductivity::commands::{ProbeTypeOne, ProbeTypePointOne, ProbeTypeState, ProbeTypeTen};
 pub use devices::conductivity::commands::{ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState};
-pub use devices::conductivity::responses::CompensationValue;
+
+use devices::conductivity::responses::{CalibrationStatus, CompensationValue, Exported, ExportedInfo, DeviceStatus, LedStatus, OutputStringStatus, ProbeType, ProtocolLockStatus};
+
 use utilities::atof;
 
 use ezo_common::BpsRate;
 
+impl_SocketRequest_for! {
+    Baud: OkReply,
+    req_str: {
+        if req_str.starts_with("baud ") {
+            let resp = req_str.get(5..).unwrap();
+            let bps_num = resp.parse::<u32>()
+                    .chain_err(|| ErrorKind::NumberParse)?;
+            let bps = BpsRate::parse_u32(bps_num)
+                    .chain_err(|| ErrorKind::RequestParse)?;
+            Ok(Baud(bps))
+        } else {
+            Err(ErrorKind::RequestParse.into())
         }
+    },
+    req_out: {
+        format!("baud {}", &req_out.0.parse())
+    }
 }
+
+impl_SocketRequest_for! {
+    CalibrationClear: OkReply,
+    req_str: {
+        match req_str {
+            "calibration-clear" => Ok(CalibrationClear),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "calibration-clear".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    CalibrationDry: OkReply,
+    req_str: {
+        match req_str {
+            "calibration-dry" => Ok(CalibrationDry),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "calibration-dry".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    CalibrationHigh: OkReply,
+    req_str: {
+        if req_str.starts_with("calibration-high ") {
+            let resp = req_str.get(17..).unwrap();
+            let value = atof(resp)?;
+            return Ok(CalibrationHigh(value));
+        }
+        Err(ErrorKind::RequestParse.into())
+    },
+    req_out: {
+        format!("calibration-high {:.*}", 3, req_out.0)
+    }
+}
+
+impl_SocketRequest_for! {
+    CalibrationLow: OkReply,
+    req_str: {
+        if req_str.starts_with("calibration-low ") {
+            let resp = req_str.get(16..).unwrap();
+            let value = atof(resp)?;
+            return Ok(CalibrationLow(value));
+        }
+        Err(ErrorKind::RequestParse.into())
+    },
+    req_out: {
+        format!("calibration-low {:.*}", 3, req_out.0)
+    }
+}
+
+impl_SocketRequest_for! {
+    CalibrationOnePoint: OkReply,
+    req_str: {
+        if req_str.starts_with("calibration-onepoint ") {
+            let resp = req_str.get(21..).unwrap();
+            let value = atof(resp)?;
+            return Ok(CalibrationOnePoint(value));
+        }
+        Err(ErrorKind::RequestParse.into())
+    },
+    req_out: {
+        format!("calibration-onepoint {:.*}", 3, req_out.0)
+    }
+}
+
+impl_SocketRequest_for! {
+    CalibrationState: CalibrationStatus,
+    req_str: {
+        match req_str {
+            "calibration-status" => Ok(CalibrationState),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "calibration-status".to_string()
+    }
+}
+
 impl SocketRequest for CompensationGet {
     type Response = CompensationValue;
 
@@ -72,6 +175,351 @@ impl SocketRequest for CompensationSet {
     }
 }
 
+impl_SocketRequest_for! {
+    DeviceAddress: OkReply,
+    req_str: {
+        if req_str.starts_with("device-address ") {
+            let resp = req_str.get(15..).unwrap();
+            let addr = resp.parse::<u16>()
+                    .chain_err(|| ErrorKind::NumberParse)?;
+            Ok(DeviceAddress(addr))
+        } else {
+            Err(ErrorKind::RequestParse.into())
+        }
+    },
+    req_out: {
+        format!("device-address {}", &req_out.0)
+    }
+}
+
+impl_SocketRequest_for! {
+    DeviceInformation: OkReply,
+    req_str: {
+        match req_str {
+            "device-info" => Ok(DeviceInformation),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "device-info".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    Export: Exported,
+    req_str: {
+        match req_str {
+            "export" => Ok(Export),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "export".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    ExportInfo: ExportedInfo,
+    req_str: {
+        match req_str {
+            "export-info" => Ok(ExportInfo),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "export-info".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    Import: OkReply,
+    req_str: {
+        if req_str.starts_with("import ") {
+            let resp = req_str.get(7..).unwrap();
+            match resp.len() {
+                1...12 => return Ok(Import(resp.to_string())),
+                _ => return Err(ErrorKind::RequestParse.into()),
+            }
+        }
+        Err(ErrorKind::RequestParse.into())
+    },
+    req_out: {
+        format!("import {}", req_out.0)
+    }
+}
+
+impl_SocketRequest_for! {
+    Factory: OkReply,
+    req_str: {
+        match req_str {
+            "factory" => Ok(Factory),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "factory".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    Find: OkReply,
+    req_str: {
+        match req_str {
+            "find" => Ok(Find),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "find".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    LedOff: OkReply,
+    req_str: {
+        match req_str {
+            "led-off" => Ok(LedOff),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "led-off".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    LedOn: OkReply,
+    req_str: {
+        match req_str {
+            "led-on" => Ok(LedOn),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "led-on".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    LedState: LedStatus,
+    req_str: {
+        match req_str {
+            "led-status" => Ok(LedState),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "led-status".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    OutputDisableConductivity: OkReply,
+    req_str: {
+        match req_str {
+            "output-conductivity-off" => Ok(OutputDisableConductivity),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "output-conductivity-off".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    OutputDisableSalinity: OkReply,
+    req_str: {
+        match req_str {
+            "output-salinity-off" => Ok(OutputDisableSalinity),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "output-salinity-off".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    OutputDisableSpecificGravity: OkReply,
+    req_str: {
+        match req_str {
+            "output-sg-off" => Ok(OutputDisableSpecificGravity),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "output-sg-off".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    OutputDisableTds: OkReply,
+    req_str: {
+        match req_str {
+            "output-tds-off" => Ok(OutputDisableTds),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "output-tds-off".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    OutputEnableConductivity: OkReply,
+    req_str: {
+        match req_str {
+            "output-conductivity-on" => Ok(OutputEnableConductivity),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "output-conductivity-on".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    OutputEnableSalinity: OkReply,
+    req_str: {
+        match req_str {
+            "output-salinity-on" => Ok(OutputEnableSalinity),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "output-salinity-on".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    OutputEnableSpecificGravity: OkReply,
+    req_str: {
+        match req_str {
+            "output-sg-on" => Ok(OutputEnableSpecificGravity),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "output-sg-on".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    OutputEnableTds: OkReply,
+    req_str: {
+        match req_str {
+            "output-tds-on" => Ok(OutputEnableTds),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "output-tds-on".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    OutputState: OutputStringStatus,
+    req_str: {
+        match req_str {
+            "output-status" => Ok(OutputState),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "output-status".to_string()
+    }
+}
+impl_SocketRequest_for! {
+    ProbeTypeOne: OkReply,
+    req_str: {
+        match req_str {
+            "probe-type-1.0" => Ok(ProbeTypeOne),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "probe-type-1.0".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    ProbeTypePointOne: OkReply,
+    req_str: {
+        match req_str {
+            "probe-type-0.1" => Ok(ProbeTypePointOne),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "probe-type-0.1".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    ProbeTypeTen: OkReply,
+    req_str: {
+        match req_str {
+            "probe-type-10" => Ok(ProbeTypeTen),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "probe-type-10".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    ProbeTypeState: ProbeType,
+    req_str: {
+        match req_str {
+            "probe-type-status" => Ok(ProbeTypeState),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "probe-type-status".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    ProtocolLockDisable: OkReply,
+    req_str: {
+        match req_str {
+            "protocol-lock-off" => Ok(ProtocolLockDisable),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "protocol-lock-off".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    ProtocolLockEnable: OkReply,
+    req_str: {
+        match req_str {
+            "protocol-lock-on" => Ok(ProtocolLockEnable),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "protocol-lock-on".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    ProtocolLockState: ProtocolLockStatus,
+    req_str: {
+        match req_str {
+            "protocol-lock-status" => Ok(ProtocolLockState),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "protocol-lock-status".to_string()
+    }
+}
+
 // Implements SocketRequest for commands
 impl SocketRequest for Reading {
     type Response = OkReply;
@@ -115,6 +563,19 @@ impl SocketRequest for Sleep {
             .chain_err(|| ErrorKind::CommandRequest)?;
         let response = OkReply::response_from(endpoint)?;
         Ok(response)
+    }
+}
+
+impl_SocketRequest_for! {
+    Status: DeviceStatus,
+    req_str: {
+        match req_str {
+            "status" => Ok(Status),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "status".to_string()
     }
 }
 
