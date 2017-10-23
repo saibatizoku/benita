@@ -1,25 +1,30 @@
 //! Requests for the conductivity sensor. Requests are sent to a conductivity `Endpoint`.
 use errors::*;
 
-use network::{Endpoint, SocketRequest, SocketReply};
+use network::{Endpoint, SocketReply, SocketRequest};
 use network::common::OkReply;
 
 pub use devices::conductivity::commands::Baud;
-pub use devices::conductivity::commands::{CalibrationClear, CalibrationDry, CalibrationHigh, CalibrationLow,
-                              CalibrationOnePoint, CalibrationState};
+pub use devices::conductivity::commands::{CalibrationClear, CalibrationDry, CalibrationHigh,
+                                          CalibrationLow, CalibrationOnePoint, CalibrationState};
 pub use devices::conductivity::commands::{CompensationGet, CompensationSet};
-pub use devices::conductivity::commands::{DeviceAddress, DeviceInformation, Factory, Find, Reading, Sleep,
-                              Status};
+pub use devices::conductivity::commands::{DeviceAddress, DeviceInformation, Factory, Find,
+                                          Reading, Sleep, Status};
 pub use devices::conductivity::commands::{Export, ExportInfo, Import};
 pub use devices::conductivity::commands::{LedOff, LedOn, LedState};
 pub use devices::conductivity::commands::{OutputDisableConductivity, OutputDisableSalinity,
-                              OutputDisableSpecificGravity, OutputDisableTds,
-                              OutputEnableConductivity, OutputEnableSalinity,
-                              OutputEnableSpecificGravity, OutputEnableTds, OutputState};
-pub use devices::conductivity::commands::{ProbeTypeOne, ProbeTypePointOne, ProbeTypeState, ProbeTypeTen};
-pub use devices::conductivity::commands::{ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState};
+                                          OutputDisableSpecificGravity, OutputDisableTds,
+                                          OutputEnableConductivity, OutputEnableSalinity,
+                                          OutputEnableSpecificGravity, OutputEnableTds,
+                                          OutputState};
+pub use devices::conductivity::commands::{ProbeTypeOne, ProbeTypePointOne, ProbeTypeState,
+                                          ProbeTypeTen};
+pub use devices::conductivity::commands::{ProtocolLockDisable, ProtocolLockEnable,
+                                          ProtocolLockState};
 
-use devices::conductivity::responses::{CalibrationStatus, CompensationValue, Exported, ExportedInfo, DeviceStatus, LedStatus, OutputStringStatus, ProbeType, ProtocolLockStatus};
+use devices::conductivity::responses::{CalibrationStatus, CompensationValue, DeviceStatus,
+                                       Exported, ExportedInfo, LedStatus, OutputStringStatus,
+                                       ProbeType, ProtocolLockStatus};
 
 use utilities::atof;
 
@@ -143,7 +148,8 @@ impl SocketRequest for CompensationGet {
     }
 
     fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<CompensationValue> {
-        let _read = endpoint.send(self.request_string().as_bytes())
+        let _read = endpoint
+            .send(self.request_string().as_bytes())
             .chain_err(|| ErrorKind::CommandRequest)?;
         let response = CompensationValue::response_from(endpoint)?;
         Ok(response)
@@ -168,7 +174,8 @@ impl SocketRequest for CompensationSet {
     }
 
     fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<OkReply> {
-        let _read = endpoint.send(self.request_string().as_bytes())
+        let _read = endpoint
+            .send(self.request_string().as_bytes())
             .chain_err(|| ErrorKind::CommandRequest)?;
         let response = OkReply::response_from(endpoint)?;
         Ok(response)
@@ -536,7 +543,8 @@ impl SocketRequest for Reading {
     }
 
     fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<OkReply> {
-        let _read = endpoint.send(self.request_string().as_bytes())
+        let _read = endpoint
+            .send(self.request_string().as_bytes())
             .chain_err(|| ErrorKind::CommandRequest)?;
         let response = OkReply::response_from(endpoint)?;
         Ok(response)
@@ -559,7 +567,8 @@ impl SocketRequest for Sleep {
     }
 
     fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<OkReply> {
-        let _read = endpoint.send(self.request_string().as_bytes())
+        let _read = endpoint
+            .send(self.request_string().as_bytes())
             .chain_err(|| ErrorKind::CommandRequest)?;
         let response = OkReply::response_from(endpoint)?;
         Ok(response)
@@ -683,7 +692,8 @@ mod tests {
 
     #[test]
     fn parse_conductivity_calibration_onepoint_request_from_valid_str() {
-        let request = CalibrationOnePoint::from_request_str("calibration-onepoint 1000.3324").unwrap();
+        let request =
+            CalibrationOnePoint::from_request_str("calibration-onepoint 1000.3324").unwrap();
         assert_eq!("calibration-onepoint 1000.332", &request.request_string());
     }
 
@@ -905,7 +915,8 @@ mod tests {
 
     #[test]
     fn parse_conductivity_output_conductivity_off_request_from_valid_str() {
-        let request = OutputDisableConductivity::from_request_str("output-conductivity-off").unwrap();
+        let request =
+            OutputDisableConductivity::from_request_str("output-conductivity-off").unwrap();
         assert_eq!("output-conductivity-off", &request.request_string());
     }
 

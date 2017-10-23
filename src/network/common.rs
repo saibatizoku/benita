@@ -3,7 +3,10 @@ use std;
 use errors::*;
 
 /// A response sent over a socket
-pub trait Endpoint where Self: std::marker::Sized {
+pub trait Endpoint
+where
+    Self: std::marker::Sized,
+{
     /// bind the endpoint to the given `url`. Listens for incoming messages.
     fn bind(&self, url: &str) -> Result<()>;
     /// connect the endpoint to the given `url`. Sends outgoing messages.
@@ -15,7 +18,10 @@ pub trait Endpoint where Self: std::marker::Sized {
 }
 
 /// A request sent over a socket
-pub trait SocketRequest where Self: std::marker::Sized {
+pub trait SocketRequest
+where
+    Self: std::marker::Sized,
+{
     /// The expected response type.
     type Response: SocketReply;
 
@@ -28,7 +34,10 @@ pub trait SocketRequest where Self: std::marker::Sized {
 }
 
 /// A response sent over a socket
-pub trait SocketReply where Self: std::marker::Sized {
+pub trait SocketReply
+where
+    Self: std::marker::Sized,
+{
     /// Create a new instance from `&str`.
     fn parse_response(rep_str: &str) -> Result<Self>;
     fn response_from<T: Endpoint>(endpoint: &T) -> Result<Self>;

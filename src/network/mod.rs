@@ -8,4 +8,4 @@ pub mod ph;
 pub mod temperature;
 
 // Important traits.
-pub use self::common::{Endpoint, SocketRequest, SocketReply};
+pub use self::common::{Endpoint, SocketReply, SocketRequest};

@@ -2,8 +2,9 @@
 use errors::*;
 use network::{Endpoint, SocketReply};
 use devices::conductivity::responses::{CalibrationStatus, CompensationValue, DeviceInfo,
-                    DeviceStatus, Exported, ExportedInfo, LedStatus, OutputStringStatus,
-                    ProbeReading, ProbeType, ProtocolLockStatus};
+                                       DeviceStatus, Exported, ExportedInfo, LedStatus,
+                                       OutputStringStatus, ProbeReading, ProbeType,
+                                       ProtocolLockStatus};
 
 macro_rules! fn_response_from {
     ($name:ident) => {
