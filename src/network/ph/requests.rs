@@ -23,6 +23,395 @@ use utilities::atof;
 
 use ezo_common::BpsRate;
 
+impl_SocketRequest_for! {
+    Baud: OkReply,
+    req_str: {
+        if req_str.starts_with("baud ") {
+            let resp = req_str.get(5..).unwrap();
+            let bps_num = resp.parse::<u32>()
+                    .chain_err(|| ErrorKind::NumberParse)?;
+            let bps = BpsRate::parse_u32(bps_num)
+                    .chain_err(|| ErrorKind::RequestParse)?;
+            Ok(Baud(bps))
+        } else {
+            Err(ErrorKind::RequestParse.into())
+        }
+    },
+    req_out: {
+        format!("baud {}", &req_out.0.parse())
+    }
+}
+
+impl_SocketRequest_for! {
+    CalibrationClear: OkReply,
+    req_str: {
+        match req_str {
+            "calibration-clear" => Ok(CalibrationClear),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "calibration-clear".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    CalibrationHigh: OkReply,
+    req_str: {
+        if req_str.starts_with("calibration-high ") {
+            let resp = req_str.get(17..).unwrap();
+            let value = atof(resp)?;
+            return Ok(CalibrationHigh(value));
+        }
+        Err(ErrorKind::RequestParse.into())
+    },
+    req_out: {
+        format!("calibration-high {:.*}", 3, req_out.0)
+    }
+}
+
+impl_SocketRequest_for! {
+    CalibrationLow: OkReply,
+    req_str: {
+        if req_str.starts_with("calibration-low ") {
+            let resp = req_str.get(16..).unwrap();
+            let value = atof(resp)?;
+            return Ok(CalibrationLow(value));
+        }
+        Err(ErrorKind::RequestParse.into())
+    },
+    req_out: {
+        format!("calibration-low {:.*}", 3, req_out.0)
+    }
+}
+
+impl_SocketRequest_for! {
+    CalibrationMid: OkReply,
+    req_str: {
+        if req_str.starts_with("calibration-mid ") {
+            let resp = req_str.get(16..).unwrap();
+            let value = atof(resp)?;
+            return Ok(CalibrationMid(value));
+        }
+        Err(ErrorKind::RequestParse.into())
+    },
+    req_out: {
+        format!("calibration-mid {:.*}", 3, req_out.0)
+    }
+}
+
+impl_SocketRequest_for! {
+    CalibrationState: CalibrationStatus,
+    req_str: {
+        match req_str {
+            "calibration-status" => Ok(CalibrationState),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "calibration-status".to_string()
+    }
+}
+
+impl SocketRequest for CompensationGet {
+    type Response = CompensationValue;
+
+    fn from_request_str(req_str: &str) -> Result<CompensationGet> {
+        match req_str {
+            "compensation-get" => Ok(CompensationGet),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    }
+
+    fn request_string(&self) -> String {
+        "compensation-get".to_string()
+    }
+
+    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<CompensationValue> {
+        let _read = endpoint
+            .send(self.request_string().as_bytes())
+            .chain_err(|| ErrorKind::CommandRequest)?;
+        let response = CompensationValue::response_from(endpoint)?;
+        Ok(response)
+    }
+}
+
+// Implements SocketRequest for commands
+impl SocketRequest for CompensationSet {
+    type Response = OkReply;
+
+    fn from_request_str(req_str: &str) -> Result<CompensationSet> {
+        if req_str.starts_with("compensation-set ") {
+            let resp = req_str.get(17..).unwrap();
+            let value = atof(resp)?;
+            return Ok(CompensationSet(value));
+        }
+        Err(ErrorKind::RequestParse.into())
+    }
+
+    fn request_string(&self) -> String {
+        format!("compensation-set {:.*}", 3, self.0)
+    }
+
+    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<OkReply> {
+        let _read = endpoint
+            .send(self.request_string().as_bytes())
+            .chain_err(|| ErrorKind::CommandRequest)?;
+        let response = OkReply::response_from(endpoint)?;
+        Ok(response)
+    }
+}
+
+impl_SocketRequest_for! {
+    DeviceAddress: OkReply,
+    req_str: {
+        if req_str.starts_with("device-address ") {
+            let resp = req_str.get(15..).unwrap();
+            let addr = resp.parse::<u16>()
+                    .chain_err(|| ErrorKind::NumberParse)?;
+            Ok(DeviceAddress(addr))
+        } else {
+            Err(ErrorKind::RequestParse.into())
+        }
+    },
+    req_out: {
+        format!("device-address {}", &req_out.0)
+    }
+}
+
+impl_SocketRequest_for! {
+    DeviceInformation: DeviceInfo,
+    req_str: {
+        match req_str {
+            "device-info" => Ok(DeviceInformation),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "device-info".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    Export: Exported,
+    req_str: {
+        match req_str {
+            "export" => Ok(Export),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "export".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    ExportInfo: ExportedInfo,
+    req_str: {
+        match req_str {
+            "export-info" => Ok(ExportInfo),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "export-info".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    Import: OkReply,
+    req_str: {
+        if req_str.starts_with("import ") {
+            let resp = req_str.get(7..).unwrap();
+            match resp.len() {
+                1...12 => return Ok(Import(resp.to_string())),
+                _ => return Err(ErrorKind::RequestParse.into()),
+            }
+        }
+        Err(ErrorKind::RequestParse.into())
+    },
+    req_out: {
+        format!("import {}", req_out.0)
+    }
+}
+
+impl_SocketRequest_for! {
+    Factory: OkReply,
+    req_str: {
+        match req_str {
+            "factory" => Ok(Factory),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "factory".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    Find: OkReply,
+    req_str: {
+        match req_str {
+            "find" => Ok(Find),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "find".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    LedOff: OkReply,
+    req_str: {
+        match req_str {
+            "led-off" => Ok(LedOff),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "led-off".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    LedOn: OkReply,
+    req_str: {
+        match req_str {
+            "led-on" => Ok(LedOn),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "led-on".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    LedState: LedStatus,
+    req_str: {
+        match req_str {
+            "led-status" => Ok(LedState),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "led-status".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    ProtocolLockDisable: OkReply,
+    req_str: {
+        match req_str {
+            "protocol-lock-off" => Ok(ProtocolLockDisable),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "protocol-lock-off".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    ProtocolLockEnable: OkReply,
+    req_str: {
+        match req_str {
+            "protocol-lock-on" => Ok(ProtocolLockEnable),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "protocol-lock-on".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    ProtocolLockState: ProtocolLockStatus,
+    req_str: {
+        match req_str {
+            "protocol-lock-status" => Ok(ProtocolLockState),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "protocol-lock-status".to_string()
+    }
+}
+
+// Implements SocketRequest for commands
+impl SocketRequest for Reading {
+    type Response = SensorReading;
+
+    fn from_request_str(req_str: &str) -> Result<Reading> {
+        match req_str {
+            "read" => Ok(Reading),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    }
+
+    fn request_string(&self) -> String {
+        "read".to_string()
+    }
+
+    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<SensorReading> {
+        let _read = endpoint
+            .send(self.request_string().as_bytes())
+            .chain_err(|| ErrorKind::CommandRequest)?;
+        let response = SensorReading::response_from(endpoint)?;
+        Ok(response)
+    }
+}
+
+// Implements SocketRequest for commands
+impl SocketRequest for Sleep {
+    type Response = OkReply;
+
+    fn from_request_str(req_str: &str) -> Result<Sleep> {
+        match req_str {
+            "sleep" => Ok(Sleep),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    }
+
+    fn request_string(&self) -> String {
+        "sleep".to_string()
+    }
+
+    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<OkReply> {
+        let _read = endpoint
+            .send(self.request_string().as_bytes())
+            .chain_err(|| ErrorKind::CommandRequest)?;
+        let response = OkReply::response_from(endpoint)?;
+        Ok(response)
+    }
+}
+
+impl_SocketRequest_for! {
+    Slope: ProbeSlope,
+    req_str: {
+        match req_str {
+            "slope" => Ok(Slope),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "slope".to_string()
+    }
+}
+
+impl_SocketRequest_for! {
+    Status: DeviceStatus,
+    req_str: {
+        match req_str {
+            "status" => Ok(Status),
+            _ => Err(ErrorKind::RequestParse.into()),
+        }
+    },
+    _req_out: {
+        "status".to_string()
+    }
+}
 
 #[cfg(test)]
 mod tests {
