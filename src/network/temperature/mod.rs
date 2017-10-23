@@ -1,4 +1,4 @@
-//! Networked services for pH sensing.
+//! Networked services for Temperature sensing.
 pub mod replies;
 
 mod server;
