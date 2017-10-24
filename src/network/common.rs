@@ -40,25 +40,9 @@ where
 {
     /// Create a new instance from `&str`.
     fn parse_response(rep_str: &str) -> Result<Self>;
+    /// Return the instance as a `String`.
+    fn response_string(&self) -> String;
     fn response_from<T: Endpoint>(endpoint: &T) -> Result<Self>;
-}
-
-// Implements SocketRequest for commands
-pub struct OkReply;
-
-impl SocketReply for OkReply {
-    fn parse_response(rep_str: &str) -> Result<OkReply> {
-        match rep_str {
-            "ok" => Ok(OkReply),
-            _ => Err(ErrorKind::CommandReply.into()),
-        }
-    }
-
-    fn response_from<T: Endpoint>(endpoint: &T) -> Result<OkReply> {
-        let rep_string = endpoint.recv()?;
-        let response = OkReply::parse_response(&rep_string)?;
-        Ok(response)
-    }
 }
 
 // Common network commands
@@ -277,7 +261,31 @@ macro_rules! impl_SocketReply_for {
                     .chain_err(|| ErrorKind::CommandReply)
             }
 
+            fn response_string(&self) -> String {
+                format!("{}", self)
+            }
+
             fn_response_from!($name);
         }
     };
 }
+
+/// `ok` reply.
+pub struct OkReply;
+
+impl OkReply {
+    fn parse(rep_str: &str) -> Result<OkReply> {
+        match rep_str {
+            "ok" => Ok(OkReply),
+            _ => Err(ErrorKind::CommandReply.into()),
+        }
+    }
+}
+
+impl std::fmt::Display for OkReply {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "ok")
+    }
+}
+
+impl_SocketReply_for!(OkReply);
