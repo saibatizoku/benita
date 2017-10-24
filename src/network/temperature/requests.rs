@@ -6,19 +6,22 @@ use network::common::OkReply;
 
 pub use devices::temperature::commands::Baud;
 pub use devices::temperature::commands::Command;
-pub use devices::temperature::commands::{CalibrationClear, CalibrationState, CalibrationTemperature};
+pub use devices::temperature::commands::{CalibrationClear, CalibrationState,
+                                         CalibrationTemperature};
 pub use devices::temperature::commands::{DataloggerDisable, DataloggerInterval, DataloggerPeriod};
-pub use devices::temperature::commands::{DeviceAddress, DeviceInformation, Factory, Find, Reading, Sleep,
-                                    Status};
+pub use devices::temperature::commands::{DeviceAddress, DeviceInformation, Factory, Find, Reading,
+                                         Sleep, Status};
 pub use devices::temperature::commands::{Export, ExportInfo, Import};
 pub use devices::temperature::commands::{LedOff, LedOn, LedState};
 pub use devices::temperature::commands::{MemoryClear, MemoryRecall, MemoryRecallLast};
-pub use devices::temperature::commands::{ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState};
+pub use devices::temperature::commands::{ProtocolLockDisable, ProtocolLockEnable,
+                                         ProtocolLockState};
 pub use devices::temperature::commands::{ScaleCelsius, ScaleFahrenheit, ScaleKelvin, ScaleState};
 
-use devices::temperature::responses::{CalibrationStatus, DataLoggerStorageIntervalSeconds, DeviceInfo,
-                            DeviceStatus, Exported, ExportedInfo, LedStatus, MemoryReading,
-                            ProtocolLockStatus, SensorReading, TemperatureScale};
+use devices::temperature::responses::{CalibrationStatus, DataLoggerStorageIntervalSeconds,
+                                      DeviceInfo, DeviceStatus, Exported, ExportedInfo, LedStatus,
+                                      MemoryReading, ProtocolLockStatus, SensorReading,
+                                      TemperatureScale};
 use utilities::atof;
 
 use ezo_common::BpsRate;
@@ -485,7 +488,8 @@ mod tests {
 
     #[test]
     fn parse_temperature_calibration_set_request_from_valid_str() {
-        let request = CalibrationTemperature::from_request_str("calibration-set 1000.3324").unwrap();
+        let request =
+            CalibrationTemperature::from_request_str("calibration-set 1000.3324").unwrap();
         assert_eq!("calibration-set 1000.332", &request.request_string());
     }
 
