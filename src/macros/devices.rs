@@ -6,6 +6,7 @@ macro_rules! device_i2cdev {
         #[ doc = $doc ]
         pub struct $name {
             path: String,
+            address: u16,
             i2cdev: LinuxI2CDevice,
         }
 
@@ -19,12 +20,13 @@ macro_rules! device_i2cdev {
                 let i2cdev = LinuxI2CDevice::new(path, address)
                     .chain_err(|| ErrorKind::SensorTrouble)?;
                 let path = path.to_string();
-                Ok( $name { path, i2cdev: i2cdev } )
+                Ok( $name { path, address, i2cdev: i2cdev } )
             }
             /// Update the sensor's I2C address.
             pub fn update_address(&mut self, address: u16) -> Result<()> {
                 let i2cdev = LinuxI2CDevice::new(&self.path, address)
                     .chain_err(|| ErrorKind::SensorTrouble)?;
+                self.address = address;
                 self.i2cdev = i2cdev;
                 Ok( () )
             }
@@ -40,7 +42,7 @@ macro_rules! device_i2cdev {
 
         impl fmt::Debug for $name {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                write!(f, "{} {{ {} }}", stringify!($name), self.path)
+                write!(f, "{} {{ ADDRESS {} @ {}}}", stringify!($name), self.address, self.path)
             }
         }
     };
