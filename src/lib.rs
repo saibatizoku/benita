@@ -28,8 +28,8 @@ extern crate serde_derive;
 extern crate toml;
 
 #[macro_use]
-// Useful macros.
-mod macros;
+// Useful items, functions and macros.
+pub mod common;
 
 pub mod cli;
 pub mod config;
