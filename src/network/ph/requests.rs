@@ -113,52 +113,31 @@ impl_SocketRequest_for! {
     }
 }
 
-impl SocketRequest for CompensationGet {
-    type Response = CompensationValue;
-
-    fn from_request_str(req_str: &str) -> Result<CompensationGet> {
+impl_SocketRequest_for! {
+    CompensationGet: CompensationValue,
+    req_str: {
         match req_str {
             "compensation-get" => Ok(CompensationGet),
             _ => Err(ErrorKind::RequestParse.into()),
         }
-    }
-
-    fn request_string(&self) -> String {
+    },
+    _reply: {
         "compensation-get".to_string()
-    }
-
-    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<CompensationValue> {
-        let _read = endpoint
-            .send(self.request_string().as_bytes())
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        let response = CompensationValue::response_from(endpoint)?;
-        Ok(response)
     }
 }
 
-// Implements SocketRequest for commands
-impl SocketRequest for CompensationSet {
-    type Response = OkReply;
-
-    fn from_request_str(req_str: &str) -> Result<CompensationSet> {
+impl_SocketRequest_for! {
+    CompensationSet: OkReply,
+    req_str: {
         if req_str.starts_with("compensation-set ") {
             let resp = req_str.get(17..).unwrap();
             let value = atof(resp)?;
             return Ok(CompensationSet(value));
         }
         Err(ErrorKind::RequestParse.into())
-    }
-
-    fn request_string(&self) -> String {
-        format!("compensation-set {:.*}", 3, self.0)
-    }
-
-    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<OkReply> {
-        let _read = endpoint
-            .send(self.request_string().as_bytes())
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        let response = OkReply::response_from(endpoint)?;
-        Ok(response)
+    },
+    reply: {
+        format!("compensation-set {:.*}", 3, reply.0)
     }
 }
 
@@ -339,51 +318,29 @@ impl_SocketRequest_for! {
     }
 }
 
-// Implements SocketRequest for commands
-impl SocketRequest for Reading {
-    type Response = SensorReading;
-
-    fn from_request_str(req_str: &str) -> Result<Reading> {
+impl_SocketRequest_for! {
+    Reading: SensorReading,
+    req_str: {
         match req_str {
             "read" => Ok(Reading),
             _ => Err(ErrorKind::RequestParse.into()),
         }
-    }
-
-    fn request_string(&self) -> String {
+    },
+    _req_out: {
         "read".to_string()
-    }
-
-    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<SensorReading> {
-        let _read = endpoint
-            .send(self.request_string().as_bytes())
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        let response = SensorReading::response_from(endpoint)?;
-        Ok(response)
     }
 }
 
-// Implements SocketRequest for commands
-impl SocketRequest for Sleep {
-    type Response = OkReply;
-
-    fn from_request_str(req_str: &str) -> Result<Sleep> {
+impl_SocketRequest_for! {
+    Sleep: OkReply,
+    req_str: {
         match req_str {
             "sleep" => Ok(Sleep),
             _ => Err(ErrorKind::RequestParse.into()),
         }
-    }
-
-    fn request_string(&self) -> String {
+    },
+    _req_out: {
         "sleep".to_string()
-    }
-
-    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<OkReply> {
-        let _read = endpoint
-            .send(self.request_string().as_bytes())
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        let response = OkReply::response_from(endpoint)?;
-        Ok(response)
     }
 }
 

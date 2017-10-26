@@ -1,6 +1,7 @@
 //! Replies from the conductivity sensor. `Reply`s are received after a `Request`.
 use errors::*;
 use network::{Endpoint, SocketReply};
+
 pub use devices::conductivity::responses::{CalibrationStatus, CompensationValue, DeviceInfo,
                                            DeviceStatus, Exported, ExportedInfo, LedStatus,
                                            OutputStringStatus, ProbeReading, ProbeType,
