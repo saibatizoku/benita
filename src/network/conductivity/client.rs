@@ -1,6 +1,7 @@
 //! Client for Conductivity sensing.
 use errors::*;
-use network::Endpoint;
+use network::{Endpoint, SocketReply, SocketRequest};
+use network::conductivity::requests::{CompensationSet, OutputState, Reading, Sleep};
 
 // Needed by the device_socket! macro.
 use neuras;
@@ -15,34 +16,25 @@ device_socket! {
 impl ConductivityClient {
     /// get the output string parameters for sensor readings.
     pub fn get_output_params(&self) -> Result<String> {
-        let _read = self.send("get_params".as_bytes())
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        let response = self.recv().chain_err(|| ErrorKind::CommandResponse)?;
-        Ok(response)
+        let reply = OutputState.send_to(self)?;
+        Ok(reply.to_reply_string())
     }
 
     /// send the compensation temperature for sensor readings.
     pub fn send_compensate(&self, t: f64) -> Result<String> {
-        let calibrate = format!("calibrate {:.*}", 3, t);
-        let _read = self.send(calibrate.as_bytes())
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        let response = self.recv().chain_err(|| ErrorKind::CommandResponse)?;
-        Ok(response)
+        let reply = CompensationSet(t).send_to(self)?;
+        Ok(reply.to_reply_string())
     }
 
     /// get the output string with sensor readings.
     pub fn send_read(&self) -> Result<String> {
-        let _read = self.send("read".as_bytes())
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        let response = self.recv().chain_err(|| ErrorKind::CommandResponse)?;
-        Ok(response)
+        let reply = Reading.send_to(self)?;
+        Ok(reply.to_reply_string())
     }
 
     /// set the sensor to sleep (low-power) mode.
     pub fn send_sleep(&self) -> Result<String> {
-        let _read = self.send("sleep".as_bytes())
-            .chain_err(|| ErrorKind::CommandRequest)?;
-        let response = self.recv().chain_err(|| ErrorKind::CommandResponse)?;
-        Ok(response)
+        let reply = Sleep.send_to(self)?;
+        Ok(reply.to_reply_string())
     }
 }
