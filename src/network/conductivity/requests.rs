@@ -594,7 +594,7 @@ mod tests {
 
     fn assert_valid_baud_request(test_str: &str, bps: BpsRate) {
         let request = Baud::from_request_str(test_str).unwrap();
-        assert_eq!(test_str, &request.request_string());
+        assert_eq!(test_str, &request.to_request_string());
         assert_eq!(bps, request.0);
     }
     #[test]

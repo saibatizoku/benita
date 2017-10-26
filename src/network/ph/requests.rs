@@ -419,7 +419,7 @@ mod tests {
 
     fn assert_valid_baud_request(test_str: &str, bps: BpsRate) {
         let request = Baud::from_request_str(test_str).unwrap();
-        assert_eq!(test_str, &request.request_string());
+        assert_eq!(test_str, &request.to_request_string());
         assert_eq!(bps, request.0);
     }
     #[test]
@@ -452,7 +452,7 @@ mod tests {
     #[test]
     fn parse_ph_calibration_clear_request_from_valid_str() {
         let request = CalibrationClear::from_request_str("calibration-clear").unwrap();
-        assert_eq!("calibration-clear", &request.request_string());
+        assert_eq!("calibration-clear", &request.to_request_string());
     }
 
     #[test]
@@ -467,7 +467,7 @@ mod tests {
     #[test]
     fn parse_ph_calibration_high_request_from_valid_str() {
         let request = CalibrationHigh::from_request_str("calibration-high 1000.3324").unwrap();
-        assert_eq!("calibration-high 1000.332", &request.request_string());
+        assert_eq!("calibration-high 1000.332", &request.to_request_string());
     }
 
     #[test]
@@ -485,7 +485,7 @@ mod tests {
     #[test]
     fn parse_ph_calibration_low_request_from_valid_str() {
         let request = CalibrationLow::from_request_str("calibration-low 1000.3324").unwrap();
-        assert_eq!("calibration-low 1000.332", &request.request_string());
+        assert_eq!("calibration-low 1000.332", &request.to_request_string());
     }
 
     #[test]
@@ -503,7 +503,7 @@ mod tests {
     #[test]
     fn parse_ph_calibration_mid_request_from_valid_str() {
         let request = CalibrationMid::from_request_str("calibration-mid 1000.3324").unwrap();
-        assert_eq!("calibration-mid 1000.332", &request.request_string());
+        assert_eq!("calibration-mid 1000.332", &request.to_request_string());
     }
 
     #[test]
@@ -521,7 +521,7 @@ mod tests {
     #[test]
     fn parse_ph_calibration_status_request_from_valid_str() {
         let request = CalibrationState::from_request_str("calibration-status").unwrap();
-        assert_eq!("calibration-status", &request.request_string());
+        assert_eq!("calibration-status", &request.to_request_string());
     }
 
     #[test]
@@ -536,7 +536,7 @@ mod tests {
     #[test]
     fn parse_ph_compensation_get_request_from_valid_str() {
         let request = CompensationGet::from_request_str("compensation-get").unwrap();
-        assert_eq!("compensation-get", &request.request_string());
+        assert_eq!("compensation-get", &request.to_request_string());
     }
 
     #[test]
@@ -554,7 +554,7 @@ mod tests {
     #[test]
     fn parse_ph_compensation_set_request_from_valid_str() {
         let request = CompensationSet::from_request_str("compensation-set 10.5829").unwrap();
-        assert_eq!("compensation-set 10.583", &request.request_string());
+        assert_eq!("compensation-set 10.583", &request.to_request_string());
     }
 
     #[test]
@@ -569,7 +569,7 @@ mod tests {
     #[test]
     fn parse_ph_device_address_request_from_valid_str() {
         let request = DeviceAddress::from_request_str("device-address 90").unwrap();
-        assert_eq!("device-address 90", &request.request_string());
+        assert_eq!("device-address 90", &request.to_request_string());
     }
 
     #[test]
@@ -587,7 +587,7 @@ mod tests {
     #[test]
     fn parse_ph_device_info_request_from_valid_str() {
         let request = DeviceInformation::from_request_str("device-info").unwrap();
-        assert_eq!("device-info", &request.request_string());
+        assert_eq!("device-info", &request.to_request_string());
     }
 
     #[test]
@@ -602,7 +602,7 @@ mod tests {
     #[test]
     fn parse_ph_export_request_from_valid_str() {
         let request = Export::from_request_str("export").unwrap();
-        assert_eq!("export", &request.request_string());
+        assert_eq!("export", &request.to_request_string());
     }
 
     #[test]
@@ -617,7 +617,7 @@ mod tests {
     #[test]
     fn parse_ph_export_info_request_from_valid_str() {
         let request = ExportInfo::from_request_str("export-info").unwrap();
-        assert_eq!("export-info", &request.request_string());
+        assert_eq!("export-info", &request.to_request_string());
     }
 
     #[test]
@@ -632,7 +632,7 @@ mod tests {
     #[test]
     fn parse_ph_import_request_from_valid_str() {
         let request = Import::from_request_str("import 123456789012").unwrap();
-        assert_eq!("import 123456789012", &request.request_string());
+        assert_eq!("import 123456789012", &request.to_request_string());
     }
 
     #[test]
@@ -650,7 +650,7 @@ mod tests {
     #[test]
     fn parse_ph_factory_request_from_valid_str() {
         let request = Factory::from_request_str("factory").unwrap();
-        assert_eq!("factory", &request.request_string());
+        assert_eq!("factory", &request.to_request_string());
     }
 
     #[test]
@@ -665,7 +665,7 @@ mod tests {
     #[test]
     fn parse_ph_find_request_from_valid_str() {
         let request = Find::from_request_str("find").unwrap();
-        assert_eq!("find", &request.request_string());
+        assert_eq!("find", &request.to_request_string());
     }
 
     #[test]
@@ -680,7 +680,7 @@ mod tests {
     #[test]
     fn parse_ph_led_off_request_from_valid_str() {
         let request = LedOff::from_request_str("led-off").unwrap();
-        assert_eq!("led-off", &request.request_string());
+        assert_eq!("led-off", &request.to_request_string());
     }
 
     #[test]
@@ -695,7 +695,7 @@ mod tests {
     #[test]
     fn parse_ph_led_on_request_from_valid_str() {
         let request = LedOn::from_request_str("led-on").unwrap();
-        assert_eq!("led-on", &request.request_string());
+        assert_eq!("led-on", &request.to_request_string());
     }
 
     #[test]
@@ -710,7 +710,7 @@ mod tests {
     #[test]
     fn parse_ph_led_status_request_from_valid_str() {
         let request = LedState::from_request_str("led-status").unwrap();
-        assert_eq!("led-status", &request.request_string());
+        assert_eq!("led-status", &request.to_request_string());
     }
 
     #[test]
@@ -725,7 +725,7 @@ mod tests {
     #[test]
     fn parse_ph_protocol_lock_off_request_from_valid_str() {
         let request = ProtocolLockDisable::from_request_str("protocol-lock-off").unwrap();
-        assert_eq!("protocol-lock-off", &request.request_string());
+        assert_eq!("protocol-lock-off", &request.to_request_string());
     }
 
     #[test]
@@ -740,7 +740,7 @@ mod tests {
     #[test]
     fn parse_ph_protocol_lock_on_request_from_valid_str() {
         let request = ProtocolLockEnable::from_request_str("protocol-lock-on").unwrap();
-        assert_eq!("protocol-lock-on", &request.request_string());
+        assert_eq!("protocol-lock-on", &request.to_request_string());
     }
 
     #[test]
@@ -755,7 +755,7 @@ mod tests {
     #[test]
     fn parse_ph_protocol_lock_status_request_from_valid_str() {
         let request = ProtocolLockState::from_request_str("protocol-lock-status").unwrap();
-        assert_eq!("protocol-lock-status", &request.request_string());
+        assert_eq!("protocol-lock-status", &request.to_request_string());
     }
 
     #[test]
@@ -770,7 +770,7 @@ mod tests {
     #[test]
     fn parse_ph_read_request_from_valid_str() {
         let request = Reading::from_request_str("read").unwrap();
-        assert_eq!("read", &request.request_string());
+        assert_eq!("read", &request.to_request_string());
     }
 
     #[test]
@@ -782,7 +782,7 @@ mod tests {
     #[test]
     fn parse_ph_sleep_request_from_valid_str() {
         let request = Sleep::from_request_str("sleep").unwrap();
-        assert_eq!("sleep", &request.request_string());
+        assert_eq!("sleep", &request.to_request_string());
     }
 
     #[test]
@@ -794,7 +794,7 @@ mod tests {
     #[test]
     fn parse_ph_slope_request_from_valid_str() {
         let request = Slope::from_request_str("slope").unwrap();
-        assert_eq!("slope", &request.request_string());
+        assert_eq!("slope", &request.to_request_string());
     }
 
     #[test]
@@ -806,7 +806,7 @@ mod tests {
     #[test]
     fn parse_ph_status_request_from_valid_str() {
         let request = Status::from_request_str("status").unwrap();
-        assert_eq!("status", &request.request_string());
+        assert_eq!("status", &request.to_request_string());
     }
 
     #[test]

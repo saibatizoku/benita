@@ -441,7 +441,7 @@ mod tests {
 
     fn assert_valid_baud_request(test_str: &str, bps: BpsRate) {
         let request = Baud::from_request_str(test_str).unwrap();
-        assert_eq!(test_str, &request.request_string());
+        assert_eq!(test_str, &request.to_request_string());
         assert_eq!(bps, request.0);
     }
     #[test]
@@ -474,7 +474,7 @@ mod tests {
     #[test]
     fn parse_temperature_calibration_clear_request_from_valid_str() {
         let request = CalibrationClear::from_request_str("calibration-clear").unwrap();
-        assert_eq!("calibration-clear", &request.request_string());
+        assert_eq!("calibration-clear", &request.to_request_string());
     }
 
     #[test]
@@ -490,7 +490,7 @@ mod tests {
     fn parse_temperature_calibration_set_request_from_valid_str() {
         let request =
             CalibrationTemperature::from_request_str("calibration-set 1000.3324").unwrap();
-        assert_eq!("calibration-set 1000.332", &request.request_string());
+        assert_eq!("calibration-set 1000.332", &request.to_request_string());
     }
 
     #[test]
@@ -508,7 +508,7 @@ mod tests {
     #[test]
     fn parse_temperature_calibration_status_request_from_valid_str() {
         let request = CalibrationState::from_request_str("calibration-status").unwrap();
-        assert_eq!("calibration-status", &request.request_string());
+        assert_eq!("calibration-status", &request.to_request_string());
     }
 
     #[test]
@@ -523,7 +523,7 @@ mod tests {
     #[test]
     fn parse_temperature_datalogger_off_request_from_valid_str() {
         let request = DataloggerDisable::from_request_str("datalogger-off").unwrap();
-        assert_eq!("datalogger-off", &request.request_string());
+        assert_eq!("datalogger-off", &request.to_request_string());
     }
 
     #[test]
@@ -538,7 +538,7 @@ mod tests {
     #[test]
     fn parse_temperature_datalogger_set_request_from_valid_str() {
         let request = DataloggerPeriod::from_request_str("datalogger-set 10").unwrap();
-        assert_eq!("datalogger-set 10", &request.request_string());
+        assert_eq!("datalogger-set 10", &request.to_request_string());
     }
 
     #[test]
@@ -559,7 +559,7 @@ mod tests {
     #[test]
     fn parse_temperature_datalogger_status_request_from_valid_str() {
         let request = DataloggerInterval::from_request_str("datalogger-status").unwrap();
-        assert_eq!("datalogger-status", &request.request_string());
+        assert_eq!("datalogger-status", &request.to_request_string());
     }
 
     #[test]
@@ -577,7 +577,7 @@ mod tests {
     #[test]
     fn parse_temperature_device_address_request_from_valid_str() {
         let request = DeviceAddress::from_request_str("device-address 90").unwrap();
-        assert_eq!("device-address 90", &request.request_string());
+        assert_eq!("device-address 90", &request.to_request_string());
     }
 
     #[test]
@@ -595,7 +595,7 @@ mod tests {
     #[test]
     fn parse_temperature_device_info_request_from_valid_str() {
         let request = DeviceInformation::from_request_str("device-info").unwrap();
-        assert_eq!("device-info", &request.request_string());
+        assert_eq!("device-info", &request.to_request_string());
     }
 
     #[test]
@@ -610,7 +610,7 @@ mod tests {
     #[test]
     fn parse_temperature_export_request_from_valid_str() {
         let request = Export::from_request_str("export").unwrap();
-        assert_eq!("export", &request.request_string());
+        assert_eq!("export", &request.to_request_string());
     }
 
     #[test]
@@ -625,7 +625,7 @@ mod tests {
     #[test]
     fn parse_temperature_export_info_request_from_valid_str() {
         let request = ExportInfo::from_request_str("export-info").unwrap();
-        assert_eq!("export-info", &request.request_string());
+        assert_eq!("export-info", &request.to_request_string());
     }
 
     #[test]
@@ -640,7 +640,7 @@ mod tests {
     #[test]
     fn parse_temperature_import_request_from_valid_str() {
         let request = Import::from_request_str("import 123456789012").unwrap();
-        assert_eq!("import 123456789012", &request.request_string());
+        assert_eq!("import 123456789012", &request.to_request_string());
     }
 
     #[test]
@@ -658,7 +658,7 @@ mod tests {
     #[test]
     fn parse_temperature_factory_request_from_valid_str() {
         let request = Factory::from_request_str("factory").unwrap();
-        assert_eq!("factory", &request.request_string());
+        assert_eq!("factory", &request.to_request_string());
     }
 
     #[test]
@@ -673,7 +673,7 @@ mod tests {
     #[test]
     fn parse_temperature_find_request_from_valid_str() {
         let request = Find::from_request_str("find").unwrap();
-        assert_eq!("find", &request.request_string());
+        assert_eq!("find", &request.to_request_string());
     }
 
     #[test]
@@ -688,7 +688,7 @@ mod tests {
     #[test]
     fn parse_temperature_led_off_request_from_valid_str() {
         let request = LedOff::from_request_str("led-off").unwrap();
-        assert_eq!("led-off", &request.request_string());
+        assert_eq!("led-off", &request.to_request_string());
     }
 
     #[test]
@@ -703,7 +703,7 @@ mod tests {
     #[test]
     fn parse_temperature_led_on_request_from_valid_str() {
         let request = LedOn::from_request_str("led-on").unwrap();
-        assert_eq!("led-on", &request.request_string());
+        assert_eq!("led-on", &request.to_request_string());
     }
 
     #[test]
@@ -718,7 +718,7 @@ mod tests {
     #[test]
     fn parse_temperature_led_status_request_from_valid_str() {
         let request = LedState::from_request_str("led-status").unwrap();
-        assert_eq!("led-status", &request.request_string());
+        assert_eq!("led-status", &request.to_request_string());
     }
 
     #[test]
@@ -733,7 +733,7 @@ mod tests {
     #[test]
     fn parse_temperature_memory_clear_request_from_valid_str() {
         let request = MemoryClear::from_request_str("memory-clear").unwrap();
-        assert_eq!("memory-clear", &request.request_string());
+        assert_eq!("memory-clear", &request.to_request_string());
     }
 
     #[test]
@@ -748,7 +748,7 @@ mod tests {
     #[test]
     fn parse_temperature_memory_recall_request_from_valid_str() {
         let request = MemoryRecall::from_request_str("memory-recall").unwrap();
-        assert_eq!("memory-recall", &request.request_string());
+        assert_eq!("memory-recall", &request.to_request_string());
     }
 
     #[test]
@@ -763,7 +763,7 @@ mod tests {
     #[test]
     fn parse_temperature_memory_recall_last_request_from_valid_str() {
         let request = MemoryRecallLast::from_request_str("memory-recall-last").unwrap();
-        assert_eq!("memory-recall-last", &request.request_string());
+        assert_eq!("memory-recall-last", &request.to_request_string());
     }
 
     #[test]
@@ -778,7 +778,7 @@ mod tests {
     #[test]
     fn parse_temperature_protocol_lock_off_request_from_valid_str() {
         let request = ProtocolLockDisable::from_request_str("protocol-lock-off").unwrap();
-        assert_eq!("protocol-lock-off", &request.request_string());
+        assert_eq!("protocol-lock-off", &request.to_request_string());
     }
 
     #[test]
@@ -793,7 +793,7 @@ mod tests {
     #[test]
     fn parse_temperature_protocol_lock_on_request_from_valid_str() {
         let request = ProtocolLockEnable::from_request_str("protocol-lock-on").unwrap();
-        assert_eq!("protocol-lock-on", &request.request_string());
+        assert_eq!("protocol-lock-on", &request.to_request_string());
     }
 
     #[test]
@@ -808,7 +808,7 @@ mod tests {
     #[test]
     fn parse_temperature_protocol_lock_status_request_from_valid_str() {
         let request = ProtocolLockState::from_request_str("protocol-lock-status").unwrap();
-        assert_eq!("protocol-lock-status", &request.request_string());
+        assert_eq!("protocol-lock-status", &request.to_request_string());
     }
 
     #[test]
@@ -823,7 +823,7 @@ mod tests {
     #[test]
     fn parse_temperature_read_request_from_valid_str() {
         let request = Reading::from_request_str("read").unwrap();
-        assert_eq!("read", &request.request_string());
+        assert_eq!("read", &request.to_request_string());
     }
 
     #[test]
@@ -835,7 +835,7 @@ mod tests {
     #[test]
     fn parse_temperature_scale_celsius_request_from_valid_str() {
         let request = ScaleCelsius::from_request_str("scale-celsius").unwrap();
-        assert_eq!("scale-celsius", &request.request_string());
+        assert_eq!("scale-celsius", &request.to_request_string());
     }
 
     #[test]
@@ -847,7 +847,7 @@ mod tests {
     #[test]
     fn parse_temperature_scale_fahrenheit_request_from_valid_str() {
         let request = ScaleFahrenheit::from_request_str("scale-fahrenheit").unwrap();
-        assert_eq!("scale-fahrenheit", &request.request_string());
+        assert_eq!("scale-fahrenheit", &request.to_request_string());
     }
 
     #[test]
@@ -859,7 +859,7 @@ mod tests {
     #[test]
     fn parse_temperature_scale_kelvin_request_from_valid_str() {
         let request = ScaleKelvin::from_request_str("scale-kelvin").unwrap();
-        assert_eq!("scale-kelvin", &request.request_string());
+        assert_eq!("scale-kelvin", &request.to_request_string());
     }
 
     #[test]
@@ -871,7 +871,7 @@ mod tests {
     #[test]
     fn parse_temperature_scale_status_request_from_valid_str() {
         let request = ScaleState::from_request_str("scale-status").unwrap();
-        assert_eq!("scale-status", &request.request_string());
+        assert_eq!("scale-status", &request.to_request_string());
     }
 
     #[test]
@@ -883,7 +883,7 @@ mod tests {
     #[test]
     fn parse_temperature_sleep_request_from_valid_str() {
         let request = Sleep::from_request_str("sleep").unwrap();
-        assert_eq!("sleep", &request.request_string());
+        assert_eq!("sleep", &request.to_request_string());
     }
 
     #[test]
@@ -895,7 +895,7 @@ mod tests {
     #[test]
     fn parse_temperature_status_request_from_valid_str() {
         let request = Status::from_request_str("status").unwrap();
-        assert_eq!("status", &request.request_string());
+        assert_eq!("status", &request.to_request_string());
     }
 
     #[test]
