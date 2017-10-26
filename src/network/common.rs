@@ -28,9 +28,9 @@ where
     /// Create a new instance from `&str`.
     fn from_request_str(req_str: &str) -> Result<Self>;
     /// Return the instance as a `String`.
-    fn request_string(&self) -> String;
+    fn to_request_string(&self) -> String;
     /// Execute the request over the socket, and return the corresponding response.
-    fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<Self::Response>;
+    fn send_to<T: Endpoint>(&self, &T) -> Result<Self::Response>;
 }
 
 /// A response sent over a socket
@@ -39,10 +39,10 @@ where
     Self: std::marker::Sized,
 {
     /// Create a new instance from `&str`.
-    fn parse_response(rep_str: &str) -> Result<Self>;
+    fn parse_response(&str) -> Result<Self>;
     /// Return the instance as a `String`.
-    fn response_string(&self) -> String;
-    fn response_from<T: Endpoint>(endpoint: &T) -> Result<Self>;
+    fn to_reply_string(&self) -> String;
+    fn recv_from<T: Endpoint>(&T) -> Result<Self>;
 }
 
 // Common network commands
@@ -228,24 +228,24 @@ macro_rules! impl_SocketRequest_for {
                 $fromstr
             }
 
-            fn request_string(&self) -> String {
+            fn to_request_string(&self) -> String {
                 let $self = self;
                 $tostring
             }
 
-            fn request_to<T: Endpoint>(&self, endpoint: &T) -> Result<$response> {
-                let _read = endpoint.send(self.request_string().as_bytes())
+            fn send_to<T: Endpoint>(&self, endpoint: &T) -> Result<$response> {
+                let _read = endpoint.send(self.to_request_string().as_bytes())
                     .chain_err(|| ErrorKind::CommandRequest)?;
-                let response = $response::response_from(endpoint)?;
+                let response = $response::recv_from(endpoint)?;
                 Ok(response)
             }
         }
     };
 }
 
-macro_rules! fn_response_from {
+macro_rules! fn_recv_from {
     ($name:ident) => {
-            fn response_from<T: Endpoint>(endpoint: &T) -> Result<$name> {
+            fn recv_from<T: Endpoint>(endpoint: &T) -> Result<$name> {
                 let rep_string = endpoint.recv()?;
                 let response = $name::parse_response(&rep_string)?;
                 Ok(response)
@@ -260,12 +260,10 @@ macro_rules! impl_SocketReply_for {
                 $name::parse(rep_str)
                     .chain_err(|| ErrorKind::CommandReply)
             }
-
-            fn response_string(&self) -> String {
+            fn to_reply_string(&self) -> String {
                 format!("{}", self)
             }
-
-            fn_response_from!($name);
+            fn_recv_from!($name);
         }
     };
 }
