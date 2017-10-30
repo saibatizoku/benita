@@ -3,14 +3,13 @@ use errors::*;
 use network::{Endpoint, SocketReply, SocketRequest};
 use network::conductivity::requests::{CompensationSet, OutputState, Reading, Sleep};
 
-// Needed by the device_socket! macro.
 use neuras;
 
-// Define the network client socket for sending requests to the
-// `ConductivitySensorServer`.
-device_socket! {
+// Define the network client socket for sending requests to a
+// `ConductivityClientSocket`.
+network_socket! {
     ConductivityClient,
-    "Socket that makes requests to the Conductivity sensor server."
+    "Socket that makes requests to the Conductivity sensor socket."
 }
 
 impl ConductivityClient {

@@ -6,19 +6,19 @@ use network::Endpoint;
 use neuras;
 
 
-// Define the network server socket for directly interacting with the
+// Define the network socket for directly interacting with the
 // pH sensor via I2C.
-device_socket! {
-    PhSensorServer,
+network_sensor_socket! {
+    PhSensorSocket,
     PhSensor,
     "Socket that responds to pH sensor commands."
 }
 
-impl PhSensorServer {
+impl PhSensorSocket {
     sensor_socket_commands!(device_common);
 }
 
-impl PhSensorServer {
+impl PhSensorSocket {
     sensor_socket_commands!(calibration_common);
 
     /// Set the calibration high-point for the sensor.
@@ -46,11 +46,11 @@ impl PhSensorServer {
     }
 }
 
-impl PhSensorServer {
+impl PhSensorSocket {
     sensor_socket_commands!(temperature_compensation);
 }
 
-impl PhSensorServer {
+impl PhSensorSocket {
     /// Get the current slope for the pH sensor.
     pub fn get_slope(&mut self) -> Result<String> {
         let response = self.sensor

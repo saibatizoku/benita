@@ -2,8 +2,8 @@
 pub mod requests;
 pub mod replies;
 
-mod client;
-mod server;
+mod requester;
+mod responder;
 
-pub use self::client::ConductivityClient;
-pub use self::server::ConductivitySensorServer;
+pub use self::requester::ConductivityClient;
+pub use self::responder::ConductivitySensorSocket;

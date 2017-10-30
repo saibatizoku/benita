@@ -6,19 +6,19 @@ use network::Endpoint;
 use neuras;
 
 
-// Define the network server socket for directly interacting with the
+// Define the network socket for directly interacting with the
 // Conductivity sensor via I2C.
-device_socket! {
-    ConductivitySensorServer,
+network_sensor_socket! {
+    ConductivitySensorSocket,
     ConductivitySensor,
     "Socket that responds to Conductivity sensor commands."
 }
 
-impl ConductivitySensorServer {
+impl ConductivitySensorSocket {
     sensor_socket_commands!(device_common);
 }
 
-impl ConductivitySensorServer {
+impl ConductivitySensorSocket {
     sensor_socket_commands!(calibration_common);
 
     /// set dry calibration settings.
@@ -54,11 +54,11 @@ impl ConductivitySensorServer {
     }
 }
 
-impl ConductivitySensorServer {
+impl ConductivitySensorSocket {
     sensor_socket_commands!(temperature_compensation);
 }
 
-impl ConductivitySensorServer {
+impl ConductivitySensorSocket {
     /// get the output string parameters for sensor readings.
     pub fn get_output_params(&mut self) -> Result<String> {
         let response = self.sensor
@@ -132,7 +132,7 @@ impl ConductivitySensorServer {
     }
 }
 
-impl ConductivitySensorServer {
+impl ConductivitySensorSocket {
     /// set the probe type to `1.0`
     pub fn set_probe_type_one(&mut self) -> Result<String> {
         let _response = self.sensor

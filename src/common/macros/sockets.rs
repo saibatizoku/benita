@@ -1,6 +1,6 @@
 /// Create and define a device network socket compatible with the `benita` network.
 #[macro_export]
-macro_rules! device_socket {
+macro_rules! network_socket {
     // Name identifier and documentation for the new network socket struct.
     ($name:ident ,
      $doc:tt) => {
@@ -18,6 +18,11 @@ macro_rules! device_socket {
 
         endpoint_trait_impl!($name);
     };
+}
+
+/// Macro for declaring networked sensor sockets.
+#[macro_export]
+macro_rules! network_sensor_socket {
     // Simple sensor socket.
     ($name:ident ,
      $sensor:ident ,
@@ -89,7 +94,7 @@ mod tests {
     #[allow(unused)]
     #[test]
     fn macro_creates_a_device_network_socket() {
-        device_socket!(NewSocket, "NewSocket docs.");
+        network_socket!(NewSocket, "NewSocket docs.");
 
         let context = create_context();
         let requester = zmq_req(&context).unwrap();

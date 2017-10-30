@@ -4,4 +4,4 @@ pub mod requests;
 
 mod server;
 
-pub use self::server::TemperatureSensorServer;
+pub use self::server::TemperatureSensorSocket;

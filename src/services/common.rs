@@ -1,16 +1,18 @@
-//! Macros for services.
-macro_rules! responder_service {
+//! Common code and macros for services.
+
+// A RESPONDER service for sensor devices.
+macro_rules! sensor_responder_service {
     ( $doc:tt ,
-      $name:ident : { $sensor:ident , $server:ident } ) => {
+      $name:ident : { $sensor:ident , $sensor_responder:ident } ) => {
           #[ doc = $doc ]
           pub struct $name {
-              pub server : $server,
+              pub endpoint : $sensor_responder,
           }
 
           impl $name {
               /// Create a new networked sensor service.
               pub fn new(
-                  server_cfg: SocketConfig,
+                  endpoint_cfg: SocketConfig,
                   sensor_cfg: SensorConfig,
                   ) -> Result<$name> {
                       // We initialize our I2C device connection.
@@ -23,10 +25,10 @@ macro_rules! responder_service {
 
                       // We configure our socket as REP, for accepting requests
                       // and providing REsPonses.
-                      let responder = create_and_bind_responder(server_cfg.url)?;
-                      let server = $server::new(responder, sensor)?;
+                      let responder = create_and_bind_responder(endpoint_cfg.url)?;
+                      let endpoint = $sensor_responder::new(responder, sensor)?;
 
-                      Ok( $name { server } )
+                      Ok( $name { endpoint } )
                   }
           }
     };
@@ -43,7 +45,7 @@ macro_rules! responder_service_process_request_functions {
                     _ => "error".to_string(),
                 };
                 // Send response to the client.
-                let _respond = self.server.send(command_response.as_bytes())?;
+                let _respond = self.endpoint.send(command_response.as_bytes())?;
 
                 // No work left, so we sleep.
                 thread::sleep(Duration::from_millis(1));
@@ -53,7 +55,7 @@ macro_rules! responder_service_process_request_functions {
         /// Parse and execute incoming requests. Return an output `String`.
         pub fn process_request(&mut self) -> Result<String> {
             // Receive the incoming request
-            let request_msg = self.server.recv()?;
+            let request_msg = self.endpoint.recv()?;
             let cmd_args: Vec<&str> = request_msg.as_str().split(" ").collect();
             // Start the command-line interpreter
             let cli = $cli::new();
@@ -73,11 +75,11 @@ macro_rules! responder_service_process_request_functions {
                         Some(_val) => _val.parse::<u16>().chain_err(|| "not a number")?,
                         _ => unreachable!(),
                     };
-                    self.server.set_device_address(val)
+                    self.endpoint.set_device_address(val)
                 }
-                ("info", None) => self.server.get_device_info(),
-                ("factory", None) => self.server.set_factory_reset(),
-                ("status", None) => self.server.get_device_status(),
+                ("info", None) => self.endpoint.get_device_info(),
+                ("factory", None) => self.endpoint.set_factory_reset(),
+                ("status", None) => self.endpoint.get_device_status(),
                 _ => unreachable!(),
             }
         }
@@ -85,9 +87,9 @@ macro_rules! responder_service_process_request_functions {
         // Process LED request commands.
         fn process_led_request(&mut self, matches: &ArgMatches) -> Result<String> {
             match matches.subcommand() {
-                ("off", None) => self.server.set_led_off(),
-                ("on", None) => self.server.set_led_on(),
-                ("status", None) => self.server.get_led_status(),
+                ("off", None) => self.endpoint.set_led_off(),
+                ("on", None) => self.endpoint.set_led_on(),
+                ("status", None) => self.endpoint.get_led_status(),
                 _ => unreachable!(),
             }
         }
@@ -95,9 +97,9 @@ macro_rules! responder_service_process_request_functions {
         // Process protocol-lock request commands.
         fn process_protocol_lock_request(&mut self, matches: &ArgMatches) -> Result<String> {
             match matches.subcommand() {
-                ("off", None) => self.server.set_protocol_lock_off(),
-                ("on", None) => self.server.set_protocol_lock_on(),
-                ("status", None) => self.server.get_protocol_lock_status(),
+                ("off", None) => self.endpoint.set_protocol_lock_off(),
+                ("on", None) => self.endpoint.set_protocol_lock_on(),
+                ("status", None) => self.endpoint.get_protocol_lock_status(),
                 _ => unreachable!(),
             }
         }

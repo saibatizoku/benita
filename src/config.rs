@@ -8,20 +8,20 @@ use toml;
 
 /// Socket connection type. Can be `Bind` or `Connect`.
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
-pub enum SocketConnection {
+pub enum ConnectionType {
     #[serde(rename = "bind")] Bind,
     #[serde(rename = "connect")] Connect,
 }
 
-impl SocketConnection {
-    pub fn from_str(config_str: &str) -> Result<SocketConnection> {
+impl ConnectionType {
+    pub fn from_str(config_str: &str) -> Result<ConnectionType> {
         toml::from_str(config_str).chain_err(|| ErrorKind::ConfigParse)
     }
 }
 
-impl Default for SocketConnection {
-    fn default() -> SocketConnection {
-        SocketConnection::Bind
+impl Default for ConnectionType {
+    fn default() -> ConnectionType {
+        ConnectionType::Connect
     }
 }
 
@@ -29,7 +29,7 @@ impl Default for SocketConnection {
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
 pub struct SocketConfig<'a> {
     pub url: &'a str,
-    #[serde(default)] pub socket_connection: SocketConnection,
+    #[serde(default)] pub socket_connection: ConnectionType,
 }
 
 impl<'a> SocketConfig<'a> {
@@ -75,7 +75,9 @@ impl<'a> SensorServiceConfig<'a> {
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
 pub struct ProxyConfig<'a> {
     pub backend_url: &'a str,
+    #[serde(default)] pub backend_connection: ConnectionType,
     pub frontend_url: &'a str,
+    #[serde(default)] pub frontend_connection: ConnectionType,
 }
 
 impl<'a> ProxyConfig<'a> {
@@ -210,7 +212,7 @@ mod tests {
             config,
             SocketConfig {
                 url: "ipc://temp.ipc",
-                socket_connection: SocketConnection::Bind,
+                socket_connection: ConnectionType::Connect,
             }
         );
 
@@ -224,7 +226,7 @@ mod tests {
             config,
             SocketConfig {
                 url: "ipc://temp.ipc",
-                socket_connection: SocketConnection::Connect,
+                socket_connection: ConnectionType::Connect,
             }
         );
     }
@@ -262,6 +264,8 @@ mod tests {
             ProxyConfig {
                 backend_url: "ipc://temp.ipc",
                 frontend_url: "tcp://127.0.0.1:5558",
+                backend_connection: ConnectionType::Connect,
+                frontend_connection: ConnectionType::Connect,
             }
         );
 
@@ -269,6 +273,8 @@ mod tests {
         let config_str = r#"
             backend_url = "ipc://temp.ipc"
             frontend_url = "tcp://127.0.0.1:5558"
+            backend_connection = "bind"
+            # frontend_connection = "connect" # Default value
             channel = "temperature-0123456789abcdef"
             "#;
 
@@ -278,6 +284,8 @@ mod tests {
             ProxyConfig {
                 backend_url: "ipc://temp.ipc",
                 frontend_url: "tcp://127.0.0.1:5558",
+                backend_connection: ConnectionType::Bind,
+                frontend_connection: ConnectionType::Connect,
             }
         );
     }

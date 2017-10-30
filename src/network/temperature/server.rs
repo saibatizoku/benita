@@ -6,19 +6,19 @@ use network::Endpoint;
 use neuras;
 
 
-// Define the network server socket for directly interacting with the
+// Define the network socket for directly interacting with the
 // Temperature sensor via I2C.
-device_socket! {
-    TemperatureSensorServer,
+network_sensor_socket! {
+    TemperatureSensorSocket,
     TemperatureSensor,
     "Socket that responds to Temperature sensor commands."
 }
 
-impl TemperatureSensorServer {
+impl TemperatureSensorSocket {
     sensor_socket_commands!(device_common);
 }
 
-impl TemperatureSensorServer {
+impl TemperatureSensorSocket {
     sensor_socket_commands!(calibration_common);
 
     /// Set the calibration mid-point for the sensor.
@@ -30,7 +30,7 @@ impl TemperatureSensorServer {
     }
 }
 
-impl TemperatureSensorServer {
+impl TemperatureSensorSocket {
     /// set the data-logger interval.
     pub fn set_data_logger_interval(&mut self, c: u32) -> Result<String> {
         let _response = self.sensor
@@ -56,7 +56,7 @@ impl TemperatureSensorServer {
     }
 }
 
-impl TemperatureSensorServer {
+impl TemperatureSensorSocket {
     /// clear memory readings.
     pub fn set_memory_clear(&mut self) -> Result<String> {
         let _response = self.sensor
@@ -82,7 +82,7 @@ impl TemperatureSensorServer {
     }
 }
 
-impl TemperatureSensorServer {
+impl TemperatureSensorSocket {
     /// set scale to Celsius.
     pub fn set_scale_to_celsius(&mut self) -> Result<String> {
         let _response = self.sensor

@@ -6,4 +6,4 @@ mod client;
 mod server;
 
 pub use self::client::PhClient;
-pub use self::server::PhSensorServer;
+pub use self::server::PhSensorSocket;
