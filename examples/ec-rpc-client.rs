@@ -10,7 +10,7 @@ extern crate clap;
 extern crate neuras;
 
 use benita::errors::{ErrorKind, Result};
-use benita::network::conductivity::ConductivityClient;
+use benita::network::conductivity::ConductivityRequester;
 
 use clap::{App, Arg};
 use neuras::utils::{connect_socket, create_context, zmq_req};
@@ -54,19 +54,19 @@ fn run_client(rep_url: &str) -> Result<()> {
     let req_socket = zmq_req(&context)?;
     let _connect = connect_socket(&req_socket, rep_url)?;
 
-    let ec_client = ConductivityClient::new(req_socket)?;
+    let ec_client = ConductivityRequester::new(req_socket)?;
 
     {
         println!("Requesting 'get_output_params'");
-        let output_params = ec_client.get_output_params()?;
+        let output_params = ec_client.get_output_string_status()?;
         println!("{}", output_params);
 
         println!("Requesting 'read'");
-        let read = ec_client.send_read()?;
+        let read = ec_client.get_reading()?;
         println!("{}", read);
 
         println!("Requesting 'sleep'");
-        let sleep = ec_client.send_sleep()?;
+        let sleep = ec_client.set_sleep()?;
         println!("{}", sleep);
     }
     Ok(())

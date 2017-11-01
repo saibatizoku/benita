@@ -2,6 +2,8 @@
 pub mod replies;
 pub mod requests;
 
-mod server;
+mod requester;
+mod responder;
 
-pub use self::server::TemperatureSensorSocket;
+pub use self::requester::TemperatureRequester;
+pub use self::responder::TemperatureResponder;

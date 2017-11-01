@@ -4,8 +4,8 @@ use std::time::Duration;
 
 use config::SensorServiceConfig;
 use errors::*;
-use network::conductivity::ConductivityClient;
-use network::ph::PhClient;
+use network::conductivity::ConductivityRequester;
+use network::ph::PhRequester;
 use utilities::atof;
 
 use chrono::{DateTime, Local};
@@ -44,9 +44,9 @@ pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()
     let _connect_ph = neuras::utils::connect_socket(&req_ph, config.rep_ph_url)?;
 
     // This is the client that will send commands to the `Conductivity` sensor.
-    let ec_client = ConductivityClient::new(req_ec)?;
+    let ec_client = ConductivityRequester::new(req_ec)?;
     // This is the client that will send commands to the `pH` sensor.
-    let ph_client = PhClient::new(req_ph)?;
+    let ph_client = PhRequester::new(req_ph)?;
 
     // Continued program logic goes here...
     println!("Collecting updates from weather server...");
@@ -76,23 +76,23 @@ pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()
             println!("Calibrating EC: {}", dt.format("%F %T %z").to_string());
 
             // PH
-            let read = ph_client.send_read()?;
+            let read = ph_client.get_reading()?;
             println!("pH {}", read);
 
-            let sleep = ph_client.send_sleep()?;
+            let sleep = ph_client.set_sleep()?;
             println!("{}", sleep);
 
             // EC
-            let compensate = ec_client.send_compensate(avg_temp)?;
+            let compensate = ec_client.set_compensation_temperature(avg_temp)?;
             println!("{}", compensate);
 
-            let output_params = ec_client.get_output_params()?;
+            let output_params = ec_client.get_output_string_status()?;
             println!("{}", output_params);
 
-            let read = ec_client.send_read()?;
+            let read = ec_client.get_reading()?;
             println!("{}", read);
 
-            let sleep = ec_client.send_sleep()?;
+            let sleep = ec_client.set_sleep()?;
             println!("{}", sleep);
 
             total_temp = 0f64;

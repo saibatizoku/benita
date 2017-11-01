@@ -2,8 +2,8 @@
 pub mod replies;
 pub mod requests;
 
-mod client;
-mod server;
+mod requester;
+mod responder;
 
-pub use self::client::PhClient;
-pub use self::server::PhSensorSocket;
+pub use self::requester::PhRequester;
+pub use self::responder::PhResponder;

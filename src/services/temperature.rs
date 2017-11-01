@@ -5,7 +5,7 @@ use config::{SensorConfig, SocketConfig};
 use devices::temperature::TemperatureSensor;
 use errors::*;
 use network::Endpoint;
-use network::temperature::TemperatureSensorSocket;
+use network::temperature::TemperatureResponder;
 use utilities::{atof, create_and_bind_responder};
 
 use clap::ArgMatches;
@@ -18,7 +18,7 @@ use std::time::Duration;
 sensor_responder_service! {
     "Temperature sensor responder service.",
     TemperatureSensorService: {
-        TemperatureSensor, TemperatureSensorSocket
+        TemperatureSensor, TemperatureResponder
     }
 }
 

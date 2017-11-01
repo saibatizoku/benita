@@ -5,5 +5,5 @@ pub mod replies;
 mod requester;
 mod responder;
 
-pub use self::requester::ConductivityClient;
-pub use self::responder::ConductivitySensorSocket;
+pub use self::requester::ConductivityRequester;
+pub use self::responder::ConductivityResponder;

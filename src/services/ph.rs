@@ -4,7 +4,7 @@ use cli::ph::PhCommandApp;
 use config::{SensorConfig, SocketConfig};
 use errors::*;
 use network::Endpoint;
-use network::ph::PhSensorSocket;
+use network::ph::PhResponder;
 use devices::ph::PhSensor;
 use utilities::{atof, create_and_bind_responder};
 
@@ -18,7 +18,7 @@ use std::time::Duration;
 sensor_responder_service! {
     "pH sensor responder service.",
     PhSensorService: {
-        PhSensor, PhSensorSocket
+        PhSensor, PhResponder
     }
 }
 

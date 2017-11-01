@@ -651,7 +651,10 @@ mod tests {
     fn parse_conductivity_calibration_onepoint_request_from_valid_str() {
         let request =
             CalibrationOnePoint::from_request_str("calibration-onepoint 1000.3324").unwrap();
-        assert_eq!("calibration-onepoint 1000.332", &request.to_request_string());
+        assert_eq!(
+            "calibration-onepoint 1000.332",
+            &request.to_request_string()
+        );
     }
 
     #[test]
