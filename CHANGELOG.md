@@ -1,3 +1,7 @@
+## [0.1.4] - 2017-10-31
+### Added
+- shaping up REP-REQ sensor APIs for: conductivity, ph, and temperature.
+### Added
 ## [0.1.3] - 2017-10-30
 ### Added
 - Mechanism and traits for handling requests and replies
