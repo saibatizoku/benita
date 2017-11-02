@@ -44,6 +44,8 @@ macro_rules! network_sensor_socket {
     };
 }
 
+/// Implementation of the `Endpoint` trait for a given type.
+#[macro_export]
 macro_rules! endpoint_trait_impl {
     ($name:ident) => {
         impl Endpoint for $name {

@@ -244,16 +244,7 @@ macro_rules! impl_SocketRequest_for {
     };
 }
 
-macro_rules! fn_recv_from {
-    ($name:ident) => {
-            fn recv_from<T: Endpoint>(endpoint: &T) -> Result<$name> {
-                let rep_string = endpoint.recv()?;
-                let response = $name::parse_response(&rep_string)?;
-                Ok(response)
-            }
-    };
-}
-
+// Macro for implementing the `SocketReply` trait on a type.
 macro_rules! impl_SocketReply_for {
     ( $name:ident ) => {
         impl SocketReply for $name {
