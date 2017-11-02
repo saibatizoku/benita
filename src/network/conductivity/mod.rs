@@ -1,4 +1,5 @@
 //! Networked services for Conductivity sensing.
+pub mod api;
 pub mod requests;
 pub mod replies;
 

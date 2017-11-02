@@ -1,4 +1,5 @@
 //! Networked services for pH sensing.
+pub mod api;
 pub mod replies;
 pub mod requests;
 
