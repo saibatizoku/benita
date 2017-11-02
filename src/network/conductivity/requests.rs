@@ -22,9 +22,11 @@ pub use devices::conductivity::commands::{ProbeTypeOne, ProbeTypePointOne, Probe
 pub use devices::conductivity::commands::{ProtocolLockDisable, ProtocolLockEnable,
                                           ProtocolLockState};
 
-use devices::conductivity::responses::{CalibrationStatus, CompensationValue, DeviceStatus,
+use devices::conductivity::responses::{CalibrationStatus, CompensationValue, DeviceStatus, DeviceInfo,
                                        Exported, ExportedInfo, LedStatus, OutputStringStatus,
-                                       ProbeReading, ProbeType, ProtocolLockStatus};
+                                       ProbeType, ProtocolLockStatus};
+// Until the EZO EC API is changed, we need to do this.
+use devices::conductivity::responses::ProbeReading as SensorReading;
 
 use utilities::atof;
 
@@ -179,7 +181,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    DeviceInformation: OkReply,
+    DeviceInformation: DeviceInfo,
     req_str: {
         match req_str {
             "device-info" => Ok(DeviceInformation),
@@ -507,7 +509,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    Reading: ProbeReading,
+    Reading: SensorReading,
     req_str: {
         match req_str {
             "read" => Ok(Reading),
