@@ -1,5 +1,6 @@
 //! Common network items.
 use std;
+
 use errors::*;
 
 /// A response sent over a socket
@@ -49,166 +50,166 @@ where
 macro_rules! sensor_socket_commands {
     ( calibration_common ) => {
         /// clear calibration settings.
-        pub fn set_calibration_clear(&mut self) -> Result<String> {
+        pub fn set_calibration_clear(&mut self) -> Result<OkReply> {
             let _response = self.sensor
                 .set_calibration_clear()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok("calibration-set clear".to_string())
+            Ok(OkReply)
         }
 
         /// get the calibration status.
-        pub fn get_calibration_status(&mut self) -> Result<String> {
+        pub fn get_calibration_status(&mut self) -> Result<CalibrationStatus> {
             let response = self.sensor
                 .get_calibration_status()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(format!("calibration-status {:?}", response))
+            Ok(response)
         }
     };
 
     ( device_common ) => {
         /// get the export information from the sensor.
-        pub fn get_export_info(&mut self) -> Result<String> {
+        pub fn get_export_info(&mut self) -> Result<ExportedInfo> {
             let response = self.sensor
                 .get_export_info()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(format!("export-info {}", response))
+            Ok(response)
         }
 
         /// export a calibration line from the sensor.
-        pub fn get_export_line(&mut self) -> Result<String> {
+        pub fn get_export_line(&mut self) -> Result<Exported> {
             let response = self.sensor
                 .get_export_line()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(format!("export-line {}", response))
+            Ok(response)
         }
 
         /// import a calibration line to the sensor.
-        pub fn set_import_line(&mut self, import: &str) -> Result<String> {
+        pub fn set_import_line(&mut self, import: &str) -> Result<OkReply> {
             let _response = self.sensor
                 .set_import_line(import)
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(format!("imported {}", import))
+            Ok(OkReply)
         }
 
         /// get the sensor information.
-        pub fn get_device_info(&mut self) -> Result<String> {
+        pub fn get_device_info(&mut self) -> Result<DeviceInfo> {
             let response = self.sensor
                 .get_device_info()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(format!("device-info {:?}", response))
+            Ok(response)
         }
 
         /// get the sensor status.
-        pub fn get_device_status(&mut self) -> Result<String> {
+        pub fn get_device_status(&mut self) -> Result<DeviceStatus> {
             let response = self.sensor
                 .get_device_status()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(format!("device-status {:?}", response))
+            Ok(response)
         }
 
         /// reset the sensor device.
-        pub fn set_factory_reset(&mut self) -> Result<String> {
+        pub fn set_factory_reset(&mut self) -> Result<OkReply> {
             let _response = self.sensor
                 .set_factory_reset()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok("device-reset".to_string())
+            Ok(OkReply)
         }
 
         /// set the sensor to find mode.
-        pub fn set_find_mode(&mut self) -> Result<String> {
+        pub fn set_find_mode(&mut self) -> Result<OkReply> {
             let _response = self.sensor
                 .set_find_mode()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok("device-mode find".to_string())
+            Ok(OkReply)
         }
 
         /// change the sensor's I2C address.
-        pub fn set_device_address(&mut self, address: u16) -> Result<String> {
+        pub fn set_device_address(&mut self, address: u16) -> Result<OkReply> {
             let _response = self.sensor
                 .set_device_address(address)
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(format!("device-address {}", address))
+            Ok(OkReply)
         }
 
         /// set the LED off.
-        pub fn set_led_off(&mut self) -> Result<String> {
+        pub fn set_led_off(&mut self) -> Result<OkReply> {
             let _response = self.sensor
                 .set_led_off()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok("device-led off".to_string())
+            Ok(OkReply)
         }
 
         /// set the LED on.
-        pub fn set_led_on(&mut self) -> Result<String> {
+        pub fn set_led_on(&mut self) -> Result<OkReply> {
             let _response = self.sensor
                 .set_led_on()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok("device-led on".to_string())
+            Ok(OkReply)
         }
 
         /// get the current LED status.
-        pub fn get_led_status(&mut self) -> Result<String> {
+        pub fn get_led_status(&mut self) -> Result<LedStatus> {
             let response = self.sensor
                 .get_led_status()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(format!("device-led-status {}", response))
+            Ok(response)
         }
 
         /// set the protocol lock off.
-        pub fn set_protocol_lock_off(&mut self) -> Result<String> {
+        pub fn set_protocol_lock_off(&mut self) -> Result<OkReply> {
             let _response = self.sensor
                 .set_protocol_lock_off()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok("protocol-lock off".to_string())
+            Ok(OkReply)
         }
 
         /// set the protocol lock on.
-        pub fn set_protocol_lock_on(&mut self) -> Result<String> {
+        pub fn set_protocol_lock_on(&mut self) -> Result<OkReply> {
             let _response = self.sensor
                 .set_protocol_lock_on()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok("protocol-lock on".to_string())
+            Ok(OkReply)
         }
 
         /// get the current protocol lock status.
-        pub fn get_protocol_lock_status(&mut self) -> Result<String> {
+        pub fn get_protocol_lock_status(&mut self) -> Result<ProtocolLockStatus> {
             let response = self.sensor
                 .get_protocol_lock_status()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(format!("protocol-lock-status {}", response))
+            Ok(response)
         }
 
         /// get the output string with sensor readings.
-        pub fn get_reading(&mut self) -> Result<String> {
+        pub fn get_reading(&mut self) -> Result<SensorReading> {
             let response = self.sensor
                 .get_reading()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(format!("reading {}", response))
+            Ok(response)
         }
         /// set the sensor to sleep (low-power) mode.
-        pub fn set_sleep(&mut self) -> Result<String> {
+        pub fn set_sleep(&mut self) -> Result<OkReply> {
             let _sleep = self.sensor
                 .set_sleep()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok("sleeping".to_string())
+            Ok(OkReply)
         }
     };
 
     ( temperature_compensation ) => {
         /// get the compensation temperature for sensor readings.
-        pub fn get_compensation(&mut self) -> Result<String> {
+        pub fn get_compensation(&mut self) -> Result<CompensationValue> {
             let response = self.sensor
                 .get_compensated_temperature_value()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(format!("compensation-value {}", response.0))
+            Ok(response)
         }
 
         /// set the compensation temperature for sensor readings.
-        pub fn set_compensation(&mut self, t: f64) -> Result<String> {
+        pub fn set_compensation(&mut self, t: f64) -> Result<OkReply> {
             let _response = self.sensor
                 .set_compensation_temperature(t)
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(format!("compensation-set {}", t))
+            Ok(OkReply)
         }
     };
 }
@@ -260,10 +261,16 @@ macro_rules! impl_SocketReply_for {
                 $name::parse(rep_str)
                     .chain_err(|| ErrorKind::CommandReply)
             }
+
             fn to_reply_string(&self) -> String {
                 format!("{}", self)
             }
-            fn_recv_from!($name);
+
+            fn recv_from<T: Endpoint>(endpoint: &T) -> Result<$name> {
+                let rep_string = endpoint.recv()?;
+                let response = $name::parse_response(&rep_string)?;
+                Ok(response)
+            }
         }
     };
 }

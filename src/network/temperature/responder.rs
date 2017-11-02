@@ -1,7 +1,9 @@
 //! Server for Temperature sensing.
+use super::replies::*;
+
 use errors::*;
 use devices::temperature::TemperatureSensor;
-use network::Endpoint;
+use network::common::{Endpoint, OkReply};
 
 use neuras;
 
@@ -22,96 +24,96 @@ impl TemperatureResponder {
     sensor_socket_commands!(calibration_common);
 
     /// Set the calibration mid-point for the sensor.
-    pub fn set_calibration_temperature(&mut self, c: f64) -> Result<String> {
+    pub fn set_calibration_temperature(&mut self, c: f64) -> Result<OkReply> {
         let _response = self.sensor
             .set_calibration_temperature(c)
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("calibration-set {}", c))
+        Ok(OkReply)
     }
 }
 
 impl TemperatureResponder {
     /// set the data-logger interval.
-    pub fn set_data_logger_interval(&mut self, c: u32) -> Result<String> {
+    pub fn set_data_logger_interval(&mut self, c: u32) -> Result<OkReply> {
         let _response = self.sensor
             .set_data_logger_interval(c)
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("data-logger {}", c))
+        Ok(OkReply)
     }
 
     /// get the current data-logger status.
-    pub fn get_data_logger_status(&mut self) -> Result<String> {
+    pub fn get_data_logger_status(&mut self) -> Result<DataLoggerStorageIntervalSeconds> {
         let response = self.sensor
             .get_data_logger_status()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("data-logger-status {}", response))
+        Ok(response)
     }
 
     /// set data-logger off.
-    pub fn set_data_logger_off(&mut self) -> Result<String> {
+    pub fn set_data_logger_off(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_data_logger_off()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("data-logger off".to_string())
+        Ok(OkReply)
     }
 }
 
 impl TemperatureResponder {
     /// clear memory readings.
-    pub fn set_memory_clear(&mut self) -> Result<String> {
+    pub fn set_memory_clear(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_memory_clear()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("memory-clear".to_string())
+        Ok(OkReply)
     }
 
     /// recall the next reading in the memory stack.
-    pub fn get_memory_recall(&mut self) -> Result<String> {
+    pub fn get_memory_recall(&mut self) -> Result<MemoryReading> {
         let response = self.sensor
             .get_memory_recall()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("memory-recall {}", response))
+        Ok(response)
     }
 
     /// recall the last reading and position in the memory stack.
-    pub fn get_memory_recall_last(&mut self) -> Result<String> {
+    pub fn get_memory_recall_last(&mut self) -> Result<MemoryReading> {
         let response = self.sensor
             .get_memory_recall_last()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("memory-recall-last {}", response))
+        Ok(response)
     }
 }
 
 impl TemperatureResponder {
     /// set scale to Celsius.
-    pub fn set_scale_to_celsius(&mut self) -> Result<String> {
+    pub fn set_scale_to_celsius(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_scale_to_celsius()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("scale celsius".to_string())
+        Ok(OkReply)
     }
 
     /// set scale to Fahrenheit.
-    pub fn set_scale_to_fahrenheit(&mut self) -> Result<String> {
+    pub fn set_scale_to_fahrenheit(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_scale_to_fahrenheit()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("scale fahrenheit".to_string())
+        Ok(OkReply)
     }
 
     /// set scale to Kelvin.
-    pub fn set_scale_to_kelvin(&mut self) -> Result<String> {
+    pub fn set_scale_to_kelvin(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_scale_to_kelvin()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("scale kelvin".to_string())
+        Ok(OkReply)
     }
 
     /// get current scale.
-    pub fn get_scale(&mut self) -> Result<String> {
+    pub fn get_scale(&mut self) -> Result<TemperatureScale> {
         let response = self.sensor
-            .get_memory_recall_last()
+            .get_scale()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("scale-status {}", response))
+        Ok(response)
     }
 }

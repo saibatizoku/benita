@@ -1,7 +1,10 @@
 //! Server for Conductivity sensing.
+use super::replies::*;
+use super::replies::ProbeReading as SensorReading;
+
 use errors::*;
 use devices::conductivity::ConductivitySensor;
-use network::Endpoint;
+use network::common::{Endpoint, OkReply};
 
 use neuras;
 
@@ -22,35 +25,35 @@ impl ConductivityResponder {
     sensor_socket_commands!(calibration_common);
 
     /// set dry calibration settings.
-    pub fn set_calibration_dry(&mut self) -> Result<String> {
+    pub fn set_calibration_dry(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_calibration_dry()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("calibration-set dry".to_string())
+        Ok(OkReply)
     }
 
     /// Set the calibration high-point for the sensor.
-    pub fn set_calibration_high(&mut self, c: f64) -> Result<String> {
+    pub fn set_calibration_high(&mut self, c: f64) -> Result<OkReply> {
         let _response = self.sensor
             .set_calibration_high(c)
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("calibration-high {}", c))
+        Ok(OkReply)
     }
 
     /// Set the calibration low-point for the sensor.
-    pub fn set_calibration_low(&mut self, c: f64) -> Result<String> {
+    pub fn set_calibration_low(&mut self, c: f64) -> Result<OkReply> {
         let _response = self.sensor
             .set_calibration_low(c)
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("calibration-low {}", c))
+        Ok(OkReply)
     }
 
     /// Set the calibration single-point for the sensor.
-    pub fn set_calibration_single(&mut self, c: f64) -> Result<String> {
+    pub fn set_calibration_single(&mut self, c: f64) -> Result<OkReply> {
         let _response = self.sensor
             .set_calibration_single(c)
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("calibration-single-point {}", c))
+        Ok(OkReply)
     }
 }
 
@@ -60,105 +63,105 @@ impl ConductivityResponder {
 
 impl ConductivityResponder {
     /// get the output string parameters for sensor readings.
-    pub fn get_output_params(&mut self) -> Result<String> {
+    pub fn get_output_params(&mut self) -> Result<OutputStringStatus> {
         let response = self.sensor
             .get_output_string_status()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("output-params {}", response))
+        Ok(response)
     }
 
     /// set the `ec` output string parameter on.
-    pub fn set_output_conductivity_on(&mut self) -> Result<String> {
+    pub fn set_output_conductivity_on(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_output_conductivity_on()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("output-ec on".to_string())
+        Ok(OkReply)
     }
 
     /// set the `ec` output string parameter on.
-    pub fn set_output_conductivity_off(&mut self) -> Result<String> {
+    pub fn set_output_conductivity_off(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_output_conductivity_off()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("output-ec off".to_string())
+        Ok(OkReply)
     }
 
     /// set the `salinity` output string parameter on.
-    pub fn set_output_salinity_on(&mut self) -> Result<String> {
+    pub fn set_output_salinity_on(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_output_salinity_on()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("output-salinity on".to_string())
+        Ok(OkReply)
     }
 
     /// set the `salinity` output string parameter on.
-    pub fn set_output_salinity_off(&mut self) -> Result<String> {
+    pub fn set_output_salinity_off(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_output_salinity_off()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("output-salinity off".to_string())
+        Ok(OkReply)
     }
 
     /// set the `sg` output string parameter on.
-    pub fn set_output_specific_gravity_on(&mut self) -> Result<String> {
+    pub fn set_output_specific_gravity_on(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_output_specific_gravity_on()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("output-sg on".to_string())
+        Ok(OkReply)
     }
 
     /// set the `sg` output string parameter on.
-    pub fn set_output_specific_gravity_off(&mut self) -> Result<String> {
+    pub fn set_output_specific_gravity_off(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_output_specific_gravity_off()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("output-sg off".to_string())
+        Ok(OkReply)
     }
 
     /// set the `tds` output string parameter on.
-    pub fn set_output_tds_on(&mut self) -> Result<String> {
+    pub fn set_output_tds_on(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_output_tds_on()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("output-tds on".to_string())
+        Ok(OkReply)
     }
 
     /// set the `tds` output string parameter on.
-    pub fn set_output_tds_off(&mut self) -> Result<String> {
+    pub fn set_output_tds_off(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_output_tds_off()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("output-tds off".to_string())
+        Ok(OkReply)
     }
 }
 
 impl ConductivityResponder {
     /// set the probe type to `1.0`
-    pub fn set_probe_type_one(&mut self) -> Result<String> {
+    pub fn set_probe_type_one(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_probe_type_one()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("probe-type 1.0".to_string())
+        Ok(OkReply)
     }
     /// set the probe type to `0.1`
-    pub fn set_probe_type_point_one(&mut self) -> Result<String> {
+    pub fn set_probe_type_point_one(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_probe_type_point_one()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("probe-type 0.1".to_string())
+        Ok(OkReply)
     }
     /// set the probe type to `10`
-    pub fn set_probe_type_ten(&mut self) -> Result<String> {
+    pub fn set_probe_type_ten(&mut self) -> Result<OkReply> {
         let _response = self.sensor
             .set_probe_type_ten()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok("probe-type 10".to_string())
+        Ok(OkReply)
     }
     /// set the probe type to `10`
-    pub fn get_probe_type_status(&mut self) -> Result<String> {
+    pub fn get_probe_type_status(&mut self) -> Result<ProbeType> {
         let response = self.sensor
             .get_probe_type_status()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("probe-type {}", response))
+        Ok(response)
     }
 }
