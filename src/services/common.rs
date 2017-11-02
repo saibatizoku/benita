@@ -69,39 +69,42 @@ macro_rules! responder_service_process_request_functions {
 
         // Process device request commands.
         fn process_device_request(&mut self, matches: &ArgMatches) -> Result<String> {
-            match matches.subcommand() {
+            let reply = match matches.subcommand() {
                 ("address", Some(_m)) => {
                     let val = match _m.value_of("ADDRESS") {
                         Some(_val) => _val.parse::<u16>().chain_err(|| "not a number")?,
                         _ => unreachable!(),
                     };
-                    self.endpoint.set_device_address(val)
+                    self.endpoint.set_device_address(val)?.to_reply_string()
                 }
-                ("info", None) => self.endpoint.get_device_info(),
-                ("factory", None) => self.endpoint.set_factory_reset(),
-                ("status", None) => self.endpoint.get_device_status(),
+                ("info", None) => self.endpoint.get_device_info()?.to_reply_string(),
+                ("factory", None) => self.endpoint.set_factory_reset()?.to_reply_string(),
+                ("status", None) => self.endpoint.get_device_status()?.to_reply_string(),
                 _ => unreachable!(),
-            }
+            };
+            Ok(reply)
         }
 
         // Process LED request commands.
         fn process_led_request(&mut self, matches: &ArgMatches) -> Result<String> {
-            match matches.subcommand() {
-                ("off", None) => self.endpoint.set_led_off(),
-                ("on", None) => self.endpoint.set_led_on(),
-                ("status", None) => self.endpoint.get_led_status(),
+            let reply = match matches.subcommand() {
+                ("off", None) => self.endpoint.set_led_off()?.to_reply_string(),
+                ("on", None) => self.endpoint.set_led_on()?.to_reply_string(),
+                ("status", None) => self.endpoint.get_led_status()?.to_reply_string(),
                 _ => unreachable!(),
-            }
+            };
+            Ok(reply)
         }
 
         // Process protocol-lock request commands.
         fn process_protocol_lock_request(&mut self, matches: &ArgMatches) -> Result<String> {
-            match matches.subcommand() {
-                ("off", None) => self.endpoint.set_protocol_lock_off(),
-                ("on", None) => self.endpoint.set_protocol_lock_on(),
-                ("status", None) => self.endpoint.get_protocol_lock_status(),
+            let reply = match matches.subcommand() {
+                ("off", None) => self.endpoint.set_protocol_lock_off()?.to_reply_string(),
+                ("on", None) => self.endpoint.set_protocol_lock_on()?.to_reply_string(),
+                ("status", None) => self.endpoint.get_protocol_lock_status()?.to_reply_string(),
                 _ => unreachable!(),
-            }
+            };
+            Ok(reply)
         }
 
     };

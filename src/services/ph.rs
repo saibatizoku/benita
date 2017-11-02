@@ -3,7 +3,7 @@
 use cli::ph::PhCommandApp;
 use config::{SensorConfig, SocketConfig};
 use errors::*;
-use network::Endpoint;
+use network::common::{Endpoint, SocketReply};
 use network::ph::PhResponder;
 use devices::ph::PhSensor;
 use utilities::{atof, create_and_bind_responder};
@@ -30,11 +30,11 @@ impl PhSensorService {
             ("calibration", Some(_m)) => self.process_calibration_request(_m),
             ("compensation", Some(_m)) => self.process_compensation_request(_m),
             ("device", Some(_m)) => self.process_device_request(_m),
-            ("find", None) => self.endpoint.set_find_mode(),
+            ("find", None) => Ok(self.endpoint.set_find_mode()?.to_reply_string()),
             ("led", Some(_m)) => self.process_led_request(_m),
             ("protocol-lock", Some(_m)) => self.process_protocol_lock_request(_m),
-            ("read", None) => self.endpoint.get_reading(),
-            ("sleep", None) => self.endpoint.set_sleep(),
+            ("read", None) => Ok(self.endpoint.get_reading()?.to_reply_string()),
+            ("sleep", None) => Ok(self.endpoint.set_sleep()?.to_reply_string()),
             _ => return Err(ErrorKind::CommandParse.into()),
         }
     }
@@ -42,28 +42,28 @@ impl PhSensorService {
     // Process calibration request commands.
     fn process_calibration_request(&mut self, matches: &ArgMatches) -> Result<String> {
         match matches.subcommand() {
-            ("status", None) => self.endpoint.get_calibration_status(),
-            ("clear", None) => self.endpoint.set_calibration_clear(),
+            ("status", None) => Ok(self.endpoint.get_calibration_status()?.to_reply_string()),
+            ("clear", None) => Ok(self.endpoint.set_calibration_clear()?.to_reply_string()),
             ("high", Some(_m)) => {
                 let cal = match _m.value_of("CAL") {
                     Some(_cal) => atof(_cal)?,
                     _ => unreachable!(),
                 };
-                self.endpoint.set_calibration_high(cal)
+                Ok(self.endpoint.set_calibration_high(cal)?.to_reply_string())
             }
             ("mid", Some(_m)) => {
                 let cal = match _m.value_of("CAL") {
                     Some(_cal) => atof(_cal)?,
                     _ => unreachable!(),
                 };
-                self.endpoint.set_calibration_mid(cal)
+                Ok(self.endpoint.set_calibration_mid(cal)?.to_reply_string())
             }
             ("low", Some(_m)) => {
                 let cal = match _m.value_of("CAL") {
                     Some(_cal) => atof(_cal)?,
                     _ => unreachable!(),
                 };
-                self.endpoint.set_calibration_low(cal)
+                Ok(self.endpoint.set_calibration_low(cal)?.to_reply_string())
             }
             _ => unreachable!(),
         }
@@ -72,13 +72,13 @@ impl PhSensorService {
     // Process compensation request commands.
     fn process_compensation_request(&mut self, matches: &ArgMatches) -> Result<String> {
         match matches.subcommand() {
-            ("get", None) => self.endpoint.get_compensation(),
+            ("get", None) => Ok(self.endpoint.get_compensation()?.to_reply_string()),
             ("set", Some(_m)) => {
                 let temp = match _m.value_of("TEMP") {
                     Some(t) => atof(t)?,
                     _ => unreachable!(),
                 };
-                self.endpoint.set_compensation(temp)
+                Ok(self.endpoint.set_compensation(temp)?.to_reply_string())
             }
             _ => unreachable!(),
         }

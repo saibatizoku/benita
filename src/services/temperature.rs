@@ -4,7 +4,7 @@ use cli::temperature::TemperatureCommandApp;
 use config::{SensorConfig, SocketConfig};
 use devices::temperature::TemperatureSensor;
 use errors::*;
-use network::Endpoint;
+use network::common::{Endpoint, SocketReply};
 use network::temperature::TemperatureResponder;
 use utilities::{atof, create_and_bind_responder};
 
@@ -29,11 +29,11 @@ impl TemperatureSensorService {
         match matched.subcommand() {
             ("calibration", Some(_m)) => self.process_calibration_request(_m),
             ("device", Some(_m)) => self.process_device_request(_m),
-            ("find", None) => self.endpoint.set_find_mode(),
+            ("find", None) => Ok(self.endpoint.set_find_mode()?.to_reply_string()),
             ("led", Some(_m)) => self.process_led_request(_m),
             ("protocol-lock", Some(_m)) => self.process_protocol_lock_request(_m),
-            ("read", None) => self.endpoint.get_reading(),
-            ("sleep", None) => self.endpoint.set_sleep(),
+            ("read", None) => Ok(self.endpoint.get_reading()?.to_reply_string()),
+            ("sleep", None) => Ok(self.endpoint.set_sleep()?.to_reply_string()),
             _ => return Err(ErrorKind::CommandParse.into()),
         }
     }
@@ -41,14 +41,14 @@ impl TemperatureSensorService {
     // Process calibration request commands.
     fn process_calibration_request(&mut self, matches: &ArgMatches) -> Result<String> {
         match matches.subcommand() {
-            ("status", None) => self.endpoint.get_calibration_status(),
-            ("clear", None) => self.endpoint.set_calibration_clear(),
+            ("status", None) => Ok(self.endpoint.get_calibration_status()?.to_reply_string()),
+            ("clear", None) => Ok(self.endpoint.set_calibration_clear()?.to_reply_string()),
             ("set", Some(_m)) => {
                 let cal = match _m.value_of("CAL") {
                     Some(_cal) => atof(_cal)?,
                     _ => unreachable!(),
                 };
-                self.endpoint.set_calibration_temperature(cal)
+                Ok(self.endpoint.set_calibration_temperature(cal)?.to_reply_string())
             }
             _ => unreachable!(),
         }
