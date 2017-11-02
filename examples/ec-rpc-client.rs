@@ -10,6 +10,7 @@ extern crate clap;
 extern crate neuras;
 
 use benita::errors::{ErrorKind, Result};
+use benita::network::conductivity::api::ConductivityAPI;
 use benita::network::conductivity::ConductivityRequester;
 
 use clap::{App, Arg};

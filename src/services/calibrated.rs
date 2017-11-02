@@ -4,8 +4,10 @@ use std::time::Duration;
 
 use config::SensorServiceConfig;
 use errors::*;
+use network::conductivity::api::ConductivityAPI;
 use network::conductivity::ConductivityRequester;
 use network::ph::PhRequester;
+use network::ph::api::PhAPI;
 use utilities::atof;
 
 use chrono::{DateTime, Local};
