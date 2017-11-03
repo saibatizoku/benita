@@ -7,15 +7,63 @@
 
 extern crate benita;
 extern crate clap;
+#[macro_use]
+extern crate error_chain;
 
 use std::path::PathBuf;
 
 use benita::cli::shared::is_url;
-use benita::config::{SensorConfig, SocketConfig};
+use benita::config::{ConnectionType, SensorConfig, SocketConfig};
+use benita::devices::conductivity::ConductivitySensor;
 use benita::errors::*;
-use benita::services::conductivity::ConductivitySensorService;
+use benita::network::common::{Endpoint, SocketReply, SocketRequest};
+use benita::network::conductivity::ConductivityResponder;
+use benita::network::conductivity::requests::*;
+use benita::utilities::*;
 
 use clap::{App, Arg};
+
+// Match and evaluate commands
+fn match_and_eval(s: &str, e: &mut ConductivityResponder) -> Result<String> {
+    match s {
+        a if CalibrationState::from_request_str(a).is_ok() => {
+            let _req = CalibrationState::from_request_str(s)?;
+            let reply = e.get_calibration_status()?;
+            Ok(format!("{:?}", reply))
+        }
+        a if CompensationSet::from_request_str(a).is_ok() => {
+            let _req = CompensationSet::from_request_str(s)?;
+            let reply = e.set_compensation(_req.0)?;
+            Ok(format!("{:?}", reply))
+        }
+        a if DeviceInformation::from_request_str(a).is_ok() => {
+            let _req = DeviceInformation::from_request_str(s)?;
+            let reply = e.get_device_info()?;
+            Ok(format!("{:?}", reply))
+        }
+        a if OutputState::from_request_str(a).is_ok() => {
+            let _req = OutputState::from_request_str(s)?;
+            let reply = e.get_output_params()?;
+            Ok(format!("{:?}", reply))
+        }
+        a if Reading::from_request_str(a).is_ok() => {
+            let _req = Reading::from_request_str(s)?;
+            let reply = e.get_reading()?;
+            Ok(format!("{:?}", reply))
+        }
+        a if Sleep::from_request_str(a).is_ok() => {
+            let _req = Sleep::from_request_str(s)?;
+            let reply = e.set_sleep()?;
+            Ok(format!("{:?}", reply))
+        }
+        a if Status::from_request_str(a).is_ok() => {
+            let _req = Status::from_request_str(s)?;
+            let reply = e.get_device_status()?;
+            Ok(format!("{:?}", reply))
+        }
+        _ => bail!("unrecognized command"),
+    }
+}
 
 // Main code. Parse the command-line arguments and execute.
 fn run_main_code() -> Result<()> {
@@ -46,7 +94,10 @@ fn run_main_code() -> Result<()> {
         .get_matches();
 
     // Blank socket configuration.
-    let mut socket_cfg = SocketConfig::default();
+    let mut socket_cfg = SocketConfig {
+        socket_connection: ConnectionType::Bind,
+        ..Default::default()
+    };
 
     // next, add it the `url` from the command-line
     if let Some(c) = matches.value_of("URL") {
@@ -66,20 +117,29 @@ fn run_main_code() -> Result<()> {
         sensor_cfg.address = c.parse().chain_err(|| "Bad Address")?;
     }
 
-    // We initialize the conductivity sensor service.
-    let mut service = ConductivitySensorService::new(socket_cfg, sensor_cfg)
-        .chain_err(|| "Could not create Conductivity service")?;
+    // We initialize the sensor.
+    let sensor = ConductivitySensor::from_config(sensor_cfg)?;
+
+    // We initialize the socket.
+    let socket = match socket_cfg.socket_connection {
+        ConnectionType::Bind => create_and_bind_responder(socket_cfg.url)?,
+        ConnectionType::Connect => create_and_connect_responder(socket_cfg.url)?,
+    };
+
+    // We initialize the responder with the sensor and socket.
+    let mut responder = ConductivityResponder::new(socket, sensor)?;
 
     // This is the main loop, it will run for as long as the program runs.
-    {
-        // Start listening on the specified `URL` for incoming requests.
-        let _listen = service
-            .listen()
-            .chain_err(|| "Conductivity service stopped listening")?;
+    loop {
+        let req_str = &responder.recv()?;
+        println!("REQ: {}", &req_str);
+        let call: String = match_and_eval(&req_str, &mut responder)?;
+        println!("REP: {}", &call);
+        let _reply = &responder.send(call.as_bytes())?;
     }
 
     // Never reach this line...
-    Ok(())
+    // Ok(())
 }
 
 fn main() {

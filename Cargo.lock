@@ -1,22 +1,3 @@
-[root]
-name = "benita"
-version = "0.1.5"
-dependencies = [
- "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "clap 2.27.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "ezo_common 0.1.0 (git+https://github.com/saibatizoku/ezo-common-rs.git)",
- "ezo_ec 0.1.0 (git+https://github.com/saibatizoku/ezo-ec-rs.git)",
- "ezo_ph 0.1.0 (git+https://github.com/saibatizoku/ezo-ph-rs.git)",
- "ezo_rtd 0.1.0 (git+https://github.com/saibatizoku/ezo-rtd-rs.git)",
- "i2cdev 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "neuras 0.1.0 (git+https://github.com/saibatizoku/neuras.git)",
- "serde 1.0.17 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde_derive 1.0.17 (registry+https://github.com/rust-lang/crates.io-index)",
- "sysfs_gpio 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "toml 0.4.5 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
 [[package]]
 name = "aho-corasick"
 version = "0.5.3"
@@ -62,6 +43,25 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "cc 1.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "libc 0.2.33 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "benita"
+version = "0.1.5"
+dependencies = [
+ "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "clap 2.27.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ezo_common 0.1.0 (git+https://github.com/saibatizoku/ezo-common-rs.git)",
+ "ezo_ec 0.1.0 (git+https://github.com/saibatizoku/ezo-ec-rs.git)",
+ "ezo_ph 0.1.0 (git+https://github.com/saibatizoku/ezo-ph-rs.git)",
+ "ezo_rtd 0.1.0 (git+https://github.com/saibatizoku/ezo-rtd-rs.git)",
+ "i2cdev 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "neuras 0.1.0 (git+https://github.com/saibatizoku/neuras.git)",
+ "serde 1.0.17 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_derive 1.0.17 (registry+https://github.com/rust-lang/crates.io-index)",
+ "sysfs_gpio 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "toml 0.4.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -157,7 +157,7 @@ dependencies = [
 [[package]]
 name = "ezo_ec"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/ezo-ec-rs.git#626508bfbb84c7511828f3ea1cb65185a8f6a890"
+source = "git+https://github.com/saibatizoku/ezo-ec-rs.git#5f4b315760c803f614a164724f228ff79f0a8efe"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -168,7 +168,7 @@ dependencies = [
 [[package]]
 name = "ezo_ph"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/ezo-ph-rs.git#8fd19319194c7f1a4614bc2b2b3587763427890d"
+source = "git+https://github.com/saibatizoku/ezo-ph-rs.git#f19071260a66d83d08e810a3f80ac76ad46c4ba3"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -179,7 +179,7 @@ dependencies = [
 [[package]]
 name = "ezo_rtd"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/ezo-rtd-rs.git#f80ed0627a8e39a98a3293b04a71168348bfad7e"
+source = "git+https://github.com/saibatizoku/ezo-rtd-rs.git#5f39b332e38e7b8a4ba3f21a86b9d16d10f6c4c9"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
