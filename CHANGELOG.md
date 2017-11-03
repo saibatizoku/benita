@@ -1,3 +1,9 @@
+## [0.1.5] - 2017-11-02
+### Added
+- specify Sensor APIs as traits
+- requesters implement sensor APIs
+- tests for all sensor replies
+- services continue to work using APIs... kinda
 ## [0.1.4] - 2017-10-31
 ### Added
 - shaping up REP-REQ sensor APIs for: conductivity, ph, and temperature.
