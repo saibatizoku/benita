@@ -29,7 +29,7 @@ extern crate toml;
 
 #[macro_use]
 // Useful items, functions and macros.
-pub mod common;
+mod macros;
 
 pub mod cli;
 pub mod config;
