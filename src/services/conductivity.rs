@@ -92,8 +92,16 @@ impl ConductivitySensorService {
         match matches.subcommand() {
             ("status", None) => Ok(self.endpoint.get_output_params()?.to_reply_string()),
             ("ec", Some(_m)) => match _m.subcommand() {
-                ("off", None) => Ok(self.endpoint.set_output_conductivity_off()?.to_reply_string()),
-                ("on", None) => Ok(self.endpoint.set_output_conductivity_on()?.to_reply_string()),
+                ("off", None) => Ok(
+                    self.endpoint
+                        .set_output_conductivity_off()?
+                        .to_reply_string(),
+                ),
+                ("on", None) => Ok(
+                    self.endpoint
+                        .set_output_conductivity_on()?
+                        .to_reply_string(),
+                ),
                 _ => unreachable!(),
             },
             ("salinity", Some(_m)) => match _m.subcommand() {
@@ -102,8 +110,16 @@ impl ConductivitySensorService {
                 _ => unreachable!(),
             },
             ("sg", Some(_m)) => match _m.subcommand() {
-                ("off", None) => Ok(self.endpoint.set_output_specific_gravity_off()?.to_reply_string()),
-                ("on", None) => Ok(self.endpoint.set_output_specific_gravity_on()?.to_reply_string()),
+                ("off", None) => Ok(
+                    self.endpoint
+                        .set_output_specific_gravity_off()?
+                        .to_reply_string(),
+                ),
+                ("on", None) => Ok(
+                    self.endpoint
+                        .set_output_specific_gravity_on()?
+                        .to_reply_string(),
+                ),
                 _ => unreachable!(),
             },
             ("tds", Some(_m)) => match _m.subcommand() {

@@ -22,9 +22,9 @@ pub use devices::conductivity::commands::{ProbeTypeOne, ProbeTypePointOne, Probe
 pub use devices::conductivity::commands::{ProtocolLockDisable, ProtocolLockEnable,
                                           ProtocolLockState};
 
-use devices::conductivity::responses::{CalibrationStatus, CompensationValue, DeviceStatus, DeviceInfo,
-                                       Exported, ExportedInfo, LedStatus, OutputStringStatus,
-                                       ProbeType, ProtocolLockStatus};
+use devices::conductivity::responses::{CalibrationStatus, CompensationValue, DeviceInfo,
+                                       DeviceStatus, Exported, ExportedInfo, LedStatus,
+                                       OutputStringStatus, ProbeType, ProtocolLockStatus};
 // Until the EZO EC API is changed, we need to do this.
 use devices::conductivity::responses::ProbeReading as SensorReading;
 

@@ -48,7 +48,11 @@ impl TemperatureSensorService {
                     Some(_cal) => atof(_cal)?,
                     _ => unreachable!(),
                 };
-                Ok(self.endpoint.set_calibration_temperature(cal)?.to_reply_string())
+                Ok(
+                    self.endpoint
+                        .set_calibration_temperature(cal)?
+                        .to_reply_string(),
+                )
             }
             _ => unreachable!(),
         }

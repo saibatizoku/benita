@@ -10,7 +10,10 @@ use neuras;
 
 
 // Creates a client for network requests to the `PhResponder`.
-network_socket!(TemperatureRequester, "Socket that communicates with the pH sensor.");
+network_socket!(
+    TemperatureRequester,
+    "Socket that communicates with the pH sensor."
+);
 
 impl TemperatureAPI for TemperatureRequester {
     /// get the export information from the sensor.

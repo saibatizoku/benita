@@ -27,6 +27,7 @@ pub fn create_and_connect_responder(url: &str) -> Result<Socket> {
     // We configure our socket as REP, for accepting requests
     let responder = zmq_rep(&context)?;
     // We bind our socket to URL.
-    let _bind_socket = connect_socket(&responder, url).chain_err(|| "problems connecting to socket")?;
+    let _bind_socket =
+        connect_socket(&responder, url).chain_err(|| "problems connecting to socket")?;
     Ok(responder)
 }
