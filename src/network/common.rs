@@ -273,8 +273,14 @@ impl OkReply {
     fn parse(rep_str: &str) -> Result<OkReply> {
         match rep_str {
             "ok" => Ok(OkReply),
-            _ => Err(ErrorKind::CommandReply.into()),
+            _ => Err(ErrorKind::ResponseParse.into()),
         }
+    }
+}
+
+impl std::fmt::Debug for OkReply {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "ok")
     }
 }
 
