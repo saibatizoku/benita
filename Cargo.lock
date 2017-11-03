@@ -157,7 +157,7 @@ dependencies = [
 [[package]]
 name = "ezo_ec"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/ezo-ec-rs.git#e7a1fc653151c68d8b9ce6a6b9bdbdeb1160c940"
+source = "git+https://github.com/saibatizoku/ezo-ec-rs.git#626508bfbb84c7511828f3ea1cb65185a8f6a890"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -168,7 +168,7 @@ dependencies = [
 [[package]]
 name = "ezo_ph"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/ezo-ph-rs.git#29b32f4a628b56b43533999d1d025f01fb733fc2"
+source = "git+https://github.com/saibatizoku/ezo-ph-rs.git#8fd19319194c7f1a4614bc2b2b3587763427890d"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
