@@ -11,7 +11,9 @@ ezo_common = { git = "https://github.com/saibatizoku/ezo-common-rs.git", branch 
 ezo_ec = { git = "https://github.com/saibatizoku/ezo-ec-rs.git", branch = "master" }
 ezo_ph = { git = "https://github.com/saibatizoku/ezo-ph-rs.git", branch = "master" }
 ezo_rtd = { git = "https://github.com/saibatizoku/ezo-rtd-rs.git", branch = "master" }
+fern = "0.4"
 i2cdev = "0.3.1"
+log = "0.3"
 neuras = { git = "https://github.com/saibatizoku/neuras.git", branch = "master" }
 serde = "1.0"
 serde_derive = "1.0"

@@ -62,7 +62,7 @@ pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()
     let ph_client = PhRequester::new(req_ph)?;
 
     // Continued program logic goes here...
-    println!("Collecting updates from weather server...");
+    info!("Collecting updates from weather server...");
 
     let mut samples = 1;
     let mut total_temp = 0f64;
@@ -71,12 +71,12 @@ pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()
     loop {
         // Receive and parse the string from the subscription channel.
         let sub_str = subscriber.recv_string(0).unwrap().unwrap();
-        let (uuid, dt, temperature, scale) = parse_calibration_value_msg(&sub_str)?;
+        let (uuid, _dt, temperature, scale) = parse_calibration_value_msg(&sub_str)?;
         // Print it out to the screen
         // TODO: use logging to handle this
-        println!(
-            "{:?} {} {}",
-            dt, //.format("%F %T %z").to_string(),
+        info!(
+            target: &uuid,
+            "{} {}",
             temperature,
             scale
         );
@@ -86,41 +86,35 @@ pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()
         let n = 2;
         if samples == n {
             let avg_temp = total_temp / n as f64;
-            println!("UUID: {} AVG: {:.*} {}", uuid, 3, avg_temp, scale);
+            info!(target: &uuid, "temperature avg {:.*} {}", 3, avg_temp, scale);
 
-            let dt: DateTime<Local> = Local::now();
             // PH
             let compensate = ph_client.set_compensation_temperature(avg_temp)?;
-            println!("{:?} compensate {:.*} {} {}", dt, 3, avg_temp, compensate, &scale);
+            info!(target: &uuid, "compensate {:.*} {} {}", 3, avg_temp, compensate, &scale);
 
-            let dt: DateTime<Local> = Local::now();
             let read = ph_client.get_reading()?;
-            println!("{:?} {} pH", dt, read);
+            info!(target: &uuid, "{} pH", read);
 
-            let dt: DateTime<Local> = Local::now();
             let sleep = ph_client.set_sleep()?;
-            println!("{:?} sleep {}", dt, sleep);
+            info!(target: &uuid, "sleep {}", sleep);
 
             // EC
-            let dt: DateTime<Local> = Local::now();
             let compensate = conductivity_client.set_compensation_temperature(avg_temp)?;
-            println!("{:?} compensate {:.*} {} {}", dt, 3, avg_temp, compensate, &scale);
+            info!(target: &uuid, "compensate {:.*} {} {}", 3, avg_temp, compensate, &scale);
 
             let output_params = conductivity_client.get_output_string_status()?;
 
             let read = conductivity_client.get_reading()?;
 
-            let dt: DateTime<Local> = Local::now();
             let _o = format!("{}", output_params);
             let _r =format!("{}", read);
             let _readings = _o.split(",")
                 .zip(_r.split(","))
                 .map(|(k, v)| format!("{} {}", v, k))
-                .for_each(|s| println!("{:?} {}", dt, s));
+                .for_each(|s| info!(target: &uuid, "{}", s));
 
-            let dt: DateTime<Local> = Local::now();
             let sleep = conductivity_client.set_sleep()?;
-            println!("{:?} sleep {}", dt, sleep);
+            info!(target: &uuid, "sleep {}", sleep);
 
             total_temp = 0f64;
             samples = 1;
@@ -146,7 +140,7 @@ fn parse_calibration_value_msg(
     let uuid: DeviceUuid = match split.next() {
         Some(_uuid) => _uuid.to_string(),
         _ => {
-            println!("No valid UUID found");
+            error!("No valid UUID found");
             return Err(ErrorKind::ResponseParse.into());
         }
     };
@@ -154,7 +148,7 @@ fn parse_calibration_value_msg(
     let dt = match split.next() {
         Some(date_n_time) => date_n_time.parse::<DateTime<Local>>().unwrap(),
         _ => {
-            println!("NO valid date-time found");
+            error!("NO valid date-time found");
             return Err(ErrorKind::ResponseParse.into());
         }
     };
@@ -162,7 +156,7 @@ fn parse_calibration_value_msg(
     let temperature = match split.next() {
         Some(temp) => atof(&temp)?,
         _ => {
-            println!("NO valid date-time found");
+            error!("NO valid date-time found");
             return Err(ErrorKind::ResponseParse.into());
         }
     };
@@ -170,7 +164,7 @@ fn parse_calibration_value_msg(
     let scale: TemperatureScale = match split.next() {
         Some(_scale) => _scale.to_string(),
         _ => {
-            println!("NO valid temperature scale found");
+            error!("NO valid temperature scale found");
             return Err(ErrorKind::ResponseParse.into());
         }
     };
