@@ -42,8 +42,8 @@ before_script:
   cd ..
 cache: cargo
 script:
-- travis-cargo --skip nightly build
-- travis-cargo --skip nightly test
+- |
+  travis-cargo build && travis-cargo test
 env:
   global:
   - PATH=$HOME/.local/bin:$PATH
