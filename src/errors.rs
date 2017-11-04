@@ -29,6 +29,9 @@ error_chain! {
         SocketBind {
             description ("socket could not bind to the network URL")
         }
+        SocketCreate {
+            description ("the socket couldn't be created")
+        }
         SocketConnect {
             description ("socket could not connect to the network URL")
         }

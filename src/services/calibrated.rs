@@ -18,6 +18,17 @@ type DeviceUuid = String;
 /// The Temperature Scale.
 type TemperatureScale = String;
 
+fn setup_subscriber_socket(context: &neuras::zmq::Context) -> Result<neuras::zmq::Socket> {
+    let sub = neuras::utils::zmq_sub(context)
+        .chain_err(|| ErrorKind::SocketCreate)?;
+    Ok(sub)
+}
+
+fn setup_requester_socket(context: &neuras::zmq::Context) -> Result<neuras::zmq::Socket> {
+    let req = neuras::utils::zmq_req(context)
+        .chain_err(|| ErrorKind::SocketCreate)?;
+    Ok(req)
+}
 
 /// Run a calibrated sensor service.
 ///
@@ -31,11 +42,11 @@ pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()
 
     // Setup network sockets:
     // subscriber SUB socket
-    let subscriber = neuras::utils::zmq_sub(&context)?;
+    let subscriber = setup_subscriber_socket(&context)?;
     // conductivity REQ socket
-    let req_ec = neuras::utils::zmq_req(&context)?;
+    let req_ec = setup_requester_socket(&context)?;
     // pH REQ socket
-    let req_ph = neuras::utils::zmq_req(&context)?;
+    let req_ph = setup_requester_socket(&context)?;
 
     // Connect and subscribe
     let _connect_sub = neuras::utils::connect_socket(&subscriber, config.pub_url)?;
@@ -46,7 +57,7 @@ pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()
     let _connect_ph = neuras::utils::connect_socket(&req_ph, config.rep_ph_url)?;
 
     // This is the client that will send commands to the `Conductivity` sensor.
-    let ec_client = ConductivityRequester::new(req_ec)?;
+    let conductivity_client = ConductivityRequester::new(req_ec)?;
     // This is the client that will send commands to the `pH` sensor.
     let ph_client = PhRequester::new(req_ph)?;
 
@@ -64,38 +75,52 @@ pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()
         // Print it out to the screen
         // TODO: use logging to handle this
         println!(
-            "{} {} {}",
-            dt.format("%F %T %z").to_string(),
+            "{:?} {} {}",
+            dt, //.format("%F %T %z").to_string(),
             temperature,
             scale
         );
 
         total_temp += temperature;
 
-        if samples == 6 {
-            let avg_temp = total_temp / 6.0;
+        let n = 2;
+        if samples == n {
+            let avg_temp = total_temp / n as f64;
             println!("UUID: {} AVG: {:.*} {}", uuid, 3, avg_temp, scale);
-            println!("Calibrating EC: {}", dt.format("%F %T %z").to_string());
 
+            let dt: DateTime<Local> = Local::now();
             // PH
-            let read = ph_client.get_reading()?;
-            println!("pH {}", read);
+            let compensate = ph_client.set_compensation_temperature(avg_temp)?;
+            println!("{:?} compensate {:.*} {} {}", dt, 3, avg_temp, compensate, &scale);
 
+            let dt: DateTime<Local> = Local::now();
+            let read = ph_client.get_reading()?;
+            println!("{:?} {} pH", dt, read);
+
+            let dt: DateTime<Local> = Local::now();
             let sleep = ph_client.set_sleep()?;
-            println!("{}", sleep);
+            println!("{:?} sleep {}", dt, sleep);
 
             // EC
-            let compensate = ec_client.set_compensation_temperature(avg_temp)?;
-            println!("{}", compensate);
+            let dt: DateTime<Local> = Local::now();
+            let compensate = conductivity_client.set_compensation_temperature(avg_temp)?;
+            println!("{:?} compensate {:.*} {} {}", dt, 3, avg_temp, compensate, &scale);
 
-            let output_params = ec_client.get_output_string_status()?;
-            println!("{}", output_params);
+            let output_params = conductivity_client.get_output_string_status()?;
 
-            let read = ec_client.get_reading()?;
-            println!("{}", read);
+            let read = conductivity_client.get_reading()?;
 
-            let sleep = ec_client.set_sleep()?;
-            println!("{}", sleep);
+            let dt: DateTime<Local> = Local::now();
+            let _o = format!("{}", output_params);
+            let _r =format!("{}", read);
+            let _readings = _o.split(",")
+                .zip(_r.split(","))
+                .map(|(k, v)| format!("{} {}", v, k))
+                .for_each(|s| println!("{:?} {}", dt, s));
+
+            let dt: DateTime<Local> = Local::now();
+            let sleep = conductivity_client.set_sleep()?;
+            println!("{:?} sleep {}", dt, sleep);
 
             total_temp = 0f64;
             samples = 1;
