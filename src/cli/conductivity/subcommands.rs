@@ -368,7 +368,6 @@ mod tests {
         let mut cli_app = ConductivityOutputParamsCommand::new();
         let arg_vec = vec!["output"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
-        println!("matches: {:?}", &matches);
         assert!(matches.is_err());
         let arg_vec = vec!["output", "wrong"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
@@ -525,7 +524,6 @@ mod tests {
         let mut cli_app = ConductivityDeviceCommand::new();
         let arg_vec = vec!["device", "statusi"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
-        println!("{:?}", &matches);
         assert!(matches.is_err());
         let arg_vec = vec!["device", "status", "extra"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);

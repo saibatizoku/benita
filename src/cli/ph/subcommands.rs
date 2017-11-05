@@ -380,7 +380,6 @@ mod tests {
         let mut cli_app = PhDeviceCommand::new();
         let arg_vec = vec!["device", "statusi"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);
-        println!("{:?}", &matches);
         assert!(matches.is_err());
         let arg_vec = vec!["device", "status", "extra"];
         let matches = cli_app.get_matches_from_safe_borrow(arg_vec);

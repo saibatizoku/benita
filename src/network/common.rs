@@ -235,9 +235,12 @@ macro_rules! impl_SocketRequest_for {
             }
 
             fn send_to<T: Endpoint>(&self, endpoint: &T) -> Result<$response> {
+                let req = self.to_request_string();
+                debug!("sending socket request: {:?}", &req);
                 let _read = endpoint.send(self.to_request_string().as_bytes())
                     .chain_err(|| ErrorKind::CommandRequest)?;
                 let response = $response::recv_from(endpoint)?;
+                debug!("parsed socket reply: {:?}", &response);
                 Ok(response)
             }
         }
@@ -259,7 +262,9 @@ macro_rules! impl_SocketReply_for {
 
             fn recv_from<T: Endpoint>(endpoint: &T) -> Result<$name> {
                 let rep_string = endpoint.recv()?;
+                debug!("received socket reply string: {:?}", &rep_string);
                 let response = $name::parse_response(&rep_string)?;
+                debug!("parsed socket reply: {:?}", &response);
                 Ok(response)
             }
         }

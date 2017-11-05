@@ -19,14 +19,12 @@ type DeviceUuid = String;
 type TemperatureScale = String;
 
 fn setup_subscriber_socket(context: &neuras::zmq::Context) -> Result<neuras::zmq::Socket> {
-    let sub = neuras::utils::zmq_sub(context)
-        .chain_err(|| ErrorKind::SocketCreate)?;
+    let sub = neuras::utils::zmq_sub(context).chain_err(|| ErrorKind::SocketCreate)?;
     Ok(sub)
 }
 
 fn setup_requester_socket(context: &neuras::zmq::Context) -> Result<neuras::zmq::Socket> {
-    let req = neuras::utils::zmq_req(context)
-        .chain_err(|| ErrorKind::SocketCreate)?;
+    let req = neuras::utils::zmq_req(context).chain_err(|| ErrorKind::SocketCreate)?;
     Ok(req)
 }
 
@@ -74,23 +72,31 @@ pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()
         let (uuid, _dt, temperature, scale) = parse_calibration_value_msg(&sub_str)?;
         // Print it out to the screen
         // TODO: use logging to handle this
-        info!(
-            target: &uuid,
-            "{} {}",
-            temperature,
-            scale
-        );
+        info!(target: &uuid, "{} {}", temperature, scale);
 
         total_temp += temperature;
 
         let n = 2;
         if samples == n {
             let avg_temp = total_temp / n as f64;
-            info!(target: &uuid, "temperature avg {:.*} {}", 3, avg_temp, scale);
+            info!(
+                target: &uuid,
+                "temperature avg {:.*} {}",
+                3,
+                avg_temp,
+                scale
+            );
 
             // PH
             let compensate = ph_client.set_compensation_temperature(avg_temp)?;
-            info!(target: &uuid, "compensate {:.*} {} {}", 3, avg_temp, compensate, &scale);
+            info!(
+                target: &uuid,
+                "compensate {:.*} {} {}",
+                3,
+                avg_temp,
+                &scale,
+                compensate
+            );
 
             let read = ph_client.get_reading()?;
             info!(target: &uuid, "{} pH", read);
@@ -100,14 +106,21 @@ pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()
 
             // EC
             let compensate = conductivity_client.set_compensation_temperature(avg_temp)?;
-            info!(target: &uuid, "compensate {:.*} {} {}", 3, avg_temp, compensate, &scale);
+            info!(
+                target: &uuid,
+                "compensate {:.*} {} {}",
+                3,
+                avg_temp,
+                &scale,
+                compensate
+            );
 
             let output_params = conductivity_client.get_output_string_status()?;
 
             let read = conductivity_client.get_reading()?;
 
             let _o = format!("{}", output_params);
-            let _r =format!("{}", read);
+            let _r = format!("{}", read);
             let _readings = _o.split(",")
                 .zip(_r.split(","))
                 .map(|(k, v)| format!("{} {}", v, k))
