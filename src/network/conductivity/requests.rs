@@ -2,7 +2,7 @@
 use errors::*;
 
 use network::{Endpoint, SocketReply, SocketRequest};
-use network::common::OkReply;
+use network::common::ReplyStatus;
 
 pub use devices::conductivity::commands::Baud;
 pub use devices::conductivity::commands::{CalibrationClear, CalibrationDry, CalibrationHigh,
@@ -33,7 +33,7 @@ use utilities::atof;
 use ezo_common::BpsRate;
 
 impl_SocketRequest_for! {
-    Baud: OkReply,
+    Baud: ReplyStatus,
     req_str: {
         if req_str.starts_with("baud ") {
             let resp = req_str.get(5..).unwrap();
@@ -52,7 +52,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    CalibrationClear: OkReply,
+    CalibrationClear: ReplyStatus,
     req_str: {
         match req_str {
             "calibration-clear" => Ok(CalibrationClear),
@@ -65,7 +65,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    CalibrationDry: OkReply,
+    CalibrationDry: ReplyStatus,
     req_str: {
         match req_str {
             "calibration-dry" => Ok(CalibrationDry),
@@ -78,7 +78,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    CalibrationHigh: OkReply,
+    CalibrationHigh: ReplyStatus,
     req_str: {
         if req_str.starts_with("calibration-high ") {
             let resp = req_str.get(17..).unwrap();
@@ -93,7 +93,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    CalibrationLow: OkReply,
+    CalibrationLow: ReplyStatus,
     req_str: {
         if req_str.starts_with("calibration-low ") {
             let resp = req_str.get(16..).unwrap();
@@ -108,7 +108,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    CalibrationOnePoint: OkReply,
+    CalibrationOnePoint: ReplyStatus,
     req_str: {
         if req_str.starts_with("calibration-onepoint ") {
             let resp = req_str.get(21..).unwrap();
@@ -149,7 +149,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    CompensationSet: OkReply,
+    CompensationSet: ReplyStatus,
     req_str: {
         if req_str.starts_with("compensation-set ") {
             let resp = req_str.get(17..).unwrap();
@@ -164,7 +164,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    DeviceAddress: OkReply,
+    DeviceAddress: ReplyStatus,
     req_str: {
         if req_str.starts_with("device-address ") {
             let resp = req_str.get(15..).unwrap();
@@ -220,7 +220,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    Import: OkReply,
+    Import: ReplyStatus,
     req_str: {
         if req_str.starts_with("import ") {
             let resp = req_str.get(7..).unwrap();
@@ -237,7 +237,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    Factory: OkReply,
+    Factory: ReplyStatus,
     req_str: {
         match req_str {
             "factory" => Ok(Factory),
@@ -250,7 +250,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    Find: OkReply,
+    Find: ReplyStatus,
     req_str: {
         match req_str {
             "find" => Ok(Find),
@@ -263,7 +263,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    LedOff: OkReply,
+    LedOff: ReplyStatus,
     req_str: {
         match req_str {
             "led-off" => Ok(LedOff),
@@ -276,7 +276,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    LedOn: OkReply,
+    LedOn: ReplyStatus,
     req_str: {
         match req_str {
             "led-on" => Ok(LedOn),
@@ -302,7 +302,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    OutputDisableConductivity: OkReply,
+    OutputDisableConductivity: ReplyStatus,
     req_str: {
         match req_str {
             "output-conductivity-off" => Ok(OutputDisableConductivity),
@@ -315,7 +315,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    OutputDisableSalinity: OkReply,
+    OutputDisableSalinity: ReplyStatus,
     req_str: {
         match req_str {
             "output-salinity-off" => Ok(OutputDisableSalinity),
@@ -328,7 +328,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    OutputDisableSpecificGravity: OkReply,
+    OutputDisableSpecificGravity: ReplyStatus,
     req_str: {
         match req_str {
             "output-sg-off" => Ok(OutputDisableSpecificGravity),
@@ -341,7 +341,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    OutputDisableTds: OkReply,
+    OutputDisableTds: ReplyStatus,
     req_str: {
         match req_str {
             "output-tds-off" => Ok(OutputDisableTds),
@@ -354,7 +354,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    OutputEnableConductivity: OkReply,
+    OutputEnableConductivity: ReplyStatus,
     req_str: {
         match req_str {
             "output-conductivity-on" => Ok(OutputEnableConductivity),
@@ -367,7 +367,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    OutputEnableSalinity: OkReply,
+    OutputEnableSalinity: ReplyStatus,
     req_str: {
         match req_str {
             "output-salinity-on" => Ok(OutputEnableSalinity),
@@ -380,7 +380,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    OutputEnableSpecificGravity: OkReply,
+    OutputEnableSpecificGravity: ReplyStatus,
     req_str: {
         match req_str {
             "output-sg-on" => Ok(OutputEnableSpecificGravity),
@@ -393,7 +393,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    OutputEnableTds: OkReply,
+    OutputEnableTds: ReplyStatus,
     req_str: {
         match req_str {
             "output-tds-on" => Ok(OutputEnableTds),
@@ -418,7 +418,7 @@ impl_SocketRequest_for! {
     }
 }
 impl_SocketRequest_for! {
-    ProbeTypeOne: OkReply,
+    ProbeTypeOne: ReplyStatus,
     req_str: {
         match req_str {
             "probe-type-1.0" => Ok(ProbeTypeOne),
@@ -431,7 +431,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    ProbeTypePointOne: OkReply,
+    ProbeTypePointOne: ReplyStatus,
     req_str: {
         match req_str {
             "probe-type-0.1" => Ok(ProbeTypePointOne),
@@ -444,7 +444,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    ProbeTypeTen: OkReply,
+    ProbeTypeTen: ReplyStatus,
     req_str: {
         match req_str {
             "probe-type-10" => Ok(ProbeTypeTen),
@@ -470,7 +470,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    ProtocolLockDisable: OkReply,
+    ProtocolLockDisable: ReplyStatus,
     req_str: {
         match req_str {
             "protocol-lock-off" => Ok(ProtocolLockDisable),
@@ -483,7 +483,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    ProtocolLockEnable: OkReply,
+    ProtocolLockEnable: ReplyStatus,
     req_str: {
         match req_str {
             "protocol-lock-on" => Ok(ProtocolLockEnable),
@@ -522,7 +522,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    Sleep: OkReply,
+    Sleep: ReplyStatus,
     req_str: {
         match req_str {
             "sleep" => Ok(Sleep),

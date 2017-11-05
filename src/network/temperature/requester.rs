@@ -4,7 +4,7 @@ use super::replies::*;
 use super::requests::*;
 
 use errors::*;
-use network::common::{Endpoint, OkReply, SocketRequest};
+use network::common::{Endpoint, ReplyStatus, SocketRequest};
 
 use neuras;
 
@@ -29,7 +29,7 @@ impl TemperatureAPI for TemperatureRequester {
     }
 
     /// import a calibration line to the sensor.
-    fn set_import_line(&self, import: &str) -> Result<OkReply> {
+    fn set_import_line(&self, import: &str) -> Result<ReplyStatus> {
         let reply = Import(import.to_string()).send_to(self)?;
         Ok(reply)
     }
@@ -47,31 +47,31 @@ impl TemperatureAPI for TemperatureRequester {
     }
 
     /// reset the sensor device.
-    fn set_factory_reset(&self) -> Result<OkReply> {
+    fn set_factory_reset(&self) -> Result<ReplyStatus> {
         let reply = Factory.send_to(self)?;
         Ok(reply)
     }
 
     /// set the sensor to find mode.
-    fn set_find_mode(&self) -> Result<OkReply> {
+    fn set_find_mode(&self) -> Result<ReplyStatus> {
         let reply = Find.send_to(self)?;
         Ok(reply)
     }
 
     /// change the sensor's I2C address.
-    fn set_device_address(&self, address: u16) -> Result<OkReply> {
+    fn set_device_address(&self, address: u16) -> Result<ReplyStatus> {
         let reply = DeviceAddress(address).send_to(self)?;
         Ok(reply)
     }
 
     /// set the LED off.
-    fn set_led_off(&self) -> Result<OkReply> {
+    fn set_led_off(&self) -> Result<ReplyStatus> {
         let reply = LedOff.send_to(self)?;
         Ok(reply)
     }
 
     /// set the LED on.
-    fn set_led_on(&self) -> Result<OkReply> {
+    fn set_led_on(&self) -> Result<ReplyStatus> {
         let reply = LedOn.send_to(self)?;
         Ok(reply)
     }
@@ -83,13 +83,13 @@ impl TemperatureAPI for TemperatureRequester {
     }
 
     /// set the protocol lock off.
-    fn set_protocol_lock_off(&self) -> Result<OkReply> {
+    fn set_protocol_lock_off(&self) -> Result<ReplyStatus> {
         let reply = ProtocolLockDisable.send_to(self)?;
         Ok(reply)
     }
 
     /// set the protocol lock on.
-    fn set_protocol_lock_on(&self) -> Result<OkReply> {
+    fn set_protocol_lock_on(&self) -> Result<ReplyStatus> {
         let reply = ProtocolLockEnable.send_to(self)?;
         Ok(reply)
     }
@@ -106,13 +106,13 @@ impl TemperatureAPI for TemperatureRequester {
         Ok(reply)
     }
     /// set the sensor to sleep (low-power) mode.
-    fn set_sleep(&self) -> Result<OkReply> {
+    fn set_sleep(&self) -> Result<ReplyStatus> {
         let reply = Sleep.send_to(self)?;
         Ok(reply)
     }
 
     /// Clear the sensor's calibration settings.
-    fn set_calibration_clear(&self) -> Result<OkReply> {
+    fn set_calibration_clear(&self) -> Result<ReplyStatus> {
         let reply = CalibrationClear.send_to(self)?;
         Ok(reply)
     }
@@ -124,7 +124,7 @@ impl TemperatureAPI for TemperatureRequester {
     }
 
     /// Set the calibration temperature for the sensor.
-    fn set_calibration_temperature(&self, t: f64) -> Result<OkReply> {
+    fn set_calibration_temperature(&self, t: f64) -> Result<ReplyStatus> {
         let reply = CalibrationTemperature(t).send_to(self)?;
         Ok(reply)
     }
@@ -132,13 +132,13 @@ impl TemperatureAPI for TemperatureRequester {
     /// Set the data logger interval, `n`.
     ///
     /// The device will take readings and save them to memory at the given interval.
-    fn set_data_logger_interval(&self, n: u32) -> Result<OkReply> {
+    fn set_data_logger_interval(&self, n: u32) -> Result<ReplyStatus> {
         let reply = DataloggerPeriod(n).send_to(self)?;
         Ok(reply)
     }
 
     /// Disable the data-logger.
-    fn set_data_logger_off(&self) -> Result<OkReply> {
+    fn set_data_logger_off(&self) -> Result<ReplyStatus> {
         let reply = DataloggerDisable.send_to(self)?;
         Ok(reply)
     }
@@ -150,7 +150,7 @@ impl TemperatureAPI for TemperatureRequester {
     }
 
     /// Clear memory readings.
-    fn set_memory_clear(&self) -> Result<OkReply> {
+    fn set_memory_clear(&self) -> Result<ReplyStatus> {
         let reply = MemoryClear.send_to(self)?;
         Ok(reply)
     }
@@ -168,19 +168,19 @@ impl TemperatureAPI for TemperatureRequester {
     }
 
     /// Set the current temperature scale to Celsius.
-    fn set_scale_to_celsius(&self) -> Result<OkReply> {
+    fn set_scale_to_celsius(&self) -> Result<ReplyStatus> {
         let reply = ScaleCelsius.send_to(self)?;
         Ok(reply)
     }
 
     /// Set the current temperature scale to Fahrenheit.
-    fn set_scale_to_fahrenheit(&self) -> Result<OkReply> {
+    fn set_scale_to_fahrenheit(&self) -> Result<ReplyStatus> {
         let reply = ScaleFahrenheit.send_to(self)?;
         Ok(reply)
     }
 
     /// Set the current temperature scale to Kelvin.
-    fn set_scale_to_kelvin(&self) -> Result<OkReply> {
+    fn set_scale_to_kelvin(&self) -> Result<ReplyStatus> {
         let reply = ScaleKelvin.send_to(self)?;
         Ok(reply)
     }

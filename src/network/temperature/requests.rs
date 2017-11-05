@@ -2,7 +2,7 @@
 use errors::*;
 
 use network::{Endpoint, SocketReply, SocketRequest};
-use network::common::OkReply;
+use network::common::ReplyStatus;
 
 pub use devices::temperature::commands::Baud;
 pub use devices::temperature::commands::Command;
@@ -27,7 +27,7 @@ use utilities::atof;
 use ezo_common::BpsRate;
 
 impl_SocketRequest_for! {
-    Baud: OkReply,
+    Baud: ReplyStatus,
     req_str: {
         if req_str.starts_with("baud ") {
             let resp = req_str.get(5..).unwrap();
@@ -46,7 +46,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    CalibrationClear: OkReply,
+    CalibrationClear: ReplyStatus,
     req_str: {
         match req_str {
             "calibration-clear" => Ok(CalibrationClear),
@@ -59,7 +59,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    CalibrationTemperature: OkReply,
+    CalibrationTemperature: ReplyStatus,
     req_str: {
         if req_str.starts_with("calibration-set ") {
             let resp = req_str.get(16..).unwrap();
@@ -87,7 +87,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    DataloggerDisable: OkReply,
+    DataloggerDisable: ReplyStatus,
     req_str: {
         match req_str {
             "datalogger-off" => Ok(DataloggerDisable),
@@ -113,7 +113,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    DataloggerPeriod: OkReply,
+    DataloggerPeriod: ReplyStatus,
     req_str: {
         if req_str.starts_with("datalogger-set ") {
             let resp = req_str.get(15..).unwrap();
@@ -129,7 +129,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    DeviceAddress: OkReply,
+    DeviceAddress: ReplyStatus,
     req_str: {
         if req_str.starts_with("device-address ") {
             let resp = req_str.get(15..).unwrap();
@@ -185,7 +185,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    Import: OkReply,
+    Import: ReplyStatus,
     req_str: {
         if req_str.starts_with("import ") {
             let resp = req_str.get(7..).unwrap();
@@ -202,7 +202,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    Factory: OkReply,
+    Factory: ReplyStatus,
     req_str: {
         match req_str {
             "factory" => Ok(Factory),
@@ -215,7 +215,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    Find: OkReply,
+    Find: ReplyStatus,
     req_str: {
         match req_str {
             "find" => Ok(Find),
@@ -228,7 +228,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    LedOff: OkReply,
+    LedOff: ReplyStatus,
     req_str: {
         match req_str {
             "led-off" => Ok(LedOff),
@@ -241,7 +241,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    LedOn: OkReply,
+    LedOn: ReplyStatus,
     req_str: {
         match req_str {
             "led-on" => Ok(LedOn),
@@ -267,7 +267,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    MemoryClear: OkReply,
+    MemoryClear: ReplyStatus,
     req_str: {
         match req_str {
             "memory-clear" => Ok(MemoryClear),
@@ -306,7 +306,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    ProtocolLockDisable: OkReply,
+    ProtocolLockDisable: ReplyStatus,
     req_str: {
         match req_str {
             "protocol-lock-off" => Ok(ProtocolLockDisable),
@@ -319,7 +319,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    ProtocolLockEnable: OkReply,
+    ProtocolLockEnable: ReplyStatus,
     req_str: {
         match req_str {
             "protocol-lock-on" => Ok(ProtocolLockEnable),
@@ -358,7 +358,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    ScaleCelsius: OkReply,
+    ScaleCelsius: ReplyStatus,
     req_str: {
         match req_str {
             "scale-celsius" => Ok(ScaleCelsius),
@@ -371,7 +371,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    ScaleFahrenheit: OkReply,
+    ScaleFahrenheit: ReplyStatus,
     req_str: {
         match req_str {
             "scale-fahrenheit" => Ok(ScaleFahrenheit),
@@ -384,7 +384,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    ScaleKelvin: OkReply,
+    ScaleKelvin: ReplyStatus,
     req_str: {
         match req_str {
             "scale-kelvin" => Ok(ScaleKelvin),
@@ -410,7 +410,7 @@ impl_SocketRequest_for! {
 }
 
 impl_SocketRequest_for! {
-    Sleep: OkReply,
+    Sleep: ReplyStatus,
     req_str: {
         match req_str {
             "sleep" => Ok(Sleep),

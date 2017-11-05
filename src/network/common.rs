@@ -50,11 +50,11 @@ where
 macro_rules! sensor_socket_commands {
     ( calibration_common ) => {
         /// clear calibration settings.
-        pub fn set_calibration_clear(&mut self) -> Result<OkReply> {
+        pub fn set_calibration_clear(&mut self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_calibration_clear()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(OkReply)
+            Ok(ReplyStatus::Ok)
         }
 
         /// get the calibration status.
@@ -84,11 +84,11 @@ macro_rules! sensor_socket_commands {
         }
 
         /// import a calibration line to the sensor.
-        pub fn set_import_line(&mut self, import: &str) -> Result<OkReply> {
+        pub fn set_import_line(&mut self, import: &str) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_import_line(import)
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(OkReply)
+            Ok(ReplyStatus::Ok)
         }
 
         /// get the sensor information.
@@ -108,43 +108,43 @@ macro_rules! sensor_socket_commands {
         }
 
         /// reset the sensor device.
-        pub fn set_factory_reset(&mut self) -> Result<OkReply> {
+        pub fn set_factory_reset(&mut self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_factory_reset()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(OkReply)
+            Ok(ReplyStatus::Ok)
         }
 
         /// set the sensor to find mode.
-        pub fn set_find_mode(&mut self) -> Result<OkReply> {
+        pub fn set_find_mode(&mut self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_find_mode()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(OkReply)
+            Ok(ReplyStatus::Ok)
         }
 
         /// change the sensor's I2C address.
-        pub fn set_device_address(&mut self, address: u16) -> Result<OkReply> {
+        pub fn set_device_address(&mut self, address: u16) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_device_address(address)
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(OkReply)
+            Ok(ReplyStatus::Ok)
         }
 
         /// set the LED off.
-        pub fn set_led_off(&mut self) -> Result<OkReply> {
+        pub fn set_led_off(&mut self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_led_off()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(OkReply)
+            Ok(ReplyStatus::Ok)
         }
 
         /// set the LED on.
-        pub fn set_led_on(&mut self) -> Result<OkReply> {
+        pub fn set_led_on(&mut self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_led_on()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(OkReply)
+            Ok(ReplyStatus::Ok)
         }
 
         /// get the current LED status.
@@ -156,19 +156,19 @@ macro_rules! sensor_socket_commands {
         }
 
         /// set the protocol lock off.
-        pub fn set_protocol_lock_off(&mut self) -> Result<OkReply> {
+        pub fn set_protocol_lock_off(&mut self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_protocol_lock_off()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(OkReply)
+            Ok(ReplyStatus::Ok)
         }
 
         /// set the protocol lock on.
-        pub fn set_protocol_lock_on(&mut self) -> Result<OkReply> {
+        pub fn set_protocol_lock_on(&mut self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_protocol_lock_on()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(OkReply)
+            Ok(ReplyStatus::Ok)
         }
 
         /// get the current protocol lock status.
@@ -187,11 +187,11 @@ macro_rules! sensor_socket_commands {
             Ok(response)
         }
         /// set the sensor to sleep (low-power) mode.
-        pub fn set_sleep(&mut self) -> Result<OkReply> {
+        pub fn set_sleep(&mut self) -> Result<ReplyStatus> {
             let _sleep = self.sensor
                 .set_sleep()
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(OkReply)
+            Ok(ReplyStatus::Ok)
         }
     };
 
@@ -205,11 +205,11 @@ macro_rules! sensor_socket_commands {
         }
 
         /// set the compensation temperature for sensor readings.
-        pub fn set_compensation(&mut self, t: f64) -> Result<OkReply> {
+        pub fn set_compensation(&mut self, t: f64) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_compensation_temperature(t)
                 .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(OkReply)
+            Ok(ReplyStatus::Ok)
         }
     };
 }
@@ -267,27 +267,55 @@ macro_rules! impl_SocketReply_for {
 }
 
 /// `ok` reply.
-pub struct OkReply;
+#[derive(PartialEq)]
+pub enum ReplyStatus {
+    Ok,
+    Err,
+}
 
-impl OkReply {
-    fn parse(rep_str: &str) -> Result<OkReply> {
+impl ReplyStatus {
+    fn parse(rep_str: &str) -> Result<ReplyStatus> {
         match rep_str {
-            "ok" => Ok(OkReply),
+            "ok" => Ok(ReplyStatus::Ok),
+            "err" => Ok(ReplyStatus::Err),
             _ => Err(ErrorKind::ResponseParse.into()),
         }
     }
 }
 
-impl std::fmt::Debug for OkReply {
+impl std::fmt::Debug for ReplyStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "ok")
+        match *self {
+            ReplyStatus::Ok => write!(f, "ok"),
+            ReplyStatus::Err => write!(f, "err"),
+        }
     }
 }
 
-impl std::fmt::Display for OkReply {
+impl std::fmt::Display for ReplyStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "ok")
+        write!(f, "{:?}", self)
     }
 }
 
-impl_SocketReply_for!(OkReply);
+impl_SocketReply_for!(ReplyStatus);
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn create_status_reply_from_valid_str() {
+        let reply = ReplyStatus::parse_response("ok").unwrap();
+        assert_eq!(reply, ReplyStatus::Ok);
+
+        let reply = ReplyStatus::parse_response("err").unwrap();
+        assert_eq!(reply, ReplyStatus::Err);
+    }
+
+    #[test]
+    fn create_status_reply_from_invalid_str_yields_err() {
+        let reply = ReplyStatus::parse_response("okerr");
+        assert!(reply.is_err());
+    }
+}

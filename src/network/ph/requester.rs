@@ -4,7 +4,7 @@ use super::replies::*;
 use super::requests::*;
 
 use errors::*;
-use network::common::{Endpoint, OkReply, SocketRequest};
+use network::common::{Endpoint, ReplyStatus, SocketRequest};
 
 use neuras;
 
@@ -26,7 +26,7 @@ impl PhAPI for PhRequester {
     }
 
     /// import a calibration line to the sensor.
-    fn set_import_line(&self, import: &str) -> Result<OkReply> {
+    fn set_import_line(&self, import: &str) -> Result<ReplyStatus> {
         let reply = Import(import.to_string()).send_to(self)?;
         Ok(reply)
     }
@@ -44,31 +44,31 @@ impl PhAPI for PhRequester {
     }
 
     /// reset the sensor device.
-    fn set_factory_reset(&self) -> Result<OkReply> {
+    fn set_factory_reset(&self) -> Result<ReplyStatus> {
         let reply = Factory.send_to(self)?;
         Ok(reply)
     }
 
     /// set the sensor to find mode.
-    fn set_find_mode(&self) -> Result<OkReply> {
+    fn set_find_mode(&self) -> Result<ReplyStatus> {
         let reply = Find.send_to(self)?;
         Ok(reply)
     }
 
     /// change the sensor's I2C address.
-    fn set_device_address(&self, address: u16) -> Result<OkReply> {
+    fn set_device_address(&self, address: u16) -> Result<ReplyStatus> {
         let reply = DeviceAddress(address).send_to(self)?;
         Ok(reply)
     }
 
     /// set the LED off.
-    fn set_led_off(&self) -> Result<OkReply> {
+    fn set_led_off(&self) -> Result<ReplyStatus> {
         let reply = LedOff.send_to(self)?;
         Ok(reply)
     }
 
     /// set the LED on.
-    fn set_led_on(&self) -> Result<OkReply> {
+    fn set_led_on(&self) -> Result<ReplyStatus> {
         let reply = LedOn.send_to(self)?;
         Ok(reply)
     }
@@ -80,13 +80,13 @@ impl PhAPI for PhRequester {
     }
 
     /// set the protocol lock off.
-    fn set_protocol_lock_off(&self) -> Result<OkReply> {
+    fn set_protocol_lock_off(&self) -> Result<ReplyStatus> {
         let reply = ProtocolLockDisable.send_to(self)?;
         Ok(reply)
     }
 
     /// set the protocol lock on.
-    fn set_protocol_lock_on(&self) -> Result<OkReply> {
+    fn set_protocol_lock_on(&self) -> Result<ReplyStatus> {
         let reply = ProtocolLockEnable.send_to(self)?;
         Ok(reply)
     }
@@ -103,13 +103,13 @@ impl PhAPI for PhRequester {
         Ok(reply)
     }
     /// set the sensor to sleep (low-power) mode.
-    fn set_sleep(&self) -> Result<OkReply> {
+    fn set_sleep(&self) -> Result<ReplyStatus> {
         let reply = Sleep.send_to(self)?;
         Ok(reply)
     }
 
     /// Clear the sensor's calibration settings.
-    fn set_calibration_clear(&self) -> Result<OkReply> {
+    fn set_calibration_clear(&self) -> Result<ReplyStatus> {
         let reply = CalibrationClear.send_to(self)?;
         Ok(reply)
     }
@@ -120,25 +120,25 @@ impl PhAPI for PhRequester {
         Ok(reply)
     }
     /// Set the calibration high-point for the sensor.
-    fn set_calibration_high(&self, t: f64) -> Result<OkReply> {
+    fn set_calibration_high(&self, t: f64) -> Result<ReplyStatus> {
         let reply = CalibrationHigh(t).send_to(self)?;
         Ok(reply)
     }
 
     /// Set the calibration low-point for the sensor.
-    fn set_calibration_low(&self, t: f64) -> Result<OkReply> {
+    fn set_calibration_low(&self, t: f64) -> Result<ReplyStatus> {
         let reply = CalibrationLow(t).send_to(self)?;
         Ok(reply)
     }
 
     /// Set the value for mid-point calibration.
-    fn set_calibration_mid(&self, t: f64) -> Result<OkReply> {
+    fn set_calibration_mid(&self, t: f64) -> Result<ReplyStatus> {
         let reply = CalibrationMid(t).send_to(self)?;
         Ok(reply)
     }
 
     /// Set the compensation temperature.
-    fn set_compensation_temperature(&self, value: f64) -> Result<OkReply> {
+    fn set_compensation_temperature(&self, value: f64) -> Result<ReplyStatus> {
         let reply = CompensationSet(value).send_to(self)?;
         Ok(reply)
     }

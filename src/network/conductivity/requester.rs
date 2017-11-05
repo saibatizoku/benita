@@ -4,7 +4,7 @@ use super::replies::*;
 use super::requests::*;
 
 use errors::*;
-use network::common::{Endpoint, OkReply, SocketRequest};
+use network::common::{Endpoint, ReplyStatus, SocketRequest};
 
 use neuras;
 
@@ -29,7 +29,7 @@ impl ConductivityAPI for ConductivityRequester {
     }
 
     /// import a calibration line to the sensor.
-    fn set_import_line(&self, import: &str) -> Result<OkReply> {
+    fn set_import_line(&self, import: &str) -> Result<ReplyStatus> {
         let reply = Import(import.to_string()).send_to(self)?;
         Ok(reply)
     }
@@ -47,31 +47,31 @@ impl ConductivityAPI for ConductivityRequester {
     }
 
     /// reset the sensor device.
-    fn set_factory_reset(&self) -> Result<OkReply> {
+    fn set_factory_reset(&self) -> Result<ReplyStatus> {
         let reply = Factory.send_to(self)?;
         Ok(reply)
     }
 
     /// set the sensor to find mode.
-    fn set_find_mode(&self) -> Result<OkReply> {
+    fn set_find_mode(&self) -> Result<ReplyStatus> {
         let reply = Find.send_to(self)?;
         Ok(reply)
     }
 
     /// change the sensor's I2C address.
-    fn set_device_address(&self, address: u16) -> Result<OkReply> {
+    fn set_device_address(&self, address: u16) -> Result<ReplyStatus> {
         let reply = DeviceAddress(address).send_to(self)?;
         Ok(reply)
     }
 
     /// set the LED off.
-    fn set_led_off(&self) -> Result<OkReply> {
+    fn set_led_off(&self) -> Result<ReplyStatus> {
         let reply = LedOff.send_to(self)?;
         Ok(reply)
     }
 
     /// set the LED on.
-    fn set_led_on(&self) -> Result<OkReply> {
+    fn set_led_on(&self) -> Result<ReplyStatus> {
         let reply = LedOn.send_to(self)?;
         Ok(reply)
     }
@@ -83,13 +83,13 @@ impl ConductivityAPI for ConductivityRequester {
     }
 
     /// set the protocol lock off.
-    fn set_protocol_lock_off(&self) -> Result<OkReply> {
+    fn set_protocol_lock_off(&self) -> Result<ReplyStatus> {
         let reply = ProtocolLockDisable.send_to(self)?;
         Ok(reply)
     }
 
     /// set the protocol lock on.
-    fn set_protocol_lock_on(&self) -> Result<OkReply> {
+    fn set_protocol_lock_on(&self) -> Result<ReplyStatus> {
         let reply = ProtocolLockEnable.send_to(self)?;
         Ok(reply)
     }
@@ -106,13 +106,13 @@ impl ConductivityAPI for ConductivityRequester {
         Ok(reply)
     }
     /// set the sensor to sleep (low-power) mode.
-    fn set_sleep(&self) -> Result<OkReply> {
+    fn set_sleep(&self) -> Result<ReplyStatus> {
         let reply = Sleep.send_to(self)?;
         Ok(reply)
     }
 
     /// Set the compensation temperature.
-    fn set_compensation_temperature(&self, value: f64) -> Result<OkReply> {
+    fn set_compensation_temperature(&self, value: f64) -> Result<ReplyStatus> {
         let reply = CompensationSet(value).send_to(self)?;
         Ok(reply)
     }
@@ -124,7 +124,7 @@ impl ConductivityAPI for ConductivityRequester {
     }
 
     /// Clear the sensor's calibration settings.
-    fn set_calibration_clear(&self) -> Result<OkReply> {
+    fn set_calibration_clear(&self) -> Result<ReplyStatus> {
         let reply = CalibrationClear.send_to(self)?;
         Ok(reply)
     }
@@ -136,73 +136,73 @@ impl ConductivityAPI for ConductivityRequester {
     }
 
     /// Set the value for dry calibration.
-    fn set_calibration_dry(&self) -> Result<OkReply> {
+    fn set_calibration_dry(&self) -> Result<ReplyStatus> {
         let reply = CalibrationDry.send_to(self)?;
         Ok(reply)
     }
 
     /// Set the calibration high-point for the sensor.
-    fn set_calibration_high(&self, t: f64) -> Result<OkReply> {
+    fn set_calibration_high(&self, t: f64) -> Result<ReplyStatus> {
         let reply = CalibrationHigh(t).send_to(self)?;
         Ok(reply)
     }
 
     /// Set the calibration low-point for the sensor.
-    fn set_calibration_low(&self, t: f64) -> Result<OkReply> {
+    fn set_calibration_low(&self, t: f64) -> Result<ReplyStatus> {
         let reply = CalibrationLow(t).send_to(self)?;
         Ok(reply)
     }
 
     /// Set the calibration single-point for the sensor.
-    fn set_calibration_single(&self, t: f64) -> Result<OkReply> {
+    fn set_calibration_single(&self, t: f64) -> Result<ReplyStatus> {
         let reply = CalibrationOnePoint(t).send_to(self)?;
         Ok(reply)
     }
 
     /// Disable conductivity from output.
-    fn set_output_conductivity_off(&self) -> Result<OkReply> {
+    fn set_output_conductivity_off(&self) -> Result<ReplyStatus> {
         let reply = OutputDisableConductivity.send_to(self)?;
         Ok(reply)
     }
 
     /// Disable salinity from output.
-    fn set_output_salinity_off(&self) -> Result<OkReply> {
+    fn set_output_salinity_off(&self) -> Result<ReplyStatus> {
         let reply = OutputDisableSalinity.send_to(self)?;
         Ok(reply)
     }
 
     /// Disable specific gravity from output.
-    fn set_output_specific_gravity_off(&self) -> Result<OkReply> {
+    fn set_output_specific_gravity_off(&self) -> Result<ReplyStatus> {
         let reply = OutputDisableSpecificGravity.send_to(self)?;
         Ok(reply)
     }
 
     /// Disable total dissolved solids from output.
-    fn set_output_tds_off(&self) -> Result<OkReply> {
+    fn set_output_tds_off(&self) -> Result<ReplyStatus> {
         let reply = OutputDisableTds.send_to(self)?;
         Ok(reply)
     }
 
     /// Enable conductivity from output.
-    fn set_output_conductivity_on(&self) -> Result<OkReply> {
+    fn set_output_conductivity_on(&self) -> Result<ReplyStatus> {
         let reply = OutputEnableConductivity.send_to(self)?;
         Ok(reply)
     }
 
     /// Enable salinity from output.
-    fn set_output_salinity_on(&self) -> Result<OkReply> {
+    fn set_output_salinity_on(&self) -> Result<ReplyStatus> {
         let reply = OutputEnableSalinity.send_to(self)?;
         Ok(reply)
     }
 
     /// Enable specific gravity from output.
-    fn set_output_specific_gravity_on(&self) -> Result<OkReply> {
+    fn set_output_specific_gravity_on(&self) -> Result<ReplyStatus> {
         let reply = OutputEnableSpecificGravity.send_to(self)?;
         Ok(reply)
     }
 
     /// Enable total dissolved solids from output.
-    fn set_output_tds_on(&self) -> Result<OkReply> {
+    fn set_output_tds_on(&self) -> Result<ReplyStatus> {
         let reply = OutputEnableTds.send_to(self)?;
         Ok(reply)
     }
@@ -214,19 +214,19 @@ impl ConductivityAPI for ConductivityRequester {
     }
 
     /// Set the probe type to `1.0`.
-    fn set_probe_type_one(&self) -> Result<OkReply> {
+    fn set_probe_type_one(&self) -> Result<ReplyStatus> {
         let reply = ProbeTypeOne.send_to(self)?;
         Ok(reply)
     }
 
     /// Set the probe type to `0.1`.
-    fn set_probe_type_point_one(&self) -> Result<OkReply> {
+    fn set_probe_type_point_one(&self) -> Result<ReplyStatus> {
         let reply = ProbeTypePointOne.send_to(self)?;
         Ok(reply)
     }
 
     /// Set the probe type to `10`.
-    fn set_probe_type_ten(&self) -> Result<OkReply> {
+    fn set_probe_type_ten(&self) -> Result<ReplyStatus> {
         let reply = ProbeTypeTen.send_to(self)?;
         Ok(reply)
     }

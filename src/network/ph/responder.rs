@@ -3,7 +3,7 @@ use super::replies::*;
 
 use errors::*;
 use devices::ph::PhSensor;
-use network::common::{Endpoint, OkReply};
+use network::common::{Endpoint, ReplyStatus};
 
 use neuras;
 
@@ -24,27 +24,27 @@ impl PhResponder {
     sensor_socket_commands!(calibration_common);
 
     /// Set the calibration high-point for the sensor.
-    pub fn set_calibration_high(&mut self, c: f64) -> Result<OkReply> {
+    pub fn set_calibration_high(&mut self, c: f64) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_calibration_high(c)
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(OkReply)
+        Ok(ReplyStatus::Ok)
     }
 
     /// Set the calibration low-point for the sensor.
-    pub fn set_calibration_low(&mut self, c: f64) -> Result<OkReply> {
+    pub fn set_calibration_low(&mut self, c: f64) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_calibration_low(c)
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(OkReply)
+        Ok(ReplyStatus::Ok)
     }
 
     /// Set the calibration mid-point for the sensor.
-    pub fn set_calibration_mid(&mut self, c: f64) -> Result<OkReply> {
+    pub fn set_calibration_mid(&mut self, c: f64) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_calibration_mid(c)
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(OkReply)
+        Ok(ReplyStatus::Ok)
     }
 }
 
