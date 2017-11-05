@@ -6,9 +6,13 @@
 #![recursion_limit = "1024"]
 
 extern crate benita;
+extern crate chrono;
 extern crate clap;
 #[macro_use]
 extern crate error_chain;
+extern crate fern;
+#[macro_use]
+extern crate log;
 
 use std::path::PathBuf;
 
@@ -16,7 +20,7 @@ use benita::cli::shared::is_url;
 use benita::config::{ConnectionType, SensorConfig, SocketConfig};
 use benita::devices::conductivity::ConductivitySensor;
 use benita::errors::*;
-use benita::network::common::{Endpoint, SocketReply, SocketRequest};
+use benita::network::common::{Endpoint, SocketRequest};
 use benita::network::conductivity::ConductivityResponder;
 use benita::network::conductivity::requests::*;
 use benita::utilities::*;
@@ -66,7 +70,7 @@ fn match_and_eval(s: &str, e: &mut ConductivityResponder) -> Result<String> {
 }
 
 // Main code. Parse the command-line arguments and execute.
-fn run_main_code() -> Result<()> {
+fn evaluate_command_line() -> Result<()> {
     // Match the command-line arguments from std::io and start the service.
     let matches = App::new("conductivity-command-server")
         .version("0.2.0")
@@ -93,29 +97,21 @@ fn run_main_code() -> Result<()> {
         )
         .get_matches();
 
-    // Blank socket configuration.
-    let mut socket_cfg = SocketConfig {
+    // Socket configuration.
+    let socket_cfg = SocketConfig {
         socket_connection: ConnectionType::Bind,
-        ..Default::default()
+        url: matches.value_of("URL").unwrap(),
     };
 
-    // next, add it the `url` from the command-line
-    if let Some(c) = matches.value_of("URL") {
-        socket_cfg.url = c;
-    }
-
-    // Blank socket configuration.
-    let mut sensor_cfg = SensorConfig::default();
-
-    // next, add it the `I2CDEV` path from the command-line
-    if let Some(c) = matches.value_of("I2C") {
-        sensor_cfg.path = PathBuf::from(c);
-    }
-
-    // next, add it the `I2C ADDRESS` from the command-line
-    if let Some(c) = matches.value_of("ADDRESS") {
-        sensor_cfg.address = c.parse().chain_err(|| "Bad Address")?;
-    }
+    // Sensor configuration.
+    let sensor_cfg = SensorConfig {
+        address: matches
+            .value_of("ADDRESS")
+            .unwrap()
+            .parse()
+            .chain_err(|| "Bad Address")?,
+        path: PathBuf::from(matches.value_of("I2C").unwrap()),
+    };
 
     // We initialize the sensor.
     let sensor = ConductivitySensor::from_config(sensor_cfg)?;
@@ -132,9 +128,9 @@ fn run_main_code() -> Result<()> {
     // This is the main loop, it will run for as long as the program runs.
     loop {
         let req_str = &responder.recv()?;
-        println!("REQ: {}", &req_str);
+        debug!("REQ: {}", &req_str);
         let call: String = match_and_eval(&req_str, &mut responder)?;
-        println!("REP: {}", &call);
+        debug!("REP: {}", &call);
         let _reply = &responder.send(call.as_bytes())?;
     }
 
@@ -142,20 +138,34 @@ fn run_main_code() -> Result<()> {
     // Ok(())
 }
 
-fn main() {
-    // Standard setup to catch any errors.
-    if let Err(ref e) = run_main_code() {
-        println!("error: {}", e);
-
-        for e in e.iter().skip(1) {
-            println!("caused by: {}", e);
-        }
-
-        // The backtrace is not always generated. Try to run this example
-        // with `RUST_BACKTRACE=1`.
-        if let Some(backtrace) = e.backtrace() {
-            println!("backtrace: {:?}", backtrace);
-        }
-        ::std::process::exit(1);
-    }
+// Main program. Starts logger, then evaluates args from stdin.
+fn start_logger() -> Result<()> {
+    let _logger = fern::Dispatch::new()
+        .format(|out, message, record| {
+            out.finish(format_args!(
+                "{}[{}][{}] {}",
+                chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
+                record.target(),
+                record.level(),
+                message
+            ))
+        })
+        .level(log::LogLevelFilter::Debug)
+        .chain(std::io::stdout())
+        .chain(fern::log_file("calibrated-service.log")
+            .chain_err(|| "failed to open log file")?)
+        .apply()
+        .chain_err(|| "Could not setup logging")?;
+    Ok(())
 }
+
+// Main program. Starts logger, then evaluates args from stdin.
+fn run_code() -> Result<()> {
+    // Initialize logging.
+    let _log = start_logger()?;
+    info!("Starting calibrated-service");
+    evaluate_command_line()
+}
+
+// fn main() wrapped to handle error chains
+quick_main!(run_code);

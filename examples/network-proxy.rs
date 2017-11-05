@@ -5,16 +5,43 @@
 #![recursion_limit = "1024"]
 
 extern crate benita;
+extern crate chrono;
 extern crate clap;
+#[macro_use]
+extern crate error_chain;
+extern crate fern;
+#[macro_use]
+extern crate log;
 extern crate neuras;
 
 use std::fs::File;
 use std::io::Read;
 
-use benita::errors::Result;
+use benita::errors::*;
 use benita::config::ProxyConfig;
 use clap::{App, Arg};
 use neuras::utils::{create_context, zmq_xpub_xsub_proxy};
+
+// Configure and start logger.
+fn start_logger() -> Result<()> {
+    let _logger = fern::Dispatch::new()
+        .format(|out, message, record| {
+            out.finish(format_args!(
+                "{}[{}][{}] {}",
+                chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
+                record.target(),
+                record.level(),
+                message
+            ))
+        })
+        .level(log::LogLevelFilter::Debug)
+        .chain(std::io::stdout())
+        .chain(fern::log_file("proxy.log")
+            .chain_err(|| "failed to open log file")?)
+        .apply()
+        .chain_err(|| "Could not setup logging")?;
+    Ok(())
+}
 
 fn parse_cli_arguments() -> Result<()> {
     let matches = App::new("benita-neuras-proxy")
@@ -86,25 +113,16 @@ fn parse_cli_arguments() -> Result<()> {
 
 fn run_proxy(backend: &str, frontend: &str) -> Result<()> {
     let context = create_context();
-    println!("Proxied PUB service now serving at: {}", &frontend);
-    println!("... press `Ctrl-C` to quit.");
+    info!("Proxied PUB service now serving at: {}", &frontend);
     let _proxy = zmq_xpub_xsub_proxy(&context, backend, frontend)?;
     Ok(())
 }
 
-fn main() {
-    if let Err(ref e) = parse_cli_arguments() {
-        println!("error: {}", e);
-
-        for e in e.iter().skip(1) {
-            println!("caused by: {}", e);
-        }
-
-        // The backtrace is not always generated. Try to run this example
-        // with `RUST_BACKTRACE=1`.
-        if let Some(backtrace) = e.backtrace() {
-            println!("backtrace: {:?}", backtrace);
-        }
-        ::std::process::exit(1);
-    }
+fn run_code() -> Result<()> {
+    // Initialize logging.
+    let _log = start_logger()?;
+    info!("Starting network-proxy");
+    parse_cli_arguments()
 }
+
+quick_main!(run_code);
