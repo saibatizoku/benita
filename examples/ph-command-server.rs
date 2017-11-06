@@ -10,9 +10,9 @@ extern crate chrono;
 extern crate clap;
 #[macro_use]
 extern crate error_chain;
+extern crate fern;
 #[macro_use]
 extern crate log;
-extern crate fern;
 extern crate neuras;
 
 use std::path::PathBuf;
@@ -162,7 +162,7 @@ fn evaluate_command_line() -> Result<()> {
             .unwrap()
             .parse()
             .chain_err(|| "Bad Address")?,
-        path:  PathBuf::from(matches.value_of("I2C").unwrap()),
+        path: PathBuf::from(matches.value_of("I2C").unwrap()),
     };
 
     // initialize the sensor.
