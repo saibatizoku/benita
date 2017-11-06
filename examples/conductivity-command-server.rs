@@ -20,52 +20,82 @@ use benita::cli::shared::is_url;
 use benita::config::{ConnectionType, SensorConfig, SocketConfig};
 use benita::devices::conductivity::ConductivitySensor;
 use benita::errors::*;
-use benita::network::common::{Endpoint, SocketRequest};
+use benita::network::common::{Endpoint, ReplyStatus, SocketRequest};
 use benita::network::conductivity::ConductivityResponder;
 use benita::network::conductivity::requests::*;
 use benita::utilities::*;
 
 use clap::{App, Arg};
 
+// Return 'err' string, and log it
+fn return_error(e: Error) -> String {
+    error!("conductivity sensor error: {}", e);
+    format!("{:?}", ReplyStatus::Err)
+}
+
 // Match and evaluate commands
 fn match_and_eval(s: &str, e: &mut ConductivityResponder) -> Result<String> {
     match s {
         a if CalibrationState::from_request_str(a).is_ok() => {
             let _req = CalibrationState::from_request_str(s)?;
-            let reply = e.get_calibration_status()?;
-            Ok(format!("{:?}", reply))
+            let reply = match e.get_calibration_status() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
         }
         a if CompensationSet::from_request_str(a).is_ok() => {
             let _req = CompensationSet::from_request_str(s)?;
-            let reply = e.set_compensation(_req.0)?;
-            Ok(format!("{:?}", reply))
+            let reply = match e.set_compensation(_req.0) {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
         }
         a if DeviceInformation::from_request_str(a).is_ok() => {
             let _req = DeviceInformation::from_request_str(s)?;
-            let reply = e.get_device_info()?;
-            Ok(format!("{:?}", reply))
+            let reply = match e.get_device_info() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
         }
         a if OutputState::from_request_str(a).is_ok() => {
             let _req = OutputState::from_request_str(s)?;
-            let reply = e.get_output_params()?;
-            Ok(format!("{:?}", reply))
+            let reply = match e.get_output_params() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
         }
         a if Reading::from_request_str(a).is_ok() => {
             let _req = Reading::from_request_str(s)?;
-            let reply = e.get_reading()?;
-            Ok(format!("{:?}", reply))
+            let reply = match e.get_reading() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
         }
         a if Sleep::from_request_str(a).is_ok() => {
             let _req = Sleep::from_request_str(s)?;
-            let reply = e.set_sleep()?;
-            Ok(format!("{:?}", reply))
+            let reply = match e.set_sleep() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
         }
         a if Status::from_request_str(a).is_ok() => {
             let _req = Status::from_request_str(s)?;
-            let reply = e.get_device_status()?;
-            Ok(format!("{:?}", reply))
+            let reply = match e.get_device_status() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
         }
-        _ => bail!("unrecognized command"),
+        _ => {
+            error!("bad sensor command");
+            Ok(format!("{:?}", ReplyStatus::Err))
+        }
     }
 }
 
@@ -128,9 +158,9 @@ fn evaluate_command_line() -> Result<()> {
     // This is the main loop, it will run for as long as the program runs.
     loop {
         let req_str = &responder.recv()?;
-        debug!("REQ: {}", &req_str);
+        info!("REQ: {}", &req_str);
         let call: String = match_and_eval(&req_str, &mut responder)?;
-        debug!("REP: {}", &call);
+        info!("REP: {}", &call);
         let _reply = &responder.send(call.as_bytes())?;
     }
 
@@ -152,7 +182,7 @@ fn start_logger() -> Result<()> {
         })
         .level(log::LogLevelFilter::Debug)
         .chain(std::io::stdout())
-        .chain(fern::log_file("calibrated-service.log")
+        .chain(fern::log_file("conductivity-responder.log")
             .chain_err(|| "failed to open log file")?)
         .apply()
         .chain_err(|| "Could not setup logging")?;
