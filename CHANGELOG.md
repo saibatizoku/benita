@@ -1,3 +1,10 @@
+## [0.1.6] - 2017-11-05
+### Added
+- refactored examples for clarity
+- responder examples don't crash with sensor errors
+- replace `OkReply` with `ReplyStatus`, an enum that maybe `Ok` or `Err`.
+- enable logging for crate and examples
+- refactored calibrated service a bit
 ## [0.1.5] - 2017-11-02
 ### Added
 - specify Sensor APIs as traits
