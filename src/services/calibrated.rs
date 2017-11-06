@@ -10,7 +10,6 @@ use network::conductivity::ConductivityRequester;
 use network::ph::PhRequester;
 use network::ph::api::PhAPI;
 use network::temperature::replies::{SensorReading, TemperatureScale};
-use utilities::atof;
 
 use chrono::{DateTime, Local};
 use neuras;
