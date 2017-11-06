@@ -13,6 +13,7 @@ extern crate error_chain;
 extern crate fern;
 #[macro_use]
 extern crate log;
+extern crate neuras;
 
 use std::path::PathBuf;
 
@@ -26,6 +27,36 @@ use benita::network::conductivity::requests::*;
 use benita::utilities::*;
 
 use clap::{App, Arg};
+
+// Configure and start logger.
+fn start_logger() -> Result<()> {
+    let _logger = fern::Dispatch::new()
+        .format(|out, message, record| {
+            out.finish(format_args!(
+                "{}[{}][{}] {}",
+                chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
+                record.target(),
+                record.level(),
+                message
+            ))
+        })
+        .level(log::LogLevelFilter::Debug)
+        .chain(std::io::stdout())
+        .chain(fern::log_file("conductivity-responder.log")
+            .chain_err(|| "failed to open log file")?)
+        .apply()
+        .chain_err(|| "Could not setup logging")?;
+    Ok(())
+}
+
+// Return a `Socket` from a `SocketConfig`
+fn socket_from_config(cfg: &SocketConfig) -> Result<neuras::zmq::Socket> {
+    let socket = match cfg.socket_connection {
+        ConnectionType::Bind => create_and_bind_responder(cfg.url)?,
+        ConnectionType::Connect => create_and_connect_responder(cfg.url)?,
+    };
+    Ok(socket)
+}
 
 // Return 'err' string, and log it
 fn return_error(e: Error) -> String {
@@ -99,7 +130,7 @@ fn match_and_eval(s: &str, e: &mut ConductivityResponder) -> Result<String> {
     }
 }
 
-// Main code. Parse the command-line arguments and execute.
+// Parse the command-line arguments and execute.
 fn evaluate_command_line() -> Result<()> {
     // Match the command-line arguments from std::io and start the service.
     let matches = App::new("conductivity-command-server")
@@ -127,13 +158,13 @@ fn evaluate_command_line() -> Result<()> {
         )
         .get_matches();
 
-    // Socket configuration.
+    // socket configuration from args.
     let socket_cfg = SocketConfig {
         socket_connection: ConnectionType::Bind,
         url: matches.value_of("URL").unwrap(),
     };
 
-    // Sensor configuration.
+    // sensor configuration from args.
     let sensor_cfg = SensorConfig {
         address: matches
             .value_of("ADDRESS")
@@ -143,19 +174,16 @@ fn evaluate_command_line() -> Result<()> {
         path: PathBuf::from(matches.value_of("I2C").unwrap()),
     };
 
-    // We initialize the sensor.
+    // initialize the sensor.
     let sensor = ConductivitySensor::from_config(sensor_cfg)?;
 
-    // We initialize the socket.
-    let socket = match socket_cfg.socket_connection {
-        ConnectionType::Bind => create_and_bind_responder(socket_cfg.url)?,
-        ConnectionType::Connect => create_and_connect_responder(socket_cfg.url)?,
-    };
+    // initialize the socket.
+    let socket = socket_from_config(&socket_cfg)?;
 
-    // We initialize the responder with the sensor and socket.
+    // initialize the responder with the sensor and socket.
     let mut responder = ConductivityResponder::new(socket, sensor)?;
 
-    // This is the main loop, it will run for as long as the program runs.
+    // the main loop, it will run for as long as the program runs.
     loop {
         let req_str = &responder.recv()?;
         info!("REQ: {}", &req_str);
@@ -166,27 +194,6 @@ fn evaluate_command_line() -> Result<()> {
 
     // Never reach this line...
     // Ok(())
-}
-
-// Main program. Starts logger, then evaluates args from stdin.
-fn start_logger() -> Result<()> {
-    let _logger = fern::Dispatch::new()
-        .format(|out, message, record| {
-            out.finish(format_args!(
-                "{}[{}][{}] {}",
-                chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
-                record.target(),
-                record.level(),
-                message
-            ))
-        })
-        .level(log::LogLevelFilter::Debug)
-        .chain(std::io::stdout())
-        .chain(fern::log_file("conductivity-responder.log")
-            .chain_err(|| "failed to open log file")?)
-        .apply()
-        .chain_err(|| "Could not setup logging")?;
-    Ok(())
 }
 
 // Main program. Starts logger, then evaluates args from stdin.
