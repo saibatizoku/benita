@@ -149,7 +149,7 @@ dependencies = [
 [[package]]
 name = "ezo_common"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/ezo-common-rs.git#7f413655a07755d4be597fbcee4e35c507538f32"
+source = "git+https://github.com/saibatizoku/ezo-common-rs.git#ebf8dd5652f4abafc7c7891ae54242773e887369"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -159,7 +159,7 @@ dependencies = [
 [[package]]
 name = "ezo_ec"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/ezo-ec-rs.git#5f4b315760c803f614a164724f228ff79f0a8efe"
+source = "git+https://github.com/saibatizoku/ezo-ec-rs.git#e570ec6083f1e2bfa033662ee65791e28f772187"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -170,7 +170,7 @@ dependencies = [
 [[package]]
 name = "ezo_ph"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/ezo-ph-rs.git#f19071260a66d83d08e810a3f80ac76ad46c4ba3"
+source = "git+https://github.com/saibatizoku/ezo-ph-rs.git#aa3b2d7e6e9358807b197c483864d302a29322c4"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -181,7 +181,7 @@ dependencies = [
 [[package]]
 name = "ezo_rtd"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/ezo-rtd-rs.git#5f39b332e38e7b8a4ba3f21a86b9d16d10f6c4c9"
+source = "git+https://github.com/saibatizoku/ezo-rtd-rs.git#89c591569a0c6241befb1d4e729e4f0ab1581139"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -362,7 +362,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "rand"
-version = "0.3.17"
+version = "0.3.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "fuchsia-zircon 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -487,7 +487,7 @@ name = "tempdir"
 version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "rand 0.3.17 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand 0.3.18 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -670,7 +670,7 @@ dependencies = [
 "checksum pkg-config 0.3.9 (registry+https://github.com/rust-lang/crates.io-index)" = "3a8b4c6b8165cd1a1cd4b9b120978131389f64bdaf456435caa41e630edba903"
 "checksum pulldown-cmark 0.0.3 (registry+https://github.com/rust-lang/crates.io-index)" = "8361e81576d2e02643b04950e487ec172b687180da65c731c03cf336784e6c07"
 "checksum quote 0.3.15 (registry+https://github.com/rust-lang/crates.io-index)" = "7a6e920b65c65f10b2ae65c831a81a073a89edd28c7cce89475bff467ab4167a"
-"checksum rand 0.3.17 (registry+https://github.com/rust-lang/crates.io-index)" = "61efcbcd9fa8d8fbb07c84e34a8af18a1ff177b449689ad38a6e9457ecc7b2ae"
+"checksum rand 0.3.18 (registry+https://github.com/rust-lang/crates.io-index)" = "6475140dfd8655aeb72e1fd4b7a1cc1c202be65d71669476e392fe62532b9edd"
 "checksum redox_syscall 0.1.31 (registry+https://github.com/rust-lang/crates.io-index)" = "8dde11f18c108289bef24469638a04dce49da56084f2d50618b226e47eb04509"
 "checksum redox_termios 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "7e891cfe48e9100a70a3b6eb652fef28920c117d366339687bd5576160db0f76"
 "checksum regex 0.1.80 (registry+https://github.com/rust-lang/crates.io-index)" = "4fd4ace6a8cf7860714a2c2280d6c1f7e6a413486c13298bbc86fd3da019402f"
