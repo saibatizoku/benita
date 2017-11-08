@@ -22,6 +22,7 @@ pub mod responses {
                                SensorReading};
 }
 
+use std::cell::RefCell;
 use std::fmt;
 
 use config::SensorConfig;
@@ -45,25 +46,25 @@ impl PhSensor {
     sensor_commands!(calibration_common);
 
     /// Set the calibration high-point for the sensor.
-    pub fn set_calibration_high(&mut self, t: f64) -> Result<()> {
+    pub fn set_calibration_high(&self, t: f64) -> Result<()> {
         let _cmd = CalibrationHigh(t)
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
     /// Set the calibration low-point for the sensor.
-    pub fn set_calibration_low(&mut self, t: f64) -> Result<()> {
+    pub fn set_calibration_low(&self, t: f64) -> Result<()> {
         let _cmd = CalibrationLow(t)
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
     /// Set the value for mid-point calibration.
-    pub fn set_calibration_mid(&mut self, t: f64) -> Result<()> {
+    pub fn set_calibration_mid(&self, t: f64) -> Result<()> {
         let _cmd = CalibrationMid(t)
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
@@ -77,9 +78,9 @@ impl PhSensor {
     /// Get the current slope of the pH Sensor.
     ///
     /// Returns a `ProbeSlope` result.
-    pub fn get_slope(&mut self) -> Result<ProbeSlope> {
+    pub fn get_slope(&self) -> Result<ProbeSlope> {
         let slope = Slope
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(slope)
     }

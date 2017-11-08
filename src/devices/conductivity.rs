@@ -27,6 +27,7 @@ pub mod responses {
                                ProbeReading, ProbeType, ProtocolLockStatus};
 }
 
+use std::cell::RefCell;
 use std::fmt;
 
 use config::SensorConfig;
@@ -55,33 +56,33 @@ impl ConductivitySensor {
     sensor_commands!(calibration_common);
 
     /// Set the value for dry calibration.
-    pub fn set_calibration_dry(&mut self) -> Result<()> {
+    pub fn set_calibration_dry(&self) -> Result<()> {
         let _cmd = CalibrationDry
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
     /// Set the calibration high-point for the sensor.
-    pub fn set_calibration_high(&mut self, t: f64) -> Result<()> {
+    pub fn set_calibration_high(&self, t: f64) -> Result<()> {
         let _cmd = CalibrationHigh(t)
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
     /// Set the calibration low-point for the sensor.
-    pub fn set_calibration_low(&mut self, t: f64) -> Result<()> {
+    pub fn set_calibration_low(&self, t: f64) -> Result<()> {
         let _cmd = CalibrationLow(t)
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
     /// Set the calibration single-point for the sensor.
-    pub fn set_calibration_single(&mut self, t: f64) -> Result<()> {
+    pub fn set_calibration_single(&self, t: f64) -> Result<()> {
         let _cmd = CalibrationOnePoint(t)
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
@@ -93,73 +94,73 @@ impl ConductivitySensor {
 
 impl ConductivitySensor {
     /// Disable conductivity from output.
-    pub fn set_output_conductivity_off(&mut self) -> Result<()> {
+    pub fn set_output_conductivity_off(&self) -> Result<()> {
         let _set = OutputDisableConductivity
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
     /// Disable salinity from output.
-    pub fn set_output_salinity_off(&mut self) -> Result<()> {
+    pub fn set_output_salinity_off(&self) -> Result<()> {
         let _set = OutputDisableSalinity
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
     /// Disable specific gravity from output.
-    pub fn set_output_specific_gravity_off(&mut self) -> Result<()> {
+    pub fn set_output_specific_gravity_off(&self) -> Result<()> {
         let _set = OutputDisableSpecificGravity
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
     /// Disable total dissolved solids from output.
-    pub fn set_output_tds_off(&mut self) -> Result<()> {
+    pub fn set_output_tds_off(&self) -> Result<()> {
         let _set = OutputDisableTds
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
     /// Enable conductivity from output.
-    pub fn set_output_conductivity_on(&mut self) -> Result<()> {
+    pub fn set_output_conductivity_on(&self) -> Result<()> {
         let _set = OutputEnableConductivity
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
     /// Enable salinity from output.
-    pub fn set_output_salinity_on(&mut self) -> Result<()> {
+    pub fn set_output_salinity_on(&self) -> Result<()> {
         let _set = OutputEnableSalinity
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
     /// Enable specific gravity from output.
-    pub fn set_output_specific_gravity_on(&mut self) -> Result<()> {
+    pub fn set_output_specific_gravity_on(&self) -> Result<()> {
         let _set = OutputEnableSpecificGravity
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
     /// Enable total dissolved solids from output.
-    pub fn set_output_tds_on(&mut self) -> Result<()> {
+    pub fn set_output_tds_on(&self) -> Result<()> {
         let _set = OutputEnableTds
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
     /// Get the output string status.
-    pub fn get_output_string_status(&mut self) -> Result<OutputStringStatus> {
+    pub fn get_output_string_status(&self) -> Result<OutputStringStatus> {
         let status = OutputState
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(status)
     }
@@ -167,33 +168,33 @@ impl ConductivitySensor {
 
 impl ConductivitySensor {
     /// Set the probe type to `1.0`.
-    pub fn set_probe_type_one(&mut self) -> Result<()> {
+    pub fn set_probe_type_one(&self) -> Result<()> {
         let _set = ProbeTypeOne
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
     /// Set the probe type to `0.1`.
-    pub fn set_probe_type_point_one(&mut self) -> Result<()> {
+    pub fn set_probe_type_point_one(&self) -> Result<()> {
         let _set = ProbeTypePointOne
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
     /// Set the probe type to `10`.
-    pub fn set_probe_type_ten(&mut self) -> Result<()> {
+    pub fn set_probe_type_ten(&self) -> Result<()> {
         let _set = ProbeTypeTen
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
 
     /// Get probe type status.
-    pub fn get_probe_type_status(&mut self) -> Result<ProbeType> {
+    pub fn get_probe_type_status(&self) -> Result<ProbeType> {
         let status = ProbeTypeState
-            .run(&mut self.i2cdev)
+            .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(status)
     }
