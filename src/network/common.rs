@@ -50,7 +50,7 @@ where
 macro_rules! sensor_socket_commands {
     ( calibration_common ) => {
         /// clear calibration settings.
-        pub fn set_calibration_clear(&mut self) -> Result<ReplyStatus> {
+        pub fn set_calibration_clear(&self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_calibration_clear()
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -58,7 +58,7 @@ macro_rules! sensor_socket_commands {
         }
 
         /// get the calibration status.
-        pub fn get_calibration_status(&mut self) -> Result<CalibrationStatus> {
+        pub fn get_calibration_status(&self) -> Result<CalibrationStatus> {
             let response = self.sensor
                 .get_calibration_status()
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -68,7 +68,7 @@ macro_rules! sensor_socket_commands {
 
     ( device_common ) => {
         /// get the export information from the sensor.
-        pub fn get_export_info(&mut self) -> Result<ExportedInfo> {
+        pub fn get_export_info(&self) -> Result<ExportedInfo> {
             let response = self.sensor
                 .get_export_info()
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -76,7 +76,7 @@ macro_rules! sensor_socket_commands {
         }
 
         /// export a calibration line from the sensor.
-        pub fn get_export_line(&mut self) -> Result<Exported> {
+        pub fn get_export_line(&self) -> Result<Exported> {
             let response = self.sensor
                 .get_export_line()
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -84,7 +84,7 @@ macro_rules! sensor_socket_commands {
         }
 
         /// import a calibration line to the sensor.
-        pub fn set_import_line(&mut self, import: &str) -> Result<ReplyStatus> {
+        pub fn set_import_line(&self, import: &str) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_import_line(import)
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -92,7 +92,7 @@ macro_rules! sensor_socket_commands {
         }
 
         /// get the sensor information.
-        pub fn get_device_info(&mut self) -> Result<DeviceInfo> {
+        pub fn get_device_info(&self) -> Result<DeviceInfo> {
             let response = self.sensor
                 .get_device_info()
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -100,7 +100,7 @@ macro_rules! sensor_socket_commands {
         }
 
         /// get the sensor status.
-        pub fn get_device_status(&mut self) -> Result<DeviceStatus> {
+        pub fn get_device_status(&self) -> Result<DeviceStatus> {
             let response = self.sensor
                 .get_device_status()
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -108,7 +108,7 @@ macro_rules! sensor_socket_commands {
         }
 
         /// reset the sensor device.
-        pub fn set_factory_reset(&mut self) -> Result<ReplyStatus> {
+        pub fn set_factory_reset(&self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_factory_reset()
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -116,7 +116,7 @@ macro_rules! sensor_socket_commands {
         }
 
         /// set the sensor to find mode.
-        pub fn set_find_mode(&mut self) -> Result<ReplyStatus> {
+        pub fn set_find_mode(&self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_find_mode()
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -124,7 +124,7 @@ macro_rules! sensor_socket_commands {
         }
 
         /// change the sensor's I2C address.
-        pub fn set_device_address(&mut self, address: u16) -> Result<ReplyStatus> {
+        pub fn set_device_address(&self, address: u16) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_device_address(address)
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -132,7 +132,7 @@ macro_rules! sensor_socket_commands {
         }
 
         /// set the LED off.
-        pub fn set_led_off(&mut self) -> Result<ReplyStatus> {
+        pub fn set_led_off(&self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_led_off()
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -140,7 +140,7 @@ macro_rules! sensor_socket_commands {
         }
 
         /// set the LED on.
-        pub fn set_led_on(&mut self) -> Result<ReplyStatus> {
+        pub fn set_led_on(&self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_led_on()
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -148,7 +148,7 @@ macro_rules! sensor_socket_commands {
         }
 
         /// get the current LED status.
-        pub fn get_led_status(&mut self) -> Result<LedStatus> {
+        pub fn get_led_status(&self) -> Result<LedStatus> {
             let response = self.sensor
                 .get_led_status()
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -156,7 +156,7 @@ macro_rules! sensor_socket_commands {
         }
 
         /// set the protocol lock off.
-        pub fn set_protocol_lock_off(&mut self) -> Result<ReplyStatus> {
+        pub fn set_protocol_lock_off(&self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_protocol_lock_off()
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -164,7 +164,7 @@ macro_rules! sensor_socket_commands {
         }
 
         /// set the protocol lock on.
-        pub fn set_protocol_lock_on(&mut self) -> Result<ReplyStatus> {
+        pub fn set_protocol_lock_on(&self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_protocol_lock_on()
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -172,7 +172,7 @@ macro_rules! sensor_socket_commands {
         }
 
         /// get the current protocol lock status.
-        pub fn get_protocol_lock_status(&mut self) -> Result<ProtocolLockStatus> {
+        pub fn get_protocol_lock_status(&self) -> Result<ProtocolLockStatus> {
             let response = self.sensor
                 .get_protocol_lock_status()
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -180,14 +180,14 @@ macro_rules! sensor_socket_commands {
         }
 
         /// get the output string with sensor readings.
-        pub fn get_reading(&mut self) -> Result<SensorReading> {
+        pub fn get_reading(&self) -> Result<SensorReading> {
             let response = self.sensor
                 .get_reading()
                 .chain_err(|| ErrorKind::CommandRequest)?;
             Ok(response)
         }
         /// set the sensor to sleep (low-power) mode.
-        pub fn set_sleep(&mut self) -> Result<ReplyStatus> {
+        pub fn set_sleep(&self) -> Result<ReplyStatus> {
             let _sleep = self.sensor
                 .set_sleep()
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -197,7 +197,7 @@ macro_rules! sensor_socket_commands {
 
     ( temperature_compensation ) => {
         /// get the compensation temperature for sensor readings.
-        pub fn get_compensation(&mut self) -> Result<CompensationValue> {
+        pub fn get_compensation(&self) -> Result<CompensationValue> {
             let response = self.sensor
                 .get_compensated_temperature_value()
                 .chain_err(|| ErrorKind::CommandRequest)?;
@@ -205,7 +205,7 @@ macro_rules! sensor_socket_commands {
         }
 
         /// set the compensation temperature for sensor readings.
-        pub fn set_compensation(&mut self, t: f64) -> Result<ReplyStatus> {
+        pub fn set_compensation(&self, t: f64) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_compensation_temperature(t)
                 .chain_err(|| ErrorKind::CommandRequest)?;

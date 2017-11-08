@@ -24,7 +24,7 @@ impl PhResponder {
     sensor_socket_commands!(calibration_common);
 
     /// Set the calibration high-point for the sensor.
-    pub fn set_calibration_high(&mut self, c: f64) -> Result<ReplyStatus> {
+    pub fn set_calibration_high(&self, c: f64) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_calibration_high(c)
             .chain_err(|| ErrorKind::CommandRequest)?;
@@ -32,7 +32,7 @@ impl PhResponder {
     }
 
     /// Set the calibration low-point for the sensor.
-    pub fn set_calibration_low(&mut self, c: f64) -> Result<ReplyStatus> {
+    pub fn set_calibration_low(&self, c: f64) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_calibration_low(c)
             .chain_err(|| ErrorKind::CommandRequest)?;
@@ -40,7 +40,7 @@ impl PhResponder {
     }
 
     /// Set the calibration mid-point for the sensor.
-    pub fn set_calibration_mid(&mut self, c: f64) -> Result<ReplyStatus> {
+    pub fn set_calibration_mid(&self, c: f64) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_calibration_mid(c)
             .chain_err(|| ErrorKind::CommandRequest)?;
@@ -54,7 +54,7 @@ impl PhResponder {
 
 impl PhResponder {
     /// Get the current slope for the pH sensor.
-    pub fn get_slope(&mut self) -> Result<String> {
+    pub fn get_slope(&self) -> Result<String> {
         let response = self.sensor
             .get_slope()
             .chain_err(|| ErrorKind::CommandRequest)?;
