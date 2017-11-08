@@ -37,7 +37,7 @@ macro_rules! sensor_responder_service {
 macro_rules! responder_service_process_request_functions {
     ( $cli:ident ) => {
         /// Listen for incoming command requests.
-        pub fn listen(&mut self) -> Result<()> {
+        pub fn listen(&self) -> Result<()> {
             loop {
                 // Parse and process the command.
                 let command_response: String = match self.process_request() {
@@ -53,7 +53,7 @@ macro_rules! responder_service_process_request_functions {
         }
 
         /// Parse and execute incoming requests. Return an output `String`.
-        pub fn process_request(&mut self) -> Result<String> {
+        pub fn process_request(&self) -> Result<String> {
             // Receive the incoming request
             let request_msg = self.endpoint.recv()?;
             let cmd_args: Vec<&str> = request_msg.as_str().split(" ").collect();
@@ -68,7 +68,7 @@ macro_rules! responder_service_process_request_functions {
         }
 
         // Process device request commands.
-        fn process_device_request(&mut self, matches: &ArgMatches) -> Result<String> {
+        fn process_device_request(&self, matches: &ArgMatches) -> Result<String> {
             let reply = match matches.subcommand() {
                 ("address", Some(_m)) => {
                     let val = match _m.value_of("ADDRESS") {
@@ -86,7 +86,7 @@ macro_rules! responder_service_process_request_functions {
         }
 
         // Process LED request commands.
-        fn process_led_request(&mut self, matches: &ArgMatches) -> Result<String> {
+        fn process_led_request(&self, matches: &ArgMatches) -> Result<String> {
             let reply = match matches.subcommand() {
                 ("off", None) => self.endpoint.set_led_off()?.to_reply_string(),
                 ("on", None) => self.endpoint.set_led_on()?.to_reply_string(),
@@ -97,7 +97,7 @@ macro_rules! responder_service_process_request_functions {
         }
 
         // Process protocol-lock request commands.
-        fn process_protocol_lock_request(&mut self, matches: &ArgMatches) -> Result<String> {
+        fn process_protocol_lock_request(&self, matches: &ArgMatches) -> Result<String> {
             let reply = match matches.subcommand() {
                 ("off", None) => self.endpoint.set_protocol_lock_off()?.to_reply_string(),
                 ("on", None) => self.endpoint.set_protocol_lock_on()?.to_reply_string(),

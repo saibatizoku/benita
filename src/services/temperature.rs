@@ -25,7 +25,7 @@ sensor_responder_service! {
 impl TemperatureSensorService {
     responder_service_process_request_functions!(TemperatureCommandApp);
 
-    fn run_request(&mut self, matched: &ArgMatches) -> Result<String> {
+    fn run_request(&self, matched: &ArgMatches) -> Result<String> {
         match matched.subcommand() {
             ("calibration", Some(_m)) => self.process_calibration_request(_m),
             ("device", Some(_m)) => self.process_device_request(_m),
@@ -39,7 +39,7 @@ impl TemperatureSensorService {
     }
 
     // Process calibration request commands.
-    fn process_calibration_request(&mut self, matches: &ArgMatches) -> Result<String> {
+    fn process_calibration_request(&self, matches: &ArgMatches) -> Result<String> {
         match matches.subcommand() {
             ("status", None) => Ok(self.endpoint.get_calibration_status()?.to_reply_string()),
             ("clear", None) => Ok(self.endpoint.set_calibration_clear()?.to_reply_string()),

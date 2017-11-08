@@ -26,7 +26,7 @@ impl ConductivitySensorService {
     responder_service_process_request_functions!(ConductivityCommandApp);
 
     // Run the request and return the [`String`] output.
-    fn run_request(&mut self, matched: &ArgMatches) -> Result<String> {
+    fn run_request(&self, matched: &ArgMatches) -> Result<String> {
         match matched.subcommand() {
             ("calibration", Some(_m)) => self.process_calibration_request(_m),
             ("compensation", Some(_m)) => self.process_compensation_request(_m),
@@ -42,7 +42,7 @@ impl ConductivitySensorService {
     }
 
     // Process calibration request commands.
-    fn process_calibration_request(&mut self, matches: &ArgMatches) -> Result<String> {
+    fn process_calibration_request(&self, matches: &ArgMatches) -> Result<String> {
         match matches.subcommand() {
             ("status", None) => Ok(self.endpoint.get_calibration_status()?.to_reply_string()),
             ("clear", None) => Ok(self.endpoint.set_calibration_clear()?.to_reply_string()),
@@ -73,7 +73,7 @@ impl ConductivitySensorService {
     }
 
     // Process compensation request commands.
-    fn process_compensation_request(&mut self, matches: &ArgMatches) -> Result<String> {
+    fn process_compensation_request(&self, matches: &ArgMatches) -> Result<String> {
         match matches.subcommand() {
             ("get", None) => Ok(self.endpoint.get_compensation()?.to_reply_string()),
             ("set", Some(_m)) => {
@@ -88,7 +88,7 @@ impl ConductivitySensorService {
     }
 
     // Process output parameters request commands.
-    fn process_output_request(&mut self, matches: &ArgMatches) -> Result<String> {
+    fn process_output_request(&self, matches: &ArgMatches) -> Result<String> {
         match matches.subcommand() {
             ("status", None) => Ok(self.endpoint.get_output_params()?.to_reply_string()),
             ("ec", Some(_m)) => match _m.subcommand() {
