@@ -56,7 +56,7 @@ fn parse_cli_arguments() -> Result<()> {
 
 fn run(pub_url: &str) -> Result<()> {
     let device_path = format!("/dev/i2c-{}", I2C_BUS_ID);
-    let mut rtd_sensor = TemperatureSensor::new(&device_path, EZO_SENSOR_ADDR)
+    let rtd_sensor = TemperatureSensor::new(&device_path, EZO_SENSOR_ADDR)
         .chain_err(|| "Could not open I2C device")?;
     let context = create_context();
     let publisher = zmq_pub(&context)?;

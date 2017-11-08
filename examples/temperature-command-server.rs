@@ -65,7 +65,7 @@ fn return_error(e: Error) -> String {
 }
 
 // Match and evaluate commands
-fn match_and_eval(s: &str, e: &mut TemperatureResponder) -> Result<String> {
+fn match_and_eval(s: &str, e: &TemperatureResponder) -> Result<String> {
     match s {
         a if CalibrationState::from_request_str(a).is_ok() => {
             let _req = CalibrationState::from_request_str(s)?;
@@ -165,13 +165,13 @@ fn evaluate_command_line() -> Result<()> {
     let socket = socket_from_config(&socket_cfg)?;
 
     // initialize the responder with the sensor and socket.
-    let mut responder = TemperatureResponder::new(socket, sensor)?;
+    let responder = TemperatureResponder::new(socket, sensor)?;
 
     // the main loop, it will run for as long as the program runs.
     loop {
         let req_str = &responder.recv()?;
         info!("REQ: {}", &req_str);
-        let call: String = match_and_eval(&req_str, &mut responder)?;
+        let call: String = match_and_eval(&req_str, &responder)?;
         info!("REP: {}", &call);
         let _reply = &responder.send(call.as_bytes())?;
     }
