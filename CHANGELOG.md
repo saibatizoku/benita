@@ -1,3 +1,10 @@
+## [0.1.7] - 2017-11-08
+### Added
+- Top-level API module (refactored prior APIs)
+- Sensors implement APIs
+- Network requesters and responders implement the same sensor APIs
+- Sensor APIs as traits
+- remove external mutability for sensors and network sockets
 ## [0.1.6] - 2017-11-05
 ### Added
 - refactored examples for clarity
