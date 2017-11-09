@@ -1,4 +1,5 @@
 //! Server for Temperature sensing.
+use super::api::TemperatureAPI;
 use super::replies::*;
 
 use errors::*;
@@ -16,25 +17,23 @@ network_sensor_socket! {
     "Socket that responds to Temperature sensor commands."
 }
 
-impl TemperatureResponder {
-    sensor_socket_commands!(device_common);
-}
+impl TemperatureAPI for TemperatureResponder {
+    type DefaultReply = ReplyStatus;
 
-impl TemperatureResponder {
+    sensor_socket_commands!(device_common);
+
     sensor_socket_commands!(calibration_common);
 
     /// Set the calibration mid-point for the sensor.
-    pub fn set_calibration_temperature(&self, c: f64) -> Result<ReplyStatus> {
+    fn set_calibration_temperature(&self, c: f64) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_calibration_temperature(c)
             .chain_err(|| ErrorKind::CommandRequest)?;
         Ok(ReplyStatus::Ok)
     }
-}
 
-impl TemperatureResponder {
     /// set the data-logger interval.
-    pub fn set_data_logger_interval(&self, c: u32) -> Result<ReplyStatus> {
+    fn set_data_logger_interval(&self, c: u32) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_data_logger_interval(c)
             .chain_err(|| ErrorKind::CommandRequest)?;
@@ -42,7 +41,7 @@ impl TemperatureResponder {
     }
 
     /// get the current data-logger status.
-    pub fn get_data_logger_status(&self) -> Result<DataLoggerStorageIntervalSeconds> {
+    fn get_data_logger_status(&self) -> Result<DataLoggerStorageIntervalSeconds> {
         let response = self.sensor
             .get_data_logger_status()
             .chain_err(|| ErrorKind::CommandRequest)?;
@@ -50,17 +49,15 @@ impl TemperatureResponder {
     }
 
     /// set data-logger off.
-    pub fn set_data_logger_off(&self) -> Result<ReplyStatus> {
+    fn set_data_logger_off(&self) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_data_logger_off()
             .chain_err(|| ErrorKind::CommandRequest)?;
         Ok(ReplyStatus::Ok)
     }
-}
 
-impl TemperatureResponder {
     /// clear memory readings.
-    pub fn set_memory_clear(&self) -> Result<ReplyStatus> {
+    fn set_memory_clear(&self) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_memory_clear()
             .chain_err(|| ErrorKind::CommandRequest)?;
@@ -68,7 +65,7 @@ impl TemperatureResponder {
     }
 
     /// recall the next reading in the memory stack.
-    pub fn get_memory_recall(&self) -> Result<MemoryReading> {
+    fn get_memory_recall(&self) -> Result<MemoryReading> {
         let response = self.sensor
             .get_memory_recall()
             .chain_err(|| ErrorKind::CommandRequest)?;
@@ -76,17 +73,15 @@ impl TemperatureResponder {
     }
 
     /// recall the last reading and position in the memory stack.
-    pub fn get_memory_recall_last(&self) -> Result<MemoryReading> {
+    fn get_memory_recall_last(&self) -> Result<MemoryReading> {
         let response = self.sensor
             .get_memory_recall_last()
             .chain_err(|| ErrorKind::CommandRequest)?;
         Ok(response)
     }
-}
 
-impl TemperatureResponder {
     /// set scale to Celsius.
-    pub fn set_scale_to_celsius(&self) -> Result<ReplyStatus> {
+    fn set_scale_to_celsius(&self) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_scale_to_celsius()
             .chain_err(|| ErrorKind::CommandRequest)?;
@@ -94,7 +89,7 @@ impl TemperatureResponder {
     }
 
     /// set scale to Fahrenheit.
-    pub fn set_scale_to_fahrenheit(&self) -> Result<ReplyStatus> {
+    fn set_scale_to_fahrenheit(&self) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_scale_to_fahrenheit()
             .chain_err(|| ErrorKind::CommandRequest)?;
@@ -102,7 +97,7 @@ impl TemperatureResponder {
     }
 
     /// set scale to Kelvin.
-    pub fn set_scale_to_kelvin(&self) -> Result<ReplyStatus> {
+    fn set_scale_to_kelvin(&self) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_scale_to_kelvin()
             .chain_err(|| ErrorKind::CommandRequest)?;
@@ -110,7 +105,7 @@ impl TemperatureResponder {
     }
 
     /// get current scale.
-    pub fn get_scale(&self) -> Result<TemperatureScale> {
+    fn get_scale(&self) -> Result<TemperatureScale> {
         let response = self.sensor
             .get_scale()
             .chain_err(|| ErrorKind::CommandRequest)?;

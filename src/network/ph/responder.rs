@@ -1,4 +1,5 @@
 //! Server for pH sensing.
+use super::api::PhAPI;
 use super::replies::*;
 
 use errors::*;
@@ -16,15 +17,15 @@ network_sensor_socket! {
     "Socket that responds to pH sensor commands."
 }
 
-impl PhResponder {
-    sensor_socket_commands!(device_common);
-}
+impl PhAPI for PhResponder {
+    type DefaultReply = ReplyStatus;
 
-impl PhResponder {
+    sensor_socket_commands!(device_common);
+
     sensor_socket_commands!(calibration_common);
 
     /// Set the calibration high-point for the sensor.
-    pub fn set_calibration_high(&self, c: f64) -> Result<ReplyStatus> {
+    fn set_calibration_high(&self, c: f64) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_calibration_high(c)
             .chain_err(|| ErrorKind::CommandRequest)?;
@@ -32,7 +33,7 @@ impl PhResponder {
     }
 
     /// Set the calibration low-point for the sensor.
-    pub fn set_calibration_low(&self, c: f64) -> Result<ReplyStatus> {
+    fn set_calibration_low(&self, c: f64) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_calibration_low(c)
             .chain_err(|| ErrorKind::CommandRequest)?;
@@ -40,24 +41,20 @@ impl PhResponder {
     }
 
     /// Set the calibration mid-point for the sensor.
-    pub fn set_calibration_mid(&self, c: f64) -> Result<ReplyStatus> {
+    fn set_calibration_mid(&self, c: f64) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_calibration_mid(c)
             .chain_err(|| ErrorKind::CommandRequest)?;
         Ok(ReplyStatus::Ok)
     }
-}
 
-impl PhResponder {
     sensor_socket_commands!(temperature_compensation);
-}
 
-impl PhResponder {
     /// Get the current slope for the pH sensor.
-    pub fn get_slope(&self) -> Result<String> {
+    fn get_slope(&self) -> Result<ProbeSlope> {
         let response = self.sensor
             .get_slope()
             .chain_err(|| ErrorKind::CommandRequest)?;
-        Ok(format!("slope {}", response))
+        Ok(response)
     }
 }

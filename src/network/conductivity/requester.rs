@@ -16,6 +16,8 @@ network_socket! {
 }
 
 impl ConductivityAPI for ConductivityRequester {
+    type DefaultReply = ReplyStatus;
+
     /// get the export information from the sensor.
     fn get_export_info(&self) -> Result<ExportedInfo> {
         let reply = ExportInfo.send_to(self)?;
@@ -112,13 +114,13 @@ impl ConductivityAPI for ConductivityRequester {
     }
 
     /// Set the compensation temperature.
-    fn set_compensation_temperature(&self, value: f64) -> Result<ReplyStatus> {
+    fn set_compensation(&self, value: f64) -> Result<ReplyStatus> {
         let reply = CompensationSet(value).send_to(self)?;
         Ok(reply)
     }
 
     /// Get the current compensated temperature value.
-    fn get_compensated_temperature_value(&self) -> Result<CompensationValue> {
+    fn get_compensation(&self) -> Result<CompensationValue> {
         let reply = CompensationGet.send_to(self)?;
         Ok(reply)
     }
@@ -208,7 +210,7 @@ impl ConductivityAPI for ConductivityRequester {
     }
 
     /// Get the output string status.
-    fn get_output_string_status(&self) -> Result<OutputStringStatus> {
+    fn get_output_params(&self) -> Result<OutputStringStatus> {
         let reply = OutputState.send_to(self)?;
         Ok(reply)
     }

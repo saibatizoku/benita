@@ -16,6 +16,8 @@ network_socket!(
 );
 
 impl TemperatureAPI for TemperatureRequester {
+    type DefaultReply = ReplyStatus;
+
     /// get the export information from the sensor.
     fn get_export_info(&self) -> Result<ExportedInfo> {
         let reply = ExportInfo.send_to(self)?;
