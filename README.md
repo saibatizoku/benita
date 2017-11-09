@@ -26,9 +26,8 @@ use benita::devices::ph::PhSensor;
 
 fn main() {
     // Create a sensor directly with the i2cdev path, and the integer value
-    // of the I2C address for our sensor. It must be mutable
-    // to write to the I2C bus.
-    let mut ph_sensor = PhSensor::new("/dev/i2cdev-0", 100)?;
+    // of the I2C address for our sensor.
+    let ph_sensor = PhSensor::new("/dev/i2cdev-0", 100)?;
 
     // use the sensor to issue a command request and display the response.
     let response = ph_sensor.get_device_info()?;
@@ -52,11 +51,10 @@ fn main() {
     // Same goes for...
     // First, create a sensor configuration with the i2cdev path, and the
     // integer value of the I2C address for our sensor.
-    let ph_config = PhSensor::new("/dev/i2cdev-0", 99)?;
+    let ph_config = SensorConfig::new("/dev/i2cdev-0", 99);
 
-    // Second, we can start working with our sensor device. It must be mutable
-    // to write to the I2C bus.
-    let mut ph_sensor = PhSensor::from_config(ph_config)?;
+    // Second, we can start working with our sensor device.
+    let ph_sensor = PhSensor::from_config(ph_config)?;
 
     // use the sensor to issue a command request and display the response.
     let response = ph_sensor.get_reading()?;
