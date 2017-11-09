@@ -87,7 +87,7 @@ pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()
             );
 
             // PH
-            let compensate = ph_client.set_compensation_temperature(avg_temp)?;
+            let compensate = ph_client.set_compensation(avg_temp)?;
             info!(
                 target: &uuid,
                 "compensate {:.*} {} {}",
@@ -104,7 +104,7 @@ pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()
             info!(target: &uuid, "sleep {}", sleep);
 
             // EC
-            let compensate = conductivity_client.set_compensation_temperature(avg_temp)?;
+            let compensate = conductivity_client.set_compensation(avg_temp)?;
             info!(
                 target: &uuid,
                 "compensate {:.*} {} {}",
@@ -114,7 +114,7 @@ pub fn run_calibrated_sampling_service(config: SensorServiceConfig) -> Result<()
                 compensate
             );
 
-            let output_params = conductivity_client.get_output_string_status()?;
+            let output_params = conductivity_client.get_output_params()?;
 
             let read = conductivity_client.get_reading()?;
 

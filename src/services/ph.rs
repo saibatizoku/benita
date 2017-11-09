@@ -5,6 +5,7 @@ use config::{SensorConfig, SocketConfig};
 use errors::*;
 use network::common::{Endpoint, SocketReply};
 use network::ph::PhResponder;
+use network::ph::api::PhAPI;
 use devices::ph::PhSensor;
 use utilities::{atof, create_and_bind_responder};
 
