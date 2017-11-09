@@ -25,28 +25,28 @@ pub mod responses {
 use std::cell::RefCell;
 use std::fmt;
 
+use self::commands::*;
+use self::responses::*;
+
+use api::ph::PhAPI;
 use config::SensorConfig;
 use errors::*;
 
 use ezo_common::BpsRate;
 use i2cdev::linux::LinuxI2CDevice;
 
-use self::commands::*;
-
-use self::responses::*;
-
 // Use macro to define `PhSensor`
 device_i2cdev!(PhSensor, "EZO-EC Submersible pH Sensor.");
 
-impl PhSensor {
-    sensor_commands!(device_common);
-}
+impl PhAPI for PhSensor {
+    type DefaultReply = ();
 
-impl PhSensor {
+    sensor_commands!(device_common);
+
     sensor_commands!(calibration_common);
 
     /// Set the calibration high-point for the sensor.
-    pub fn set_calibration_high(&self, t: f64) -> Result<()> {
+    fn set_calibration_high(&self, t: f64) -> Result<()> {
         let _cmd = CalibrationHigh(t)
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
@@ -54,7 +54,7 @@ impl PhSensor {
     }
 
     /// Set the calibration low-point for the sensor.
-    pub fn set_calibration_low(&self, t: f64) -> Result<()> {
+    fn set_calibration_low(&self, t: f64) -> Result<()> {
         let _cmd = CalibrationLow(t)
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
@@ -62,23 +62,19 @@ impl PhSensor {
     }
 
     /// Set the value for mid-point calibration.
-    pub fn set_calibration_mid(&self, t: f64) -> Result<()> {
+    fn set_calibration_mid(&self, t: f64) -> Result<()> {
         let _cmd = CalibrationMid(t)
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
-}
 
-impl PhSensor {
     sensor_commands!(temperature_compensation);
-}
 
-impl PhSensor {
     /// Get the current slope of the pH Sensor.
     ///
     /// Returns a `ProbeSlope` result.
-    pub fn get_slope(&self) -> Result<ProbeSlope> {
+    fn get_slope(&self) -> Result<ProbeSlope> {
         let slope = Slope
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;

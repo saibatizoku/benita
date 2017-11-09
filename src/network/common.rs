@@ -199,7 +199,7 @@ macro_rules! sensor_socket_commands {
         /// get the compensation temperature for sensor readings.
         fn get_compensation(&self) -> Result<CompensationValue> {
             let response = self.sensor
-                .get_compensated_temperature_value()
+                .get_compensation()
                 .chain_err(|| ErrorKind::CommandRequest)?;
             Ok(response)
         }
@@ -207,7 +207,7 @@ macro_rules! sensor_socket_commands {
         /// set the compensation temperature for sensor readings.
         fn set_compensation(&self, t: f64) -> Result<ReplyStatus> {
             let _response = self.sensor
-                .set_compensation_temperature(t)
+                .set_compensation(t)
                 .chain_err(|| ErrorKind::CommandRequest)?;
             Ok(ReplyStatus::Ok)
         }

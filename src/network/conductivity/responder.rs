@@ -62,7 +62,7 @@ impl ConductivityAPI for ConductivityResponder {
     /// get the output string parameters for sensor readings.
     fn get_output_params(&self) -> Result<OutputStringStatus> {
         let response = self.sensor
-            .get_output_string_status()
+            .get_output_params()
             .chain_err(|| ErrorKind::CommandRequest)?;
         Ok(response)
     }

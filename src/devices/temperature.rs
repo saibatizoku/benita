@@ -25,39 +25,38 @@ pub mod responses {
 use std::cell::RefCell;
 use std::fmt;
 
+use self::commands::*;
+use self::responses::*;
+
+use api::temperature::TemperatureAPI;
 use config::SensorConfig;
 use errors::*;
 use i2cdev::linux::LinuxI2CDevice;
 use ezo_common::BpsRate;
 
-use self::commands::*;
-use self::responses::*;
-
 
 // Use macro to define `TemperatureSensor`
 device_i2cdev!(TemperatureSensor, "EZO-RTD Submersible Temperature Sensor");
 
-impl TemperatureSensor {
-    sensor_commands!(device_common);
-}
+impl TemperatureAPI for TemperatureSensor {
+    type DefaultReply = ();
 
-impl TemperatureSensor {
+    sensor_commands!(device_common);
+
     sensor_commands!(calibration_common);
 
     /// Set the calibration temperature for the sensor.
-    pub fn set_calibration_temperature(&self, t: f64) -> Result<()> {
+    fn set_calibration_temperature(&self, t: f64) -> Result<()> {
         let _cmd = CalibrationTemperature(t)
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(())
     }
-}
 
-impl TemperatureSensor {
     /// Set the data logger interval, `n`.
     ///
     /// The device will take readings and save them to memory at the given interval.
-    pub fn set_data_logger_interval(&self, n: u32) -> Result<()> {
+    fn set_data_logger_interval(&self, n: u32) -> Result<()> {
         let _set = DataloggerPeriod(n)
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
@@ -65,7 +64,7 @@ impl TemperatureSensor {
     }
 
     /// Disable the data-logger.
-    pub fn set_data_logger_off(&self) -> Result<()> {
+    fn set_data_logger_off(&self) -> Result<()> {
         let _set = DataloggerDisable
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
@@ -73,17 +72,15 @@ impl TemperatureSensor {
     }
 
     /// Get the current status of the data-logger.
-    pub fn get_data_logger_status(&self) -> Result<DataLoggerStorageIntervalSeconds> {
+    fn get_data_logger_status(&self) -> Result<DataLoggerStorageIntervalSeconds> {
         let interval = DataloggerInterval
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(interval)
     }
-}
 
-impl TemperatureSensor {
     /// Clear memory readings.
-    pub fn set_memory_clear(&self) -> Result<()> {
+    fn set_memory_clear(&self) -> Result<()> {
         let _set = MemoryClear
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
@@ -91,7 +88,7 @@ impl TemperatureSensor {
     }
 
     /// Recall the next memory reading on the stack.
-    pub fn get_memory_recall(&self) -> Result<MemoryReading> {
+    fn get_memory_recall(&self) -> Result<MemoryReading> {
         let reading = MemoryRecall
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
@@ -99,17 +96,15 @@ impl TemperatureSensor {
     }
 
     /// Recall the last memory reading on the stack.
-    pub fn get_memory_recall_last(&self) -> Result<MemoryReading> {
+    fn get_memory_recall_last(&self) -> Result<MemoryReading> {
         let reading = MemoryRecallLast
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
         Ok(reading)
     }
-}
 
-impl TemperatureSensor {
     /// Set the current temperature scale to Celsius.
-    pub fn set_scale_to_celsius(&self) -> Result<()> {
+    fn set_scale_to_celsius(&self) -> Result<()> {
         let _set = ScaleCelsius
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
@@ -117,7 +112,7 @@ impl TemperatureSensor {
     }
 
     /// Set the current temperature scale to Fahrenheit.
-    pub fn set_scale_to_fahrenheit(&self) -> Result<()> {
+    fn set_scale_to_fahrenheit(&self) -> Result<()> {
         let _set = ScaleFahrenheit
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
@@ -125,7 +120,7 @@ impl TemperatureSensor {
     }
 
     /// Set the current temperature scale to Kelvin.
-    pub fn set_scale_to_kelvin(&self) -> Result<()> {
+    fn set_scale_to_kelvin(&self) -> Result<()> {
         let _set = ScaleKelvin
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
@@ -133,7 +128,7 @@ impl TemperatureSensor {
     }
 
     /// Get the current temperature scale. Returns a `TemperatureScale` result.
-    pub fn get_scale(&self) -> Result<TemperatureScale> {
+    fn get_scale(&self) -> Result<TemperatureScale> {
         let scale = ScaleState
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
