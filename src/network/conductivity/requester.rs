@@ -1,8 +1,8 @@
 //! Client for Conductivity sensing.
-use super::api::ConductivityAPI;
 use super::replies::*;
 use super::requests::*;
 
+use api::conductivity::ConductivityAPI;
 use errors::*;
 use network::common::{Endpoint, ReplyStatus, SocketRequest};
 

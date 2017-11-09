@@ -1,7 +1,7 @@
 //! Server for Temperature sensing.
-use super::api::TemperatureAPI;
 use super::replies::*;
 
+use api::temperature::TemperatureAPI;
 use errors::*;
 use devices::temperature::TemperatureSensor;
 use network::common::{Endpoint, ReplyStatus};

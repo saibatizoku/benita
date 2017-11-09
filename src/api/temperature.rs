@@ -1,9 +1,9 @@
-//! API for Temperature sensor.
+//! API for Temperature sensor funcionality.
 use errors::*;
 
-use super::replies::*;
+use network::temperature::replies::*;
 
-/// API for the networked Temperature sensor.
+/// API for pH commands and replies
 pub trait TemperatureAPI {
     type DefaultReply;
 

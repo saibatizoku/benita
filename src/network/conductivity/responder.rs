@@ -1,8 +1,8 @@
 //! Server for Conductivity sensing.
-use super::api::ConductivityAPI;
 use super::replies::*;
 use super::replies::ProbeReading as SensorReading;
 
+use api::conductivity::ConductivityAPI;
 use errors::*;
 use devices::conductivity::ConductivitySensor;
 use network::common::{Endpoint, ReplyStatus};

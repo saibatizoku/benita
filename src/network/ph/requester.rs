@@ -1,8 +1,8 @@
 //! Client for pH sensing.
-use super::api::PhAPI;
 use super::replies::*;
 use super::requests::*;
 
+use api::ph::PhAPI;
 use errors::*;
 use network::common::{Endpoint, ReplyStatus, SocketRequest};
 

@@ -1,8 +1,8 @@
 //! Client for Temperature sensing.
-use super::api::TemperatureAPI;
 use super::replies::*;
 use super::requests::*;
 
+use api::temperature::TemperatureAPI;
 use errors::*;
 use network::common::{Endpoint, ReplyStatus, SocketRequest};
 

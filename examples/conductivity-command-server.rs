@@ -17,13 +17,13 @@ extern crate neuras;
 
 use std::path::PathBuf;
 
+use benita::api::conductivity::ConductivityAPI;
 use benita::cli::shared::is_url;
 use benita::config::{ConnectionType, SensorConfig, SocketConfig};
 use benita::devices::conductivity::ConductivitySensor;
 use benita::errors::*;
 use benita::network::common::{Endpoint, ReplyStatus, SocketRequest};
 use benita::network::conductivity::ConductivityResponder;
-use benita::network::conductivity::api::ConductivityAPI;
 use benita::network::conductivity::requests::*;
 use benita::utilities::*;
 

@@ -1,7 +1,7 @@
 //! Server for pH sensing.
-use super::api::PhAPI;
 use super::replies::*;
 
+use api::ph::PhAPI;
 use errors::*;
 use devices::ph::PhSensor;
 use network::common::{Endpoint, ReplyStatus};

@@ -33,6 +33,7 @@ extern crate toml;
 // Useful items, functions and macros.
 mod macros;
 
+pub mod api;
 pub mod cli;
 pub mod config;
 pub mod devices;

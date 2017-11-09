@@ -1,9 +1,10 @@
-//! API for Conductivity sensor.
+//! API for pH sensor functionality.
 use errors::*;
 
-use super::replies::*;
+use network::ph::replies::*;
 
-pub trait ConductivityAPI {
+/// API for pH commands and replies
+pub trait PhAPI {
     type DefaultReply;
 
     /// get the export information from the sensor.
@@ -35,7 +36,7 @@ pub trait ConductivityAPI {
     /// get the current protocol lock status.
     fn get_protocol_lock_status(&self) -> Result<ProtocolLockStatus>;
     /// get the output string with sensor readings.
-    fn get_reading(&self) -> Result<ProbeReading>;
+    fn get_reading(&self) -> Result<SensorReading>;
     /// set the sensor to sleep (low-power) mode.
     fn set_sleep(&self) -> Result<Self::DefaultReply>;
     /// Set the compensation temperature.
@@ -46,38 +47,12 @@ pub trait ConductivityAPI {
     fn set_calibration_clear(&self) -> Result<Self::DefaultReply>;
     /// Get the sensor's current calibration settings.
     fn get_calibration_status(&self) -> Result<CalibrationStatus>;
-    /// Set the value for dry calibration.
-    fn set_calibration_dry(&self) -> Result<Self::DefaultReply>;
     /// Set the calibration high-point for the sensor.
     fn set_calibration_high(&self, t: f64) -> Result<Self::DefaultReply>;
     /// Set the calibration low-point for the sensor.
     fn set_calibration_low(&self, t: f64) -> Result<Self::DefaultReply>;
-    /// Set the calibration single-point for the sensor.
-    fn set_calibration_single(&self, t: f64) -> Result<Self::DefaultReply>;
-    /// Disable conductivity from output.
-    fn set_output_conductivity_off(&self) -> Result<Self::DefaultReply>;
-    /// Disable salinity from output.
-    fn set_output_salinity_off(&self) -> Result<Self::DefaultReply>;
-    /// Disable specific gravity from output.
-    fn set_output_specific_gravity_off(&self) -> Result<Self::DefaultReply>;
-    /// Disable total dissolved solids from output.
-    fn set_output_tds_off(&self) -> Result<Self::DefaultReply>;
-    /// Enable conductivity from output.
-    fn set_output_conductivity_on(&self) -> Result<Self::DefaultReply>;
-    /// Enable salinity from output.
-    fn set_output_salinity_on(&self) -> Result<Self::DefaultReply>;
-    /// Enable specific gravity from output.
-    fn set_output_specific_gravity_on(&self) -> Result<Self::DefaultReply>;
-    /// Enable total dissolved solids from output.
-    fn set_output_tds_on(&self) -> Result<Self::DefaultReply>;
-    /// Get the output string status.
-    fn get_output_params(&self) -> Result<OutputStringStatus>;
-    /// Set the probe type to `1.0`.
-    fn set_probe_type_one(&self) -> Result<Self::DefaultReply>;
-    /// Set the probe type to `0.1`.
-    fn set_probe_type_point_one(&self) -> Result<Self::DefaultReply>;
-    /// Set the probe type to `10`.
-    fn set_probe_type_ten(&self) -> Result<Self::DefaultReply>;
-    /// Get probe type status.
-    fn get_probe_type_status(&self) -> Result<ProbeType>;
+    /// Set the value for mid-point calibration.
+    fn set_calibration_mid(&self, t: f64) -> Result<Self::DefaultReply>;
+    /// Get the current slope for the pH sensor.
+    fn get_slope(&self) -> Result<ProbeSlope>;
 }
