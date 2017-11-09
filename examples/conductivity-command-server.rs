@@ -23,6 +23,7 @@ use benita::devices::conductivity::ConductivitySensor;
 use benita::errors::*;
 use benita::network::common::{Endpoint, ReplyStatus, SocketRequest};
 use benita::network::conductivity::ConductivityResponder;
+use benita::network::conductivity::api::ConductivityAPI;
 use benita::network::conductivity::requests::*;
 use benita::utilities::*;
 

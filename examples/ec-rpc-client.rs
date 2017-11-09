@@ -59,7 +59,7 @@ fn run_client(rep_url: &str) -> Result<()> {
 
     {
         println!("Requesting 'get_output_params'");
-        let output_params = ec_client.get_output_string_status()?;
+        let output_params = ec_client.get_output_params()?;
         println!("{}", output_params);
 
         println!("Requesting 'read'");

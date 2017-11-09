@@ -22,6 +22,7 @@ use benita::config::{ConnectionType, SensorConfig, SocketConfig};
 use benita::devices::ph::PhSensor;
 use benita::errors::*;
 use benita::network::common::{Endpoint, ReplyStatus, SocketRequest};
+use benita::network::ph::api::PhAPI;
 use benita::network::ph::PhResponder;
 use benita::network::ph::requests::*;
 use benita::utilities::*;

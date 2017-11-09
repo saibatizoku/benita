@@ -23,6 +23,7 @@ use benita::devices::temperature::TemperatureSensor;
 use benita::errors::*;
 use benita::network::common::{Endpoint, ReplyStatus, SocketRequest};
 use benita::network::temperature::TemperatureResponder;
+use benita::network::temperature::api::TemperatureAPI;
 use benita::network::temperature::requests::*;
 use benita::utilities::*;
 
