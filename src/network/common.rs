@@ -43,6 +43,7 @@ where
     fn parse_response(&str) -> Result<Self>;
     /// Return the instance as a `String`.
     fn to_reply_string(&self) -> String;
+    /// Receive and parse the reply from the network.
     fn recv_from<T: Endpoint>(&T) -> Result<Self>;
 }
 

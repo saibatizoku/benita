@@ -23,6 +23,7 @@ macro_rules! device_i2cdev {
                 Ok( $name { path, address, i2cdev: RefCell::new(i2cdev) } )
             }
 
+            /// Create a new I2C sensor instance from `SensorConfig`.
             pub fn from_config(config: SensorConfig) -> Result<$name> {
                 let config_path = match config.path.to_str() {
                     Some(path) => path,
