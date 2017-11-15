@@ -1,11 +1,12 @@
 //! Server for Conductivity sensing.
 use super::replies::*;
 use super::replies::ProbeReading as SensorReading;
+use super::requests::*;
 
 use api::conductivity::ConductivityAPI;
 use errors::*;
 use devices::conductivity::ConductivitySensor;
-use network::common::{Endpoint, ReplyStatus};
+use network::common::{Endpoint, ReplyStatus, Responder, SocketRequest};
 
 use neuras;
 
@@ -158,5 +159,193 @@ impl ConductivityAPI for ConductivityResponder {
             .get_probe_type_status()
             .chain_err(|| ErrorKind::CommandRequest)?;
         Ok(response)
+    }
+}
+
+// Return 'err' string, and log it
+fn return_error(e: Error) -> String {
+    error!("conductivity sensor error: {}", e);
+    format!("{:?}", ReplyStatus::Err)
+}
+
+impl Responder for ConductivityResponder {
+    type Response = String;
+
+    // Match and evaluate commands
+    fn evaluate(&self, req: &str) -> Result<String> {
+        match req {
+            a if CalibrationDry::from_request_str(a).is_ok() => {
+                let _req = CalibrationDry::from_request_str(a)?;
+                let reply = match self.set_calibration_dry() {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if CalibrationHigh::from_request_str(a).is_ok() => {
+                let _req = CalibrationHigh::from_request_str(a)?;
+                let reply = match self.set_calibration_high(_req.0) {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if CalibrationLow::from_request_str(a).is_ok() => {
+                let _req = CalibrationLow::from_request_str(a)?;
+                let reply = match self.set_calibration_low(_req.0) {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if CalibrationOnePoint::from_request_str(a).is_ok() => {
+                let _req = CalibrationOnePoint::from_request_str(a)?;
+                let reply = match self.set_calibration_single(_req.0) {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if CalibrationState::from_request_str(a).is_ok() => {
+                let _req = CalibrationState::from_request_str(a)?;
+                let reply = match self.get_calibration_status() {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if CompensationSet::from_request_str(a).is_ok() => {
+                let _req = CompensationSet::from_request_str(a)?;
+                let reply = match self.set_compensation(_req.0) {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if CompensationGet::from_request_str(a).is_ok() => {
+                let _req = CompensationGet::from_request_str(a)?;
+                let reply = match self.get_compensation() {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if DeviceAddress::from_request_str(a).is_ok() => {
+                let _req = DeviceAddress::from_request_str(a)?;
+                let reply = match self.set_device_address(_req.0) {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if DeviceInformation::from_request_str(a).is_ok() => {
+                let _req = DeviceInformation::from_request_str(a)?;
+                let reply = match self.get_device_info() {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if Factory::from_request_str(a).is_ok() => {
+                let _req = Factory::from_request_str(a)?;
+                let reply = match self.set_factory_reset() {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if Find::from_request_str(a).is_ok() => {
+                let _req = Find::from_request_str(a)?;
+                let reply = match self.set_find_mode() {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if Export::from_request_str(a).is_ok() => {
+                let _req = Export::from_request_str(a)?;
+                let reply = match self.get_export_line() {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if ExportInfo::from_request_str(a).is_ok() => {
+                let _req = ExportInfo::from_request_str(a)?;
+                let reply = match self.get_export_info() {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if Import::from_request_str(a).is_ok() => {
+                let _req = Import::from_request_str(a)?;
+                let reply = match self.set_import_line(&_req.0) {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if LedOff::from_request_str(a).is_ok() => {
+                let _req = LedOff::from_request_str(a)?;
+                let reply = match self.set_led_off() {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if LedOn::from_request_str(a).is_ok() => {
+                let _req = LedOn::from_request_str(a)?;
+                let reply = match self.set_led_on() {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if LedState::from_request_str(a).is_ok() => {
+                let _req = LedState::from_request_str(a)?;
+                let reply = match self.get_led_status() {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if OutputState::from_request_str(a).is_ok() => {
+                let _req = OutputState::from_request_str(a)?;
+                let reply = match self.get_output_params() {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if Reading::from_request_str(a).is_ok() => {
+                let _req = Reading::from_request_str(a)?;
+                let reply = match self.get_reading() {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if Sleep::from_request_str(a).is_ok() => {
+                let _req = Sleep::from_request_str(a)?;
+                let reply = match self.set_sleep() {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            a if Status::from_request_str(a).is_ok() => {
+                let _req = Status::from_request_str(a)?;
+                let reply = match self.get_device_status() {
+                    Ok(rep) => format!("{}", rep),
+                    Err(e) => return_error(e),
+                };
+                Ok(reply)
+            }
+            _ => {
+                error!("bad sensor command");
+                Ok(format!("{:?}", ReplyStatus::Err))
+            }
+        }
     }
 }

@@ -18,6 +18,13 @@ where
     fn recv(&self) -> Result<String>;
 }
 
+/// A trait for Responders that receive Requests.
+pub trait Responder {
+    type Response;
+
+    fn evaluate(&self, req: &str) -> Result<Self::Response>;
+}
+
 /// A request sent over a socket
 pub trait SocketRequest
 where
