@@ -65,7 +65,9 @@ fn return_error(e: Error) -> String {
     format!("{:?}", ReplyStatus::Err)
 }
 
-// Match and evaluate commands
+// Match and evaluate commands.
+//
+// NOTE: It uses a custom subset of the `ConducivityAPI`.
 fn match_and_eval(s: &str, e: &ConductivityResponder) -> Result<String> {
     match s {
         a if CalibrationState::from_request_str(a).is_ok() => {
@@ -92,9 +94,145 @@ fn match_and_eval(s: &str, e: &ConductivityResponder) -> Result<String> {
             };
             Ok(reply)
         }
+        a if LedOff::from_request_str(a).is_ok() => {
+            let _req = LedOff::from_request_str(s)?;
+            let reply = match e.set_led_off() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if LedOn::from_request_str(a).is_ok() => {
+            let _req = LedOn::from_request_str(s)?;
+            let reply = match e.set_led_on() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if LedState::from_request_str(a).is_ok() => {
+            let _req = LedState::from_request_str(s)?;
+            let reply = match e.get_led_status() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if Export::from_request_str(a).is_ok() => {
+            let _req = Export::from_request_str(s)?;
+            let reply = match e.get_export_line() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if ExportInfo::from_request_str(a).is_ok() => {
+            let _req = ExportInfo::from_request_str(s)?;
+            let reply = match e.get_export_info() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if Import::from_request_str(a).is_ok() => {
+            let _req = Import::from_request_str(s)?;
+            let reply = match e.set_import_line(&_req.0) {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if OutputEnableConductivity::from_request_str(a).is_ok() => {
+            let _req = OutputEnableConductivity::from_request_str(s)?;
+            let reply = match e.set_output_conductivity_on() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if OutputEnableTds::from_request_str(a).is_ok() => {
+            let _req = OutputEnableTds::from_request_str(s)?;
+            let reply = match e.set_output_tds_on() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if OutputEnableSalinity::from_request_str(a).is_ok() => {
+            let _req = OutputEnableSalinity::from_request_str(s)?;
+            let reply = match e.set_output_salinity_on() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if OutputEnableSpecificGravity::from_request_str(a).is_ok() => {
+            let _req = OutputEnableSpecificGravity::from_request_str(s)?;
+            let reply = match e.set_output_specific_gravity_on() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if OutputDisableConductivity::from_request_str(a).is_ok() => {
+            let _req = OutputDisableConductivity::from_request_str(s)?;
+            let reply = match e.set_output_conductivity_off() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if OutputDisableTds::from_request_str(a).is_ok() => {
+            let _req = OutputDisableTds::from_request_str(s)?;
+            let reply = match e.set_output_tds_off() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if OutputDisableSalinity::from_request_str(a).is_ok() => {
+            let _req = OutputDisableSalinity::from_request_str(s)?;
+            let reply = match e.set_output_salinity_off() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if OutputDisableSpecificGravity::from_request_str(a).is_ok() => {
+            let _req = OutputDisableSpecificGravity::from_request_str(s)?;
+            let reply = match e.set_output_specific_gravity_off() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
         a if OutputState::from_request_str(a).is_ok() => {
             let _req = OutputState::from_request_str(s)?;
             let reply = match e.get_output_params() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if ProtocolLockDisable::from_request_str(a).is_ok() => {
+            let _req = ProtocolLockDisable::from_request_str(s)?;
+            let reply = match e.set_protocol_lock_off() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if ProtocolLockEnable::from_request_str(a).is_ok() => {
+            let _req = ProtocolLockEnable::from_request_str(s)?;
+            let reply = match e.set_protocol_lock_on() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if ProtocolLockState::from_request_str(a).is_ok() => {
+            let _req = ProtocolLockState::from_request_str(s)?;
+            let reply = match e.get_protocol_lock_status() {
                 Ok(rep) => format!("{:?}", rep),
                 Err(e) => return_error(e),
             };
