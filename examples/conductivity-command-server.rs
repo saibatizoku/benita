@@ -17,12 +17,14 @@ extern crate neuras;
 
 use std::path::PathBuf;
 
+use benita::api::conductivity::ConductivityAPI;
 use benita::cli::shared::is_url;
 use benita::config::{ConnectionType, SensorConfig, SocketConfig};
 use benita::devices::conductivity::ConductivitySensor;
 use benita::errors::*;
-use benita::network::common::{Endpoint, Responder};
+use benita::network::common::{Endpoint, ReplyStatus, SocketRequest};
 use benita::network::conductivity::ConductivityResponder;
+use benita::network::conductivity::requests::*;
 use benita::utilities::*;
 
 use clap::{App, Arg};
@@ -55,6 +57,78 @@ fn socket_from_config(cfg: &SocketConfig) -> Result<neuras::zmq::Socket> {
         ConnectionType::Connect => create_and_connect_responder(cfg.url)?,
     };
     Ok(socket)
+}
+
+// Return 'err' string, and log it
+fn return_error(e: Error) -> String {
+    error!("conductivity sensor error: {}", e);
+    format!("{:?}", ReplyStatus::Err)
+}
+
+// Match and evaluate commands
+fn match_and_eval(s: &str, e: &ConductivityResponder) -> Result<String> {
+    match s {
+        a if CalibrationState::from_request_str(a).is_ok() => {
+            let _req = CalibrationState::from_request_str(s)?;
+            let reply = match e.get_calibration_status() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if CompensationSet::from_request_str(a).is_ok() => {
+            let _req = CompensationSet::from_request_str(s)?;
+            let reply = match e.set_compensation(_req.0) {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if DeviceInformation::from_request_str(a).is_ok() => {
+            let _req = DeviceInformation::from_request_str(s)?;
+            let reply = match e.get_device_info() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if OutputState::from_request_str(a).is_ok() => {
+            let _req = OutputState::from_request_str(s)?;
+            let reply = match e.get_output_params() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if Reading::from_request_str(a).is_ok() => {
+            let _req = Reading::from_request_str(s)?;
+            let reply = match e.get_reading() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if Sleep::from_request_str(a).is_ok() => {
+            let _req = Sleep::from_request_str(s)?;
+            let reply = match e.set_sleep() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        a if Status::from_request_str(a).is_ok() => {
+            let _req = Status::from_request_str(s)?;
+            let reply = match e.get_device_status() {
+                Ok(rep) => format!("{:?}", rep),
+                Err(e) => return_error(e),
+            };
+            Ok(reply)
+        }
+        _ => {
+            error!("bad sensor command");
+            Ok(format!("{:?}", ReplyStatus::Err))
+        }
+    }
 }
 
 // Parse the command-line arguments and execute.
@@ -114,7 +188,7 @@ fn evaluate_command_line() -> Result<()> {
     loop {
         let req_str = &responder.recv()?;
         info!("REQ: {}", &req_str);
-        let call: String = responder.evaluate(&req_str)?;
+        let call: String = match_and_eval(&req_str, &responder)?;
         info!("REP: {}", &call);
         let _reply = &responder.send(call.as_bytes())?;
     }
