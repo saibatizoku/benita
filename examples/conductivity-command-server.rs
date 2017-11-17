@@ -15,12 +15,13 @@ extern crate fern;
 extern crate log;
 extern crate neuras;
 
+use std::fmt;
 use std::path::PathBuf;
 
-use benita::api::conductivity::ConductivityAPI;
 use benita::cli::shared::is_url;
 use benita::config::{ConnectionType, SensorConfig, SocketConfig};
 use benita::devices::conductivity::ConductivitySensor;
+use benita::devices::conductivity::commands::Command;
 use benita::errors::*;
 use benita::network::common::{Endpoint, ReplyStatus, SocketRequest};
 use benita::network::conductivity::ConductivityResponder;
@@ -59,10 +60,14 @@ fn socket_from_config(cfg: &SocketConfig) -> Result<neuras::zmq::Socket> {
     Ok(socket)
 }
 
-// Return 'err' string, and log it
-fn return_error(e: Error) -> String {
-    error!("conductivity sensor error: {}", e);
-    format!("{:?}", ReplyStatus::Err)
+// Evaluate a conductivity command using the given responder. Returns a String.
+fn eval<T: Command>(responder: &ConductivityResponder, cmd: T) -> Result<String>
+    where <T as Command>::Response: fmt::Debug {
+    let reply = match cmd.run(&mut responder.sensor.i2cdev.borrow_mut()) {
+        Ok(rep) => format!("{:?}", rep),
+        Err(_) => format!("{:?}", ReplyStatus::Err),
+    };
+    Ok(reply)
 }
 
 // Match and evaluate commands.
@@ -71,196 +76,79 @@ fn return_error(e: Error) -> String {
 fn match_and_eval(s: &str, e: &ConductivityResponder) -> Result<String> {
     match s {
         a if CalibrationState::from_request_str(a).is_ok() => {
-            let _req = CalibrationState::from_request_str(s)?;
-            let reply = match e.get_calibration_status() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, CalibrationState::from_request_str(a)?)
+        }
+        a if CompensationGet::from_request_str(a).is_ok() => {
+            eval(e, CompensationGet::from_request_str(a)?)
         }
         a if CompensationSet::from_request_str(a).is_ok() => {
-            let _req = CompensationSet::from_request_str(s)?;
-            let reply = match e.set_compensation(_req.0) {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, CompensationSet::from_request_str(a)?)
         }
         a if DeviceInformation::from_request_str(a).is_ok() => {
-            let _req = DeviceInformation::from_request_str(s)?;
-            let reply = match e.get_device_info() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, DeviceInformation::from_request_str(a)?)
         }
         a if LedOff::from_request_str(a).is_ok() => {
-            let _req = LedOff::from_request_str(s)?;
-            let reply = match e.set_led_off() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, LedOff::from_request_str(a)?)
         }
         a if LedOn::from_request_str(a).is_ok() => {
-            let _req = LedOn::from_request_str(s)?;
-            let reply = match e.set_led_on() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, LedOn::from_request_str(a)?)
         }
         a if LedState::from_request_str(a).is_ok() => {
-            let _req = LedState::from_request_str(s)?;
-            let reply = match e.get_led_status() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, LedState::from_request_str(a)?)
         }
         a if Export::from_request_str(a).is_ok() => {
-            let _req = Export::from_request_str(s)?;
-            let reply = match e.get_export_line() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, Export::from_request_str(a)?)
         }
         a if ExportInfo::from_request_str(a).is_ok() => {
-            let _req = ExportInfo::from_request_str(s)?;
-            let reply = match e.get_export_info() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, ExportInfo::from_request_str(a)?)
         }
         a if Import::from_request_str(a).is_ok() => {
-            let _req = Import::from_request_str(s)?;
-            let reply = match e.set_import_line(&_req.0) {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, Import::from_request_str(a)?)
         }
         a if OutputEnableConductivity::from_request_str(a).is_ok() => {
-            let _req = OutputEnableConductivity::from_request_str(s)?;
-            let reply = match e.set_output_conductivity_on() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, OutputEnableConductivity::from_request_str(a)?)
         }
         a if OutputEnableTds::from_request_str(a).is_ok() => {
-            let _req = OutputEnableTds::from_request_str(s)?;
-            let reply = match e.set_output_tds_on() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, OutputEnableTds::from_request_str(a)?)
         }
         a if OutputEnableSalinity::from_request_str(a).is_ok() => {
-            let _req = OutputEnableSalinity::from_request_str(s)?;
-            let reply = match e.set_output_salinity_on() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, OutputEnableSalinity::from_request_str(a)?)
         }
         a if OutputEnableSpecificGravity::from_request_str(a).is_ok() => {
-            let _req = OutputEnableSpecificGravity::from_request_str(s)?;
-            let reply = match e.set_output_specific_gravity_on() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, OutputEnableSpecificGravity::from_request_str(a)?)
         }
         a if OutputDisableConductivity::from_request_str(a).is_ok() => {
-            let _req = OutputDisableConductivity::from_request_str(s)?;
-            let reply = match e.set_output_conductivity_off() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, OutputDisableConductivity::from_request_str(a)?)
         }
         a if OutputDisableTds::from_request_str(a).is_ok() => {
-            let _req = OutputDisableTds::from_request_str(s)?;
-            let reply = match e.set_output_tds_off() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, OutputDisableTds::from_request_str(a)?)
         }
         a if OutputDisableSalinity::from_request_str(a).is_ok() => {
-            let _req = OutputDisableSalinity::from_request_str(s)?;
-            let reply = match e.set_output_salinity_off() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, OutputDisableSalinity::from_request_str(a)?)
         }
         a if OutputDisableSpecificGravity::from_request_str(a).is_ok() => {
-            let _req = OutputDisableSpecificGravity::from_request_str(s)?;
-            let reply = match e.set_output_specific_gravity_off() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, OutputDisableSpecificGravity::from_request_str(a)?)
         }
         a if OutputState::from_request_str(a).is_ok() => {
-            let _req = OutputState::from_request_str(s)?;
-            let reply = match e.get_output_params() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, OutputState::from_request_str(a)?)
         }
         a if ProtocolLockDisable::from_request_str(a).is_ok() => {
-            let _req = ProtocolLockDisable::from_request_str(s)?;
-            let reply = match e.set_protocol_lock_off() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, ProtocolLockDisable::from_request_str(a)?)
         }
         a if ProtocolLockEnable::from_request_str(a).is_ok() => {
-            let _req = ProtocolLockEnable::from_request_str(s)?;
-            let reply = match e.set_protocol_lock_on() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, ProtocolLockEnable::from_request_str(a)?)
         }
         a if ProtocolLockState::from_request_str(a).is_ok() => {
-            let _req = ProtocolLockState::from_request_str(s)?;
-            let reply = match e.get_protocol_lock_status() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, ProtocolLockState::from_request_str(a)?)
         }
         a if Reading::from_request_str(a).is_ok() => {
-            let _req = Reading::from_request_str(s)?;
-            let reply = match e.get_reading() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, Reading::from_request_str(a)?)
         }
         a if Sleep::from_request_str(a).is_ok() => {
-            let _req = Sleep::from_request_str(s)?;
-            let reply = match e.set_sleep() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, Sleep::from_request_str(a)?)
         }
         a if Status::from_request_str(a).is_ok() => {
-            let _req = Status::from_request_str(s)?;
-            let reply = match e.get_device_status() {
-                Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
-            };
-            Ok(reply)
+            eval(e, Status::from_request_str(a)?)
         }
         _ => {
             error!("bad sensor command");
