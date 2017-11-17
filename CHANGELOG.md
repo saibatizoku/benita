@@ -1,3 +1,7 @@
+## [0.1.9] -
+### Added
+- Use static dispatch to evaluate commands in Conductivity server example
+- Expose sensor and sockets for services to use
 ## [0.1.7] - 2017-11-08
 ### Added
 - Top-level API module (refactored prior APIs)
