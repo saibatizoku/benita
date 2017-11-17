@@ -31,6 +31,7 @@ use self::responses::*;
 use api::ph::PhAPI;
 use config::SensorConfig;
 use errors::*;
+use network::common::ReplyStatus;
 
 use ezo_common::BpsRate;
 use i2cdev::linux::LinuxI2CDevice;
@@ -39,34 +40,34 @@ use i2cdev::linux::LinuxI2CDevice;
 device_i2cdev!(PhSensor, "EZO-EC Submersible pH Sensor.");
 
 impl PhAPI for PhSensor {
-    type DefaultReply = ();
+    type DefaultReply = ReplyStatus;
 
     sensor_commands!(device_common);
 
     sensor_commands!(calibration_common);
 
     /// Set the calibration high-point for the sensor.
-    fn set_calibration_high(&self, t: f64) -> Result<()> {
+    fn set_calibration_high(&self, t: f64) -> Result<ReplyStatus> {
         let _cmd = CalibrationHigh(t)
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
-        Ok(())
+        Ok(ReplyStatus::Ok)
     }
 
     /// Set the calibration low-point for the sensor.
-    fn set_calibration_low(&self, t: f64) -> Result<()> {
+    fn set_calibration_low(&self, t: f64) -> Result<ReplyStatus> {
         let _cmd = CalibrationLow(t)
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
-        Ok(())
+        Ok(ReplyStatus::Ok)
     }
 
     /// Set the value for mid-point calibration.
-    fn set_calibration_mid(&self, t: f64) -> Result<()> {
+    fn set_calibration_mid(&self, t: f64) -> Result<ReplyStatus> {
         let _cmd = CalibrationMid(t)
             .run(&mut self.i2cdev.borrow_mut())
             .chain_err(|| ErrorKind::SensorTrouble)?;
-        Ok(())
+        Ok(ReplyStatus::Ok)
     }
 
     sensor_commands!(temperature_compensation);

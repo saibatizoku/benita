@@ -37,12 +37,12 @@ macro_rules! device_i2cdev {
             /// __WARNING:__ after using this command, the chip will not be available
             /// until it is put into I2C mode again. Read your chipset data-sheet for proper
             /// the procedure.
-            pub fn set_uart_mode(&self, bps_rate: u32) -> Result<()> {
+            pub fn set_uart_mode(&self, bps_rate: u32) -> Result<ReplyStatus> {
                 let bps = BpsRate::parse_u32(bps_rate)?;
                 let _cmd = Baud(bps)
                     .run(&mut self.i2cdev.borrow_mut())
                     .chain_err(|| ErrorKind::SensorTrouble)?;
-                Ok(())
+                Ok(ReplyStatus::Ok)
             }
         }
 
@@ -58,11 +58,11 @@ macro_rules! device_i2cdev {
 macro_rules! sensor_commands {
     ( calibration_common ) => {
         /// Clear the sensor's calibration settings.
-        fn set_calibration_clear(&self) -> Result<()> {
+        fn set_calibration_clear(&self) -> Result<ReplyStatus> {
             let _cmd = CalibrationClear
                 .run(&mut self.i2cdev.borrow_mut())
                 .chain_err(|| ErrorKind::SensorTrouble)?;
-            Ok(())
+            Ok(ReplyStatus::Ok)
         }
 
         /// Get the sensor's current calibration settings.
@@ -94,11 +94,11 @@ macro_rules! sensor_commands {
         }
 
         /// Import a calibration string to the sensor.
-        fn set_import_line(&self, import: &str) -> Result<()> {
+        fn set_import_line(&self, import: &str) -> Result<ReplyStatus> {
             let _import = Import(import.to_string())
                 .run(&mut self.i2cdev.borrow_mut())
                 .chain_err(|| ErrorKind::SensorTrouble)?;
-            Ok(())
+            Ok(ReplyStatus::Ok)
         }
 
         /// Get the general information about the sensor device.
@@ -122,46 +122,46 @@ macro_rules! sensor_commands {
         /// Set the sensor to the factory settings.
         ///
         /// __NOTE:__ this will delete the settings of the sensor.
-        fn set_factory_reset(&self) -> Result<()> {
+        fn set_factory_reset(&self) -> Result<ReplyStatus> {
             let _reset = Factory
                 .run(&mut self.i2cdev.borrow_mut())
                 .chain_err(|| ErrorKind::SensorTrouble)?;
-            Ok(())
+            Ok(ReplyStatus::Ok)
         }
 
         /// Set the sensor on Find mode. This will make the LED blink continuously until the sensor
         /// receives a new command.
-        fn set_find_mode(&self) -> Result<()> {
+        fn set_find_mode(&self) -> Result<ReplyStatus> {
             let _find = Find.run(&mut self.i2cdev.borrow_mut())
                 .chain_err(|| ErrorKind::SensorTrouble)?;
-            Ok(())
+            Ok(ReplyStatus::Ok)
         }
 
         /// Set a new I2C address on the sensor.
         ///
         /// __NOTE:__ using this command will make the current `self` obsolete. It is up to you to
         /// create a new sensor that is properly configured.
-        fn set_device_address(&self, address: u16) -> Result<()> {
+        fn set_device_address(&self, address: u16) -> Result<ReplyStatus> {
             let _set = DeviceAddress(address)
                 .run(&mut self.i2cdev.borrow_mut())
                 .chain_err(|| ErrorKind::SensorTrouble)?;
-            Ok(())
+            Ok(ReplyStatus::Ok)
         }
 
         /// Turn off the LED.
-        fn set_led_off(&self) -> Result<()> {
+        fn set_led_off(&self) -> Result<ReplyStatus> {
             let _set = LedOff
                 .run(&mut self.i2cdev.borrow_mut())
                 .chain_err(|| ErrorKind::SensorTrouble)?;
-            Ok(())
+            Ok(ReplyStatus::Ok)
         }
 
         /// Turn on the LED.
-        fn set_led_on(&self) -> Result<()> {
+        fn set_led_on(&self) -> Result<ReplyStatus> {
             let _set = LedOn
                 .run(&mut self.i2cdev.borrow_mut())
                 .chain_err(|| ErrorKind::SensorTrouble)?;
-            Ok(())
+            Ok(ReplyStatus::Ok)
         }
 
         /// Get the current status of the LED.
@@ -173,19 +173,19 @@ macro_rules! sensor_commands {
         }
 
         /// Set the lock off for the I2C protocol mode.
-        fn set_protocol_lock_off(&self) -> Result<()> {
+        fn set_protocol_lock_off(&self) -> Result<ReplyStatus> {
             let _set = ProtocolLockDisable
                 .run(&mut self.i2cdev.borrow_mut())
                 .chain_err(|| ErrorKind::SensorTrouble)?;
-            Ok(())
+            Ok(ReplyStatus::Ok)
         }
 
         /// Set the lock on for the I2C protocol mode.
-        fn set_protocol_lock_on(&self) -> Result<()> {
+        fn set_protocol_lock_on(&self) -> Result<ReplyStatus> {
             let _set = ProtocolLockEnable
                 .run(&mut self.i2cdev.borrow_mut())
                 .chain_err(|| ErrorKind::SensorTrouble)?;
-            Ok(())
+            Ok(ReplyStatus::Ok)
         }
 
         /// Get the I2C protocol mode status.
@@ -210,21 +210,21 @@ macro_rules! sensor_commands {
         ///
         /// 1.  it is woken up by writing a single byte to the sensor, or
         /// 2.   by sending __any__ valid command.
-        fn set_sleep(&self) -> Result<()> {
+        fn set_sleep(&self) -> Result<ReplyStatus> {
             let _sleep = Sleep
                 .run(&mut self.i2cdev.borrow_mut())
                 .chain_err(|| ErrorKind::SensorTrouble)?;
-            Ok(())
+            Ok(ReplyStatus::Ok)
         }
     };
 
     ( temperature_compensation ) => {
         /// Set the compensation temperature.
-        fn set_compensation(&self, value: f64) -> Result<()> {
+        fn set_compensation(&self, value: f64) -> Result<ReplyStatus> {
             let _cmd = CompensationSet(value)
                 .run(&mut self.i2cdev.borrow_mut())
                 .chain_err(|| ErrorKind::SensorTrouble)?;
-            Ok(())
+            Ok(ReplyStatus::Ok)
         }
 
         /// Get the current compensated temperature value.
