@@ -7,7 +7,7 @@ macro_rules! device_i2cdev {
         pub struct $name {
             path: String,
             address: u16,
-            i2cdev: RefCell<LinuxI2CDevice>,
+            pub i2cdev: RefCell<LinuxI2CDevice>,
         }
 
         impl $name {

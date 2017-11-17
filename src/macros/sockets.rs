@@ -30,7 +30,7 @@ macro_rules! network_sensor_socket {
         #[ doc = $doc ]
         pub struct $name {
             socket: neuras::zmq::Socket,
-            sensor: $sensor,
+            pub sensor: $sensor,
         }
 
         impl $name {
