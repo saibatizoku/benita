@@ -19,6 +19,7 @@ network_sensor_socket! {
 }
 
 impl ConductivityAPI for ConductivityResponder {
+    type Error = Error;
     type DefaultReply = ReplyStatus;
 
     sensor_socket_commands!(device_common);

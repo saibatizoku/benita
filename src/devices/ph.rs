@@ -40,6 +40,7 @@ use i2cdev::linux::LinuxI2CDevice;
 device_i2cdev!(PhSensor, "EZO-EC Submersible pH Sensor.");
 
 impl PhAPI for PhSensor {
+    type Error = Error;
     type DefaultReply = ReplyStatus;
 
     sensor_commands!(device_common);

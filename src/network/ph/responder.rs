@@ -18,6 +18,7 @@ network_sensor_socket! {
 }
 
 impl PhAPI for PhResponder {
+    type Error = Error;
     type DefaultReply = ReplyStatus;
 
     sensor_socket_commands!(device_common);

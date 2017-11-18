@@ -16,6 +16,7 @@ network_socket!(
 );
 
 impl TemperatureAPI for TemperatureRequester {
+    type Error = Error;
     type DefaultReply = ReplyStatus;
 
     /// get the export information from the sensor.

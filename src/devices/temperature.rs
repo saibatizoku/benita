@@ -41,6 +41,7 @@ use ezo_common::BpsRate;
 device_i2cdev!(TemperatureSensor, "EZO-RTD Submersible Temperature Sensor");
 
 impl TemperatureAPI for TemperatureSensor {
+    type Error = Error;
     type DefaultReply = ReplyStatus;
 
     sensor_commands!(device_common);

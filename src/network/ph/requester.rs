@@ -13,6 +13,7 @@ use neuras;
 network_socket!(PhRequester, "Socket that communicates with the pH sensor.");
 
 impl PhAPI for PhRequester {
+    type Error = Error;
     type DefaultReply = ReplyStatus;
 
     /// get the export information from the sensor.

@@ -50,6 +50,7 @@ device_i2cdev!(
 );
 
 impl ConductivityAPI for ConductivitySensor {
+    type Error = Error;
     type DefaultReply = ReplyStatus;
 
     sensor_commands!(device_common);
