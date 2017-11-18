@@ -1,4 +1,5 @@
 //! Library Error, and ErrorKind definitions.
+use super::config;
 use super::devices;
 use super::network;
 use super::utilities;
@@ -59,6 +60,7 @@ error_chain! {
     }
     links {
         // module error-chains
+        Config(config::errors::Error, config::errors::ErrorKind);
         Devices(devices::errors::Error, devices::errors::ErrorKind);
         Network(network::errors::Error, network::errors::ErrorKind);
         Utilities(utilities::errors::Error, utilities::errors::ErrorKind);

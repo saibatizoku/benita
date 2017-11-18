@@ -1,6 +1,11 @@
 //! Configuration settings for sensors and network sockets, using `toml`.
 //!
 //! `benita` sets up sensors and network configurations using `toml` and `serde`.
+pub mod errors {
+    error_chain! {
+    }
+}
+
 use std::path::PathBuf;
 
 use errors::*;
