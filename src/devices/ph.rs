@@ -22,6 +22,11 @@ pub mod responses {
                                SensorReading};
 }
 
+pub mod errors {
+    error_chain! {
+    }
+}
+
 use std::cell::RefCell;
 use std::fmt;
 

@@ -27,6 +27,11 @@ pub mod responses {
                                ProbeReading, ProbeType, ProtocolLockStatus};
 }
 
+pub mod errors {
+    error_chain! {
+    }
+}
+
 use std::cell::RefCell;
 use std::fmt;
 
