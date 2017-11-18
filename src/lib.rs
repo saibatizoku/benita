@@ -36,6 +36,7 @@ mod macros;
 pub mod api;
 pub mod cli;
 pub mod config;
+#[macro_use]
 pub mod devices;
 pub mod errors;
 pub mod network;

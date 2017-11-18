@@ -1,5 +1,3 @@
-//! Exported macros.
-#[macro_use]
-mod devices;
+// Exported macros.
 #[macro_use]
 mod sockets;

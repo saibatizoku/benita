@@ -1,10 +1,10 @@
 //! Collection of I2C sensor devices.
-pub mod conductivity;
-pub mod ph;
-pub mod temperature;
 
+#[macro_use]
+mod macros;
+
+/// I2C device `Error`, and `ErrorKind` definitions.
 pub mod errors {
-    //! Library Error, and ErrorKind definitions.
     use ezo_common;
     use super::conductivity;
     use super::ph;
@@ -25,3 +25,7 @@ pub mod errors {
         }
     }
 }
+
+pub mod conductivity;
+pub mod ph;
+pub mod temperature;
