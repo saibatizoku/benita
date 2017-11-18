@@ -1,5 +1,9 @@
 //! Error definitions.
 use std::io;
+
+use super::devices;
+use super::network;
+
 use neuras;
 use ezo_common;
 use ezo_ec;
@@ -58,6 +62,11 @@ error_chain! {
         }
     }
     links {
+        // module error-chains
+        Devices(devices::Error, devices::ErrorKind);
+        Network(network::Error, network::ErrorKind);
+
+        // external crate error-chains
         Neuras(neuras::errors::Error, neuras::errors::ErrorKind);
         EzoSensor(ezo_common::errors::Error, ezo_common::errors::ErrorKind);
         EcSensor(ezo_ec::errors::Error, ezo_ec::errors::ErrorKind);
