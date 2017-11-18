@@ -1,5 +1,7 @@
 //! Sensor network sockets.
 #[macro_use]
+mod macros;
+
 // Common network items
 pub mod common;
 
