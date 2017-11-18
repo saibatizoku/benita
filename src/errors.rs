@@ -1,6 +1,7 @@
 //! Library Error, and ErrorKind definitions.
 use super::devices;
 use super::network;
+use super::utilities;
 
 use neuras;
 
@@ -56,6 +57,7 @@ error_chain! {
         // module error-chains
         Devices(devices::errors::Error, devices::errors::ErrorKind);
         Network(network::errors::Error, network::errors::ErrorKind);
+        Utilities(utilities::errors::Error, utilities::errors::ErrorKind);
 
         // external crate error-chains
         Neuras(neuras::errors::Error, neuras::errors::ErrorKind);

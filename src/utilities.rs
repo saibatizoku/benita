@@ -1,5 +1,21 @@
 //! Shared useful utility functions.
-use errors::*;
+pub mod errors {
+    use neuras;
+
+    error_chain! {
+        errors {
+            NumberParse {
+                description ("this is not a number")
+            }
+        }
+        links {
+            // external crate error-chains
+            Neuras(neuras::errors::Error, neuras::errors::ErrorKind);
+        }
+    }
+}
+
+use self::errors::*;
 use neuras::zmq::Socket;
 use neuras::utils::{bind_socket, connect_socket, create_context, zmq_rep, zmq_req};
 
