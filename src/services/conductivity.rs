@@ -2,11 +2,11 @@
 
 use api::conductivity::ConductivityAPI;
 use cli::conductivity::ConductivityCommandApp;
+use conductivity::device::ConductivitySensor;
 use config::{SensorConfig, SocketConfig};
 use errors::*;
 use network::{Endpoint, SocketReply};
 use network::conductivity::ConductivityResponder;
-use devices::conductivity::ConductivitySensor;
 use utilities::{atof, create_and_bind_responder};
 
 use clap::ArgMatches;

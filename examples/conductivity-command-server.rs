@@ -20,8 +20,8 @@ use std::path::PathBuf;
 
 use benita::cli::shared::is_url;
 use benita::config::{ConnectionType, SensorConfig, SocketConfig};
-use benita::devices::conductivity::ConductivitySensor;
-use benita::devices::conductivity::commands::Command;
+use benita::conductivity::device::ConductivitySensor;
+use benita::conductivity::device::commands::Command;
 use benita::errors::*;
 use benita::network::common::{Endpoint, ReplyStatus, SocketRequest};
 use benita::network::conductivity::ConductivityResponder;

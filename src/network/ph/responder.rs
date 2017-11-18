@@ -8,7 +8,7 @@ use super::replies::*;
 
 use api::ph::PhAPI;
 use errors::*;
-use devices::ph::PhSensor;
+use ph::device::PhSensor;
 use network::common::{Endpoint, ReplyStatus};
 
 use neuras;

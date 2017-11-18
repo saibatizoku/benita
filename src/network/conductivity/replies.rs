@@ -7,7 +7,7 @@ pub mod errors {
 use errors::*;
 use network::{Endpoint, SocketReply};
 
-pub use devices::conductivity::responses::{CalibrationStatus, CompensationValue, DeviceInfo,
+pub use conductivity::device::responses::{CalibrationStatus, CompensationValue, DeviceInfo,
                                            DeviceStatus, Exported, ExportedInfo, LedStatus,
                                            OutputStringStatus, ProbeReading, ProbeType,
                                            ProtocolLockStatus};

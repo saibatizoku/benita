@@ -8,7 +8,7 @@ use super::replies::*;
 
 use api::temperature::TemperatureAPI;
 use errors::*;
-use devices::temperature::TemperatureSensor;
+use temperature::device::TemperatureSensor;
 use network::common::{Endpoint, ReplyStatus};
 
 use neuras;

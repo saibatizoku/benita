@@ -9,18 +9,18 @@ use errors::*;
 use network::{Endpoint, SocketReply, SocketRequest};
 use network::common::ReplyStatus;
 
-pub use devices::ph::commands::Baud;
-pub use devices::ph::commands::Command;
-pub use devices::ph::commands::{CalibrationClear, CalibrationHigh, CalibrationLow, CalibrationMid,
+pub use ph::device::commands::Baud;
+pub use ph::device::commands::Command;
+pub use ph::device::commands::{CalibrationClear, CalibrationHigh, CalibrationLow, CalibrationMid,
                                 CalibrationState};
-pub use devices::ph::commands::{CompensationGet, CompensationSet, DeviceAddress};
-pub use devices::ph::commands::{DeviceInformation, Factory, Find, Reading, Sleep, Status};
-pub use devices::ph::commands::{Export, ExportInfo, Import};
-pub use devices::ph::commands::{LedOff, LedOn, LedState};
-pub use devices::ph::commands::{ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState};
-pub use devices::ph::commands::Slope;
+pub use ph::device::commands::{CompensationGet, CompensationSet, DeviceAddress};
+pub use ph::device::commands::{DeviceInformation, Factory, Find, Reading, Sleep, Status};
+pub use ph::device::commands::{Export, ExportInfo, Import};
+pub use ph::device::commands::{LedOff, LedOn, LedState};
+pub use ph::device::commands::{ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState};
+pub use ph::device::commands::Slope;
 
-use devices::ph::responses::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus,
+use ph::device::responses::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus,
                              Exported, ExportedInfo, LedStatus, ProbeSlope, ProtocolLockStatus,
                              SensorReading};
 

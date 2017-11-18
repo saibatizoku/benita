@@ -9,7 +9,7 @@ use super::replies::ProbeReading as SensorReading;
 
 use api::conductivity::ConductivityAPI;
 use errors::*;
-use devices::conductivity::ConductivitySensor;
+use conductivity::device::ConductivitySensor;
 use network::common::{Endpoint, ReplyStatus};
 
 use neuras;

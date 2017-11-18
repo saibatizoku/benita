@@ -9,21 +9,21 @@ use errors::*;
 use network::{Endpoint, SocketReply, SocketRequest};
 use network::common::ReplyStatus;
 
-pub use devices::temperature::commands::Baud;
-pub use devices::temperature::commands::Command;
-pub use devices::temperature::commands::{CalibrationClear, CalibrationState,
+pub use temperature::device::commands::Baud;
+pub use temperature::device::commands::Command;
+pub use temperature::device::commands::{CalibrationClear, CalibrationState,
                                          CalibrationTemperature};
-pub use devices::temperature::commands::{DataloggerDisable, DataloggerInterval, DataloggerPeriod};
-pub use devices::temperature::commands::{DeviceAddress, DeviceInformation, Factory, Find, Reading,
+pub use temperature::device::commands::{DataloggerDisable, DataloggerInterval, DataloggerPeriod};
+pub use temperature::device::commands::{DeviceAddress, DeviceInformation, Factory, Find, Reading,
                                          Sleep, Status};
-pub use devices::temperature::commands::{Export, ExportInfo, Import};
-pub use devices::temperature::commands::{LedOff, LedOn, LedState};
-pub use devices::temperature::commands::{MemoryClear, MemoryRecall, MemoryRecallLast};
-pub use devices::temperature::commands::{ProtocolLockDisable, ProtocolLockEnable,
+pub use temperature::device::commands::{Export, ExportInfo, Import};
+pub use temperature::device::commands::{LedOff, LedOn, LedState};
+pub use temperature::device::commands::{MemoryClear, MemoryRecall, MemoryRecallLast};
+pub use temperature::device::commands::{ProtocolLockDisable, ProtocolLockEnable,
                                          ProtocolLockState};
-pub use devices::temperature::commands::{ScaleCelsius, ScaleFahrenheit, ScaleKelvin, ScaleState};
+pub use temperature::device::commands::{ScaleCelsius, ScaleFahrenheit, ScaleKelvin, ScaleState};
 
-use devices::temperature::responses::{CalibrationStatus, DataLoggerStorageIntervalSeconds,
+use temperature::device::responses::{CalibrationStatus, DataLoggerStorageIntervalSeconds,
                                       DeviceInfo, DeviceStatus, Exported, ExportedInfo, LedStatus,
                                       MemoryReading, ProtocolLockStatus, SensorReading,
                                       TemperatureScale};

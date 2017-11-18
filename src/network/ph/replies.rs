@@ -7,7 +7,7 @@ pub mod errors {
 use errors::*;
 use network::{Endpoint, SocketReply};
 
-pub use devices::ph::responses::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus,
+pub use ph::device::responses::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus,
                                  Exported, ExportedInfo, LedStatus, ProbeSlope,
                                  ProtocolLockStatus, SensorReading};
 

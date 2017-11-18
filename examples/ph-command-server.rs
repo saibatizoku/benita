@@ -20,11 +20,11 @@ use std::path::PathBuf;
 use benita::api::ph::PhAPI;
 use benita::cli::shared::is_url;
 use benita::config::{ConnectionType, SensorConfig, SocketConfig};
-use benita::devices::ph::PhSensor;
 use benita::errors::*;
 use benita::network::common::{Endpoint, ReplyStatus, SocketRequest};
 use benita::network::ph::PhResponder;
 use benita::network::ph::requests::*;
+use benita::ph::device::PhSensor;
 use benita::utilities::*;
 
 use clap::{App, Arg};

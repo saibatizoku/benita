@@ -9,29 +9,29 @@ use errors::*;
 use network::{Endpoint, SocketReply, SocketRequest};
 use network::common::ReplyStatus;
 
-pub use devices::conductivity::commands::Baud;
-pub use devices::conductivity::commands::{CalibrationClear, CalibrationDry, CalibrationHigh,
+pub use conductivity::device::commands::Baud;
+pub use conductivity::device::commands::{CalibrationClear, CalibrationDry, CalibrationHigh,
                                           CalibrationLow, CalibrationOnePoint, CalibrationState};
-pub use devices::conductivity::commands::{CompensationGet, CompensationSet};
-pub use devices::conductivity::commands::{DeviceAddress, DeviceInformation, Factory, Find,
+pub use conductivity::device::commands::{CompensationGet, CompensationSet};
+pub use conductivity::device::commands::{DeviceAddress, DeviceInformation, Factory, Find,
                                           Reading, Sleep, Status};
-pub use devices::conductivity::commands::{Export, ExportInfo, Import};
-pub use devices::conductivity::commands::{LedOff, LedOn, LedState};
-pub use devices::conductivity::commands::{OutputDisableConductivity, OutputDisableSalinity,
+pub use conductivity::device::commands::{Export, ExportInfo, Import};
+pub use conductivity::device::commands::{LedOff, LedOn, LedState};
+pub use conductivity::device::commands::{OutputDisableConductivity, OutputDisableSalinity,
                                           OutputDisableSpecificGravity, OutputDisableTds,
                                           OutputEnableConductivity, OutputEnableSalinity,
                                           OutputEnableSpecificGravity, OutputEnableTds,
                                           OutputState};
-pub use devices::conductivity::commands::{ProbeTypeOne, ProbeTypePointOne, ProbeTypeState,
+pub use conductivity::device::commands::{ProbeTypeOne, ProbeTypePointOne, ProbeTypeState,
                                           ProbeTypeTen};
-pub use devices::conductivity::commands::{ProtocolLockDisable, ProtocolLockEnable,
+pub use conductivity::device::commands::{ProtocolLockDisable, ProtocolLockEnable,
                                           ProtocolLockState};
 
-use devices::conductivity::responses::{CalibrationStatus, CompensationValue, DeviceInfo,
+use conductivity::device::responses::{CalibrationStatus, CompensationValue, DeviceInfo,
                                        DeviceStatus, Exported, ExportedInfo, LedStatus,
                                        OutputStringStatus, ProbeType, ProtocolLockStatus};
 // Until the EZO EC API is changed, we need to do this.
-use devices::conductivity::responses::ProbeReading as SensorReading;
+use conductivity::device::responses::ProbeReading as SensorReading;
 
 use utilities::atof;
 

@@ -7,7 +7,7 @@ pub mod errors {
 use errors::*;
 use network::{Endpoint, SocketReply};
 
-pub use devices::temperature::responses::{CalibrationStatus, DataLoggerStorageIntervalSeconds,
+pub use temperature::device::responses::{CalibrationStatus, DataLoggerStorageIntervalSeconds,
                                           DeviceInfo, DeviceStatus, Exported, ExportedInfo,
                                           LedStatus, MemoryReading, ProtocolLockStatus,
                                           SensorReading, TemperatureScale};

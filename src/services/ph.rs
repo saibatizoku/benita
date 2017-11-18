@@ -6,7 +6,7 @@ use config::{SensorConfig, SocketConfig};
 use errors::*;
 use network::common::{Endpoint, SocketReply};
 use network::ph::PhResponder;
-use devices::ph::PhSensor;
+use ph::device::PhSensor;
 use utilities::{atof, create_and_bind_responder};
 
 use clap::ArgMatches;
