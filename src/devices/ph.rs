@@ -30,7 +30,7 @@ use self::responses::*;
 
 use api::ph::PhAPI;
 use config::SensorConfig;
-use errors::*;
+use super::errors::*;
 use network::common::ReplyStatus;
 
 use ezo_common::BpsRate;

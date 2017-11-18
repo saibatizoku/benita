@@ -7,14 +7,16 @@ pub mod conductivity;
 pub mod ph;
 pub mod temperature;
 
+pub mod errors {
+    use neuras;
 
-mod errors {
     error_chain! {
+        links {
+            // external crate error-chains
+            Neuras(neuras::errors::Error, neuras::errors::ErrorKind);
+        }
     }
 }
 
-/// Device Errors.
-pub use self::errors::*;
-
-// Important traits.
+/// Important traits.
 pub use self::common::{Endpoint, SocketReply, SocketRequest};

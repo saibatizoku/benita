@@ -30,7 +30,7 @@ use self::responses::*;
 
 use api::temperature::TemperatureAPI;
 use config::SensorConfig;
-use errors::*;
+use super::errors::*;
 use network::common::ReplyStatus;
 
 use i2cdev::linux::LinuxI2CDevice;

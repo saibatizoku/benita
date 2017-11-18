@@ -33,9 +33,10 @@ use std::fmt;
 use self::commands::*;
 use self::responses::*;
 
+pub use super::errors::*;
+
 use api::conductivity::ConductivityAPI;
 use config::SensorConfig;
-use errors::*;
 use network::common::ReplyStatus;
 
 use ezo_common::BpsRate;
