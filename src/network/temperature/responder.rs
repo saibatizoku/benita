@@ -1,4 +1,9 @@
 //! Server for Temperature sensing.
+pub mod errors {
+    error_chain! {
+    }
+}
+
 use super::replies::*;
 
 use api::temperature::TemperatureAPI;

@@ -1,4 +1,9 @@
 //! Requests for the temperature sensor. Requests are sent to a temperature `Endpoint`.
+pub mod errors {
+    error_chain! {
+    }
+}
+
 use errors::*;
 
 use network::{Endpoint, SocketReply, SocketRequest};
