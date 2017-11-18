@@ -183,7 +183,7 @@ mod tests {
         let reply = ProbeType::parse_response("?K,1.0").unwrap();
         assert_eq!("1.0", &reply.to_reply_string());
         let reply = ProbeType::parse_response("?K,10.0").unwrap();
-        assert_eq!("10", &reply.to_reply_string());
+        assert_eq!("10.0", &reply.to_reply_string());
     }
 
     #[test]
