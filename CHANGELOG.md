@@ -1,5 +1,11 @@
-## [0.1.9] -
+## [0.1.8] - 2017-11-18
 ### Added
+- Major refactoring of sensors into new `benita::conductivity`, `benita::ph`,
+  and `benita::temperature`.
+- Top-level `benita::macros` difused into submodules, now gone.
+- Reorder a little the code inside `benita::devices`
+- Improve use of error-chaining, each module containing its own.
+- Sensor commands now return ReplyStatus::Ok instead of `()`
 - Use static dispatch to evaluate commands in Conductivity server example
 - Expose sensor and sockets for services to use
 ## [0.1.7] - 2017-11-08
