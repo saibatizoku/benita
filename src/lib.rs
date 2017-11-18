@@ -42,3 +42,7 @@ pub mod errors;
 pub mod network;
 pub mod services;
 pub mod utilities;
+
+pub mod conductivity;
+pub mod ph;
+pub mod temperature;

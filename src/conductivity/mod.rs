@@ -1,10 +1,8 @@
-//! Collection of I2C sensor devices.
+//! Conductivity device and network items
 
-#[macro_use]
-mod macros;
-
-/// I2C device `Error`, and `ErrorKind` definitions.
+/// Conductivity `Error`, and `ErrorKind` definitions.
 pub mod errors {
+    use super::device;
     use ezo_common;
 
     error_chain! {
@@ -14,9 +12,15 @@ pub mod errors {
             }
         }
         links {
+            ConductivityDevice(device::errors::Error, device::errors::ErrorKind);
             // error chains from other crates
             EzoSensorDevice(ezo_common::errors::Error, ezo_common::errors::ErrorKind);
         }
     }
 }
 
+mod api;
+pub mod device;
+
+pub use self::api::*;
+pub use self::device::ConductivitySensor;

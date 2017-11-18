@@ -27,6 +27,7 @@ pub mod responses {
                                ProbeReading, ProbeType, ProtocolLockStatus};
 }
 
+/// Conductivity I2C device `Error`, and `ErrorKind` definitions.
 pub mod errors {
     error_chain! {
     }
@@ -38,7 +39,7 @@ use std::fmt;
 use self::commands::*;
 use self::responses::*;
 
-pub use super::errors::*;
+use super::errors::*;
 
 use api::conductivity::ConductivityAPI;
 use config::SensorConfig;

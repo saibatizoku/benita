@@ -22,6 +22,7 @@ pub mod responses {
                                SensorReading};
 }
 
+/// pH I2C device `Error`, and `ErrorKind` definitions.
 pub mod errors {
     error_chain! {
     }
@@ -33,9 +34,10 @@ use std::fmt;
 use self::commands::*;
 use self::responses::*;
 
+use super::errors::*;
+
 use api::ph::PhAPI;
 use config::SensorConfig;
-use super::errors::*;
 use network::common::ReplyStatus;
 
 use ezo_common::BpsRate;

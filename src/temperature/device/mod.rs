@@ -22,6 +22,7 @@ pub mod responses {
                                 ProtocolLockStatus, SensorReading, TemperatureScale};
 }
 
+/// Temperature I2C device `Error`, and `ErrorKind` definitions.
 pub mod errors {
     error_chain! {
     }
@@ -33,9 +34,10 @@ use std::fmt;
 use self::commands::*;
 use self::responses::*;
 
+use super::errors::*;
+
 use api::temperature::TemperatureAPI;
 use config::SensorConfig;
-use super::errors::*;
 use network::common::ReplyStatus;
 
 use i2cdev::linux::LinuxI2CDevice;
