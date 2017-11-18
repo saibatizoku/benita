@@ -1,4 +1,9 @@
 //! Requests for the pH sensor. Requests are sent to a pH `Endpoint`.
+pub mod errors {
+    error_chain! {
+    }
+}
+
 use errors::*;
 
 use network::{Endpoint, SocketReply, SocketRequest};

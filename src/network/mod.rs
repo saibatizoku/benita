@@ -12,6 +12,7 @@ pub mod temperature;
 pub mod errors {
     use super::common;
     use super::conductivity;
+    use super::ph;
     use super::temperature;
     use neuras;
 
@@ -19,6 +20,7 @@ pub mod errors {
         links {
             Common(common::errors::Error, common::errors::ErrorKind);
             Conductivity(conductivity::errors::Error, conductivity::errors::ErrorKind);
+            Ph(ph::errors::Error, ph::errors::ErrorKind);
             Temperature(temperature::errors::Error, temperature::errors::ErrorKind);
             // external crate error-chains
             Neuras(neuras::errors::Error, neuras::errors::ErrorKind);

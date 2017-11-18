@@ -1,4 +1,9 @@
 //! Client for pH sensing.
+pub mod errors {
+    error_chain! {
+    }
+}
+
 use super::replies::*;
 use super::requests::*;
 
