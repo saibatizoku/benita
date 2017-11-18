@@ -1,4 +1,9 @@
 //! Requests for the conductivity sensor. Requests are sent to a conductivity `Endpoint`.
+pub mod errors {
+    error_chain! {
+    }
+}
+
 use errors::*;
 
 use network::{Endpoint, SocketReply, SocketRequest};

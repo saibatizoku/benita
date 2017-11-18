@@ -1,6 +1,11 @@
 //! Common network items.
 use std;
 
+pub mod errors {
+    error_chain! {
+    }
+}
+
 use errors::*;
 
 /// A response sent over a socket

@@ -1,4 +1,9 @@
 //! Server for Conductivity sensing.
+pub mod errors {
+    error_chain! {
+    }
+}
+
 use super::replies::*;
 use super::replies::ProbeReading as SensorReading;
 
