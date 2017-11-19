@@ -29,10 +29,6 @@ extern crate neuras;
 extern crate serde_derive;
 extern crate toml;
 
-#[macro_use]
-// Useful items, functions and macros.
-mod macros;
-
 pub mod api;
 pub mod cli;
 pub mod config;
