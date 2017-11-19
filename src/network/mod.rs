@@ -5,13 +5,11 @@ mod macros;
 // Common network items
 pub mod common;
 
-pub mod conductivity;
 pub mod ph;
 pub mod temperature;
 
 pub mod errors {
     use super::common;
-    use super::conductivity;
     use super::ph;
     use super::temperature;
     use neuras;
@@ -19,7 +17,6 @@ pub mod errors {
     error_chain! {
         links {
             Common(common::errors::Error, common::errors::ErrorKind);
-            Conductivity(conductivity::errors::Error, conductivity::errors::ErrorKind);
             Ph(ph::errors::Error, ph::errors::ErrorKind);
             Temperature(temperature::errors::Error, temperature::errors::ErrorKind);
             // external crate error-chains
@@ -27,6 +24,8 @@ pub mod errors {
         }
     }
 }
+
+pub use conductivity::network as conductivity;
 
 /// Important traits.
 pub use self::common::{Endpoint, SocketReply, SocketRequest};

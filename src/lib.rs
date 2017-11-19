@@ -39,6 +39,7 @@ pub mod config;
 #[macro_use]
 pub mod devices;
 pub mod errors;
+#[macro_use]
 pub mod network;
 pub mod services;
 pub mod utilities;
