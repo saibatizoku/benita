@@ -20,3 +20,5 @@ pub mod errors {
     }
 }
 
+mod traits;
+pub use self::traits::*;
