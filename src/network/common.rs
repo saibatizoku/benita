@@ -1,9 +1,4 @@
 //! Common network items.
-pub mod errors {
-    error_chain! {
-    }
-}
-
 use errors::*;
 
 pub use super::traits::*;

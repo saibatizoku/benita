@@ -5,11 +5,11 @@ pub mod errors {
 }
 
 use super::replies::*;
+use super::super::PhAPI;
+use super::super::device::PhSensor;
 
-use api::ph::PhAPI;
 use errors::*;
-use ph::device::PhSensor;
-use network::common::{Endpoint, ReplyStatus};
+use network::{Endpoint, ReplyStatus};
 
 use neuras;
 

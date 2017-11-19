@@ -6,11 +6,11 @@ pub mod errors {
 
 use super::replies::*;
 use super::replies::ProbeReading as SensorReading;
+use super::super::ConductivityAPI;
+use super::super::device::ConductivitySensor;
 
-use api::conductivity::ConductivityAPI;
 use errors::*;
-use conductivity::device::ConductivitySensor;
-use network::common::{Endpoint, ReplyStatus};
+use network::{Endpoint, ReplyStatus};
 
 use neuras;
 

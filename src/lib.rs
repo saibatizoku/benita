@@ -29,7 +29,6 @@ extern crate neuras;
 extern crate serde_derive;
 extern crate toml;
 
-pub mod api;
 pub mod cli;
 pub mod config;
 #[macro_use]

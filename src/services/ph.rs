@@ -1,12 +1,12 @@
 //! Network services for pH sensors.
 
-use api::ph::PhAPI;
 use cli::ph::PhCommandApp;
 use config::{SensorConfig, SocketConfig};
 use errors::*;
-use network::common::{Endpoint, SocketReply};
-use network::ph::PhResponder;
+use network::{Endpoint, SocketReply};
+use ph::PhAPI;
 use ph::device::PhSensor;
+use ph::network::PhResponder;
 use utilities::{atof, create_and_bind_responder};
 
 use clap::ArgMatches;

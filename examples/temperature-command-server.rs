@@ -17,14 +17,14 @@ extern crate neuras;
 
 use std::path::PathBuf;
 
-use benita::api::temperature::TemperatureAPI;
 use benita::cli::shared::is_url;
 use benita::config::{ConnectionType, SensorConfig, SocketConfig};
 use benita::errors::*;
-use benita::network::common::{Endpoint, ReplyStatus, SocketRequest};
-use benita::network::temperature::TemperatureResponder;
-use benita::network::temperature::requests::*;
+use benita::network::{Endpoint, ReplyStatus, SocketRequest};
+use benita::temperature::TemperatureAPI;
 use benita::temperature::device::TemperatureSensor;
+use benita::temperature::network::TemperatureResponder;
+use benita::temperature::network::requests::*;
 use benita::utilities::*;
 
 use clap::{App, Arg};

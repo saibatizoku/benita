@@ -17,14 +17,14 @@ extern crate neuras;
 
 use std::path::PathBuf;
 
-use benita::api::ph::PhAPI;
 use benita::cli::shared::is_url;
 use benita::config::{ConnectionType, SensorConfig, SocketConfig};
 use benita::errors::*;
-use benita::network::common::{Endpoint, ReplyStatus, SocketRequest};
-use benita::network::ph::PhResponder;
-use benita::network::ph::requests::*;
+use benita::network::{Endpoint, ReplyStatus, SocketRequest};
+use benita::ph::PhAPI;
 use benita::ph::device::PhSensor;
+use benita::ph::network::PhResponder;
+use benita::ph::network::requests::*;
 use benita::utilities::*;
 
 use clap::{App, Arg};

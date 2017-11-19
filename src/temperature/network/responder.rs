@@ -5,11 +5,11 @@ pub mod errors {
 }
 
 use super::replies::*;
+use super::super::TemperatureAPI;
+use super::super::device::TemperatureSensor;
 
-use api::temperature::TemperatureAPI;
 use errors::*;
-use temperature::device::TemperatureSensor;
-use network::common::{Endpoint, ReplyStatus};
+use network::{Endpoint, ReplyStatus};
 
 use neuras;
 

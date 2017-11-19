@@ -9,9 +9,9 @@ extern crate benita;
 extern crate clap;
 extern crate neuras;
 
-use benita::api::conductivity::ConductivityAPI;
+use benita::conductivity::ConductivityAPI;
+use benita::conductivity::network::ConductivityRequester;
 use benita::errors::{ErrorKind, Result};
-use benita::network::conductivity::ConductivityRequester;
 
 use clap::{App, Arg};
 use neuras::utils::{connect_socket, create_context, zmq_req};

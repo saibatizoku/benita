@@ -1,12 +1,12 @@
 //! Network services for Temperature sensors.
 
-use api::temperature::TemperatureAPI;
 use cli::temperature::TemperatureCommandApp;
 use config::{SensorConfig, SocketConfig};
 use errors::*;
-use network::common::{Endpoint, SocketReply};
-use network::temperature::TemperatureResponder;
+use network::{Endpoint, SocketReply};
+use temperature::TemperatureAPI;
 use temperature::device::TemperatureSensor;
+use temperature::network::TemperatureResponder;
 use utilities::{atof, create_and_bind_responder};
 
 use clap::ArgMatches;

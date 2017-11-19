@@ -1,12 +1,12 @@
 //! Network services for Conductivity sensors.
 
-use api::conductivity::ConductivityAPI;
 use cli::conductivity::ConductivityCommandApp;
+use conductivity::ConductivityAPI;
 use conductivity::device::ConductivitySensor;
+use conductivity::network::ConductivityResponder;
 use config::{SensorConfig, SocketConfig};
 use errors::*;
 use network::{Endpoint, SocketReply};
-use network::conductivity::ConductivityResponder;
 use utilities::{atof, create_and_bind_responder};
 
 use clap::ArgMatches;

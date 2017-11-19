@@ -34,11 +34,11 @@ use std::fmt;
 use self::commands::*;
 use self::responses::*;
 
+use super::TemperatureAPI;
 use super::errors::*;
 
-use api::temperature::TemperatureAPI;
 use config::SensorConfig;
-use network::common::ReplyStatus;
+use network::ReplyStatus;
 
 use i2cdev::linux::LinuxI2CDevice;
 use ezo_common::BpsRate;

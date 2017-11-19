@@ -22,10 +22,10 @@ use benita::cli::shared::is_url;
 use benita::config::{ConnectionType, SensorConfig, SocketConfig};
 use benita::conductivity::device::ConductivitySensor;
 use benita::conductivity::device::commands::Command;
+use benita::conductivity::network::ConductivityResponder;
+use benita::conductivity::network::requests::*;
 use benita::errors::*;
-use benita::network::common::{Endpoint, ReplyStatus, SocketRequest};
-use benita::network::conductivity::ConductivityResponder;
-use benita::network::conductivity::requests::*;
+use benita::network::{Endpoint, ReplyStatus, SocketRequest};
 use benita::utilities::*;
 
 use clap::{App, Arg};

@@ -2,14 +2,14 @@
 use std::thread;
 use std::time::Duration;
 
-use api::conductivity::ConductivityAPI;
-use api::ph::PhAPI;
+use conductivity::ConductivityAPI;
+use conductivity::network::ConductivityRequester;
 use config::SensorServiceConfig;
 use errors::*;
-use network::common::SocketReply;
-use network::conductivity::ConductivityRequester;
-use network::ph::PhRequester;
-use network::temperature::replies::{SensorReading, TemperatureScale};
+use network::SocketReply;
+use temperature::network::replies::{SensorReading, TemperatureScale};
+use ph::PhAPI;
+use ph::network::PhRequester;
 
 use chrono::{DateTime, Local};
 use neuras;

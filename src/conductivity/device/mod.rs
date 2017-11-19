@@ -39,11 +39,11 @@ use std::fmt;
 use self::commands::*;
 use self::responses::*;
 
+use super::ConductivityAPI;
 use super::errors::*;
 
-use api::conductivity::ConductivityAPI;
 use config::SensorConfig;
-use network::common::ReplyStatus;
+use network::ReplyStatus;
 
 use ezo_common::BpsRate;
 use i2cdev::linux::LinuxI2CDevice;

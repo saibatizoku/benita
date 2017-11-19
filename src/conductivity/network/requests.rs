@@ -6,8 +6,7 @@ pub mod errors {
 
 use errors::*;
 
-use network::{Endpoint, SocketReply, SocketRequest};
-use network::common::ReplyStatus;
+use network::{Endpoint, ReplyStatus, SocketReply, SocketRequest};
 
 pub use conductivity::device::commands::Baud;
 pub use conductivity::device::commands::{CalibrationClear, CalibrationDry, CalibrationHigh,

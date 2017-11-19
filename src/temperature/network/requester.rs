@@ -6,10 +6,10 @@ pub mod errors {
 
 use super::replies::*;
 use super::requests::*;
+use super::super::TemperatureAPI;
 
-use api::temperature::TemperatureAPI;
 use errors::*;
-use network::common::{Endpoint, ReplyStatus, SocketRequest};
+use network::{Endpoint, ReplyStatus, SocketRequest};
 
 use neuras;
 
