@@ -2,6 +2,8 @@
 #[macro_use]
 mod macros;
 
+mod traits;
+
 // Common network items
 pub mod common;
 
