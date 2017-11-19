@@ -7,10 +7,7 @@ pub mod errors {
 use errors::*;
 use network::{Endpoint, SocketReply};
 
-pub use conductivity::device::responses::{CalibrationStatus, CompensationValue, DeviceInfo,
-                                           DeviceStatus, Exported, ExportedInfo, LedStatus,
-                                           OutputStringStatus, ProbeReading, ProbeType,
-                                           ProtocolLockStatus};
+pub use conductivity::response::*;
 
 // Basically, wrap existing responses from the original sensor crate.
 impl_SocketReply_for!(CalibrationStatus);
@@ -21,7 +18,7 @@ impl_SocketReply_for!(Exported);
 impl_SocketReply_for!(ExportedInfo);
 impl_SocketReply_for!(LedStatus);
 impl_SocketReply_for!(OutputStringStatus);
-impl_SocketReply_for!(ProbeReading);
+impl_SocketReply_for!(SensorReading);
 impl_SocketReply_for!(ProbeType);
 impl_SocketReply_for!(ProtocolLockStatus);
 
@@ -166,18 +163,18 @@ mod tests {
     }
 
     #[test]
-    fn parse_probe_reading_reply_from_valid_str() {
-        let reply = ProbeReading::parse_response("0.1").unwrap();
+    fn parse_sensor_reading_reply_from_valid_str() {
+        let reply = SensorReading::parse_response("0.1").unwrap();
         assert_eq!("0.1", &reply.to_reply_string());
-        let reply = ProbeReading::parse_response("1.0,0.05").unwrap();
+        let reply = SensorReading::parse_response("1.0,0.05").unwrap();
         assert_eq!("1,0.05", &reply.to_reply_string());
-        let reply = ProbeReading::parse_response("10.0").unwrap();
+        let reply = SensorReading::parse_response("10.0").unwrap();
         assert_eq!("10", &reply.to_reply_string());
     }
 
     #[test]
-    fn parse_probe_reading_reply_from_invalid_str_yields_err() {
-        let reply = ProbeReading::parse_response("");
+    fn parse_sensor_reading_reply_from_invalid_str_yields_err() {
+        let reply = SensorReading::parse_response("");
         assert!(reply.is_err());
     }
 

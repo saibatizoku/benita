@@ -5,7 +5,6 @@ pub mod errors {
 }
 
 use super::replies::*;
-use super::replies::ProbeReading as SensorReading;
 use super::super::ConductivityAPI;
 use super::super::device::ConductivitySensor;
 

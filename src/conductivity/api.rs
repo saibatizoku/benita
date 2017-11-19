@@ -1,5 +1,5 @@
 //! API for Conductivity sensor functionality.
-use network::conductivity::replies::*;
+use super::response::*;
 
 /// API for Conductivity commands and replies
 pub trait ConductivityAPI {
@@ -35,7 +35,7 @@ pub trait ConductivityAPI {
     /// get the current protocol lock status.
     fn get_protocol_lock_status(&self) -> ::std::result::Result<ProtocolLockStatus, Self::Error>;
     /// get the output string with sensor readings.
-    fn get_reading(&self) -> ::std::result::Result<ProbeReading, Self::Error>;
+    fn get_reading(&self) -> ::std::result::Result<SensorReading, Self::Error>;
     /// set the sensor to sleep (low-power) mode.
     fn set_sleep(&self) -> ::std::result::Result<Self::DefaultReply, Self::Error>;
     /// Set the compensation temperature.

@@ -109,7 +109,7 @@ impl ConductivityAPI for ConductivityRequester {
     }
 
     /// get the output string with sensor readings.
-    fn get_reading(&self) -> Result<ProbeReading> {
+    fn get_reading(&self) -> Result<SensorReading> {
         let reply = Reading.send_to(self)?;
         Ok(reply)
     }

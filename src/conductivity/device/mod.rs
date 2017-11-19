@@ -1,32 +1,5 @@
 //! EZO EC submersible electrical conductivity sensor. Command-API for the EZO EC chipset.
 
-pub mod commands {
-    //! Commands from EZO EC chipset.
-    pub use ezo_ec::command::Command;
-    pub use ezo_ec::command::Baud;
-    pub use ezo_ec::command::{CalibrationClear, CalibrationDry, CalibrationHigh, CalibrationLow,
-                              CalibrationOnePoint, CalibrationState};
-    pub use ezo_ec::command::{CompensatedTemperatureValue as CompensationGet,
-                              TemperatureCompensation as CompensationSet};
-    pub use ezo_ec::command::{DeviceAddress, DeviceInformation, Factory, Find, Reading, Sleep,
-                              Status};
-    pub use ezo_ec::command::{Export, ExportInfo, Import};
-    pub use ezo_ec::command::{LedOff, LedOn, LedState};
-    pub use ezo_ec::command::{OutputDisableConductivity, OutputDisableSalinity,
-                              OutputDisableSpecificGravity, OutputDisableTds,
-                              OutputEnableConductivity, OutputEnableSalinity,
-                              OutputEnableSpecificGravity, OutputEnableTds, OutputState};
-    pub use ezo_ec::command::{ProbeTypeOne, ProbeTypePointOne, ProbeTypeState, ProbeTypeTen};
-    pub use ezo_ec::command::{ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState};
-}
-
-pub mod responses {
-    //! Responses from EZO EC chipset.
-    pub use ezo_ec::response::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus,
-                               Exported, ExportedInfo, LedStatus, OutputStringStatus,
-                               ProbeReading, ProbeType, ProtocolLockStatus};
-}
-
 /// Conductivity I2C device `Error`, and `ErrorKind` definitions.
 pub mod errors {
     error_chain! {
@@ -36,11 +9,10 @@ pub mod errors {
 use std::cell::RefCell;
 use std::fmt;
 
-use self::commands::*;
-use self::responses::*;
-
 use super::ConductivityAPI;
+use super::command::*;
 use super::errors::*;
+use super::response::*;
 
 use config::SensorConfig;
 use network::ReplyStatus;
@@ -48,7 +20,8 @@ use network::ReplyStatus;
 use ezo_common::BpsRate;
 use i2cdev::linux::LinuxI2CDevice;
 
-pub type SensorReading = ProbeReading;
+pub use super::command as commands;
+pub use super::response as responses;
 
 // Use macro to define `ConductivitySensor`
 device_i2cdev!(

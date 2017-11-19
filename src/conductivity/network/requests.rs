@@ -8,29 +8,9 @@ use errors::*;
 
 use network::{Endpoint, ReplyStatus, SocketReply, SocketRequest};
 
-pub use conductivity::device::commands::Baud;
-pub use conductivity::device::commands::{CalibrationClear, CalibrationDry, CalibrationHigh,
-                                          CalibrationLow, CalibrationOnePoint, CalibrationState};
-pub use conductivity::device::commands::{CompensationGet, CompensationSet};
-pub use conductivity::device::commands::{DeviceAddress, DeviceInformation, Factory, Find,
-                                          Reading, Sleep, Status};
-pub use conductivity::device::commands::{Export, ExportInfo, Import};
-pub use conductivity::device::commands::{LedOff, LedOn, LedState};
-pub use conductivity::device::commands::{OutputDisableConductivity, OutputDisableSalinity,
-                                          OutputDisableSpecificGravity, OutputDisableTds,
-                                          OutputEnableConductivity, OutputEnableSalinity,
-                                          OutputEnableSpecificGravity, OutputEnableTds,
-                                          OutputState};
-pub use conductivity::device::commands::{ProbeTypeOne, ProbeTypePointOne, ProbeTypeState,
-                                          ProbeTypeTen};
-pub use conductivity::device::commands::{ProtocolLockDisable, ProtocolLockEnable,
-                                          ProtocolLockState};
+pub use conductivity::command::*;
 
-use conductivity::device::responses::{CalibrationStatus, CompensationValue, DeviceInfo,
-                                       DeviceStatus, Exported, ExportedInfo, LedStatus,
-                                       OutputStringStatus, ProbeType, ProtocolLockStatus};
-// Until the EZO EC API is changed, we need to do this.
-use conductivity::device::responses::ProbeReading as SensorReading;
+use conductivity::response::*;
 
 use utilities::atof;
 
