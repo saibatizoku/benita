@@ -15,6 +15,7 @@ use super::response::*;
 
 use common_ezo::EzoChipAPI;
 use config::SensorConfig;
+use devices::{I2CCommand, I2CResponse, SensorDevice};
 use network::ReplyStatus;
 
 use ezo_common::BpsRate;
@@ -28,6 +29,10 @@ device_i2cdev!(
     ConductivitySensor,
     "EZO-EC Submersible Electrical Conductivity Sensor."
 );
+
+impl SensorDevice for ConductivitySensor {
+    type Error = Error;
+}
 
 impl EzoChipAPI for ConductivitySensor {
     type SensorError = Error;

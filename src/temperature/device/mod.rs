@@ -38,6 +38,7 @@ use super::errors::*;
 
 use common_ezo::EzoChipAPI;
 use config::SensorConfig;
+use devices::{I2CCommand, I2CResponse, SensorDevice};
 use network::ReplyStatus;
 
 use i2cdev::linux::LinuxI2CDevice;
@@ -53,6 +54,10 @@ impl EzoChipAPI for TemperatureSensor {
 
     sensor_commands!(device_common);
     sensor_commands!(calibration_common);
+}
+
+impl SensorDevice for TemperatureSensor  {
+    type Error = Error;
 }
 
 impl TemperatureAPI for TemperatureSensor {

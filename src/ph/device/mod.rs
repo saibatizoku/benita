@@ -15,6 +15,7 @@ use super::response::*;
 
 use common_ezo::EzoChipAPI;
 use config::SensorConfig;
+use devices::{I2CCommand, I2CResponse, SensorDevice};
 use network::ReplyStatus;
 
 use ezo_common::BpsRate;
@@ -25,6 +26,10 @@ pub use super::response as responses;
 
 // Use macro to define `PhSensor`
 device_i2cdev!(PhSensor, "EZO-EC Submersible pH Sensor.");
+
+impl SensorDevice for PhSensor {
+    type Error = Error;
+}
 
 impl EzoChipAPI for PhSensor {
     type SensorError = Error;
