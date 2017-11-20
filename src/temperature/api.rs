@@ -3,7 +3,7 @@ use common_ezo::EzoChipAPI;
 use network::temperature::replies::*;
 
 /// API for pH commands and replies
-pub trait TemperatureAPI : EzoChipAPI {
+pub trait TemperatureAPI: EzoChipAPI {
     type Error;
     type DefaultReply;
 
@@ -12,15 +12,23 @@ pub trait TemperatureAPI : EzoChipAPI {
     /// Get the sensor's current calibration settings.
     fn get_calibration_status(&self) -> ::std::result::Result<CalibrationStatus, Self::Error>;
     /// Set the calibration temperature for the sensor.
-    fn set_calibration_temperature(&self, t: f64) -> ::std::result::Result<Self::DefaultReply, Self::Error>;
+    fn set_calibration_temperature(
+        &self,
+        t: f64,
+    ) -> ::std::result::Result<Self::DefaultReply, Self::Error>;
     /// Set the data logger interval, `n`.
     ///
     /// The device will take readings and save them to memory at the given interval.
-    fn set_data_logger_interval(&self, n: u32) -> ::std::result::Result<Self::DefaultReply, Self::Error>;
+    fn set_data_logger_interval(
+        &self,
+        n: u32,
+    ) -> ::std::result::Result<Self::DefaultReply, Self::Error>;
     /// Disable the data-logger.
     fn set_data_logger_off(&self) -> ::std::result::Result<Self::DefaultReply, Self::Error>;
     /// Get the current status of the data-logger.
-    fn get_data_logger_status(&self) -> ::std::result::Result<DataLoggerStorageIntervalSeconds, Self::Error>;
+    fn get_data_logger_status(
+        &self,
+    ) -> ::std::result::Result<DataLoggerStorageIntervalSeconds, Self::Error>;
     /// Clear memory readings.
     fn set_memory_clear(&self) -> ::std::result::Result<Self::DefaultReply, Self::Error>;
     /// Recall the next memory reading on the stack.

@@ -62,7 +62,9 @@ fn socket_from_config(cfg: &SocketConfig) -> Result<neuras::zmq::Socket> {
 
 // Evaluate a conductivity command using the given responder. Returns a String.
 fn eval<T: Command>(responder: &ConductivityResponder, cmd: T) -> Result<String>
-    where <T as Command>::Response: fmt::Debug {
+where
+    <T as Command>::Response: fmt::Debug,
+{
     let reply = match cmd.run(&mut responder.sensor.i2cdev.borrow_mut()) {
         Ok(rep) => format!("{:?}", rep),
         Err(_) => format!("{:?}", ReplyStatus::Err),
@@ -87,24 +89,12 @@ fn match_and_eval(s: &str, e: &ConductivityResponder) -> Result<String> {
         a if DeviceInformation::from_request_str(a).is_ok() => {
             eval(e, DeviceInformation::from_request_str(a)?)
         }
-        a if LedOff::from_request_str(a).is_ok() => {
-            eval(e, LedOff::from_request_str(a)?)
-        }
-        a if LedOn::from_request_str(a).is_ok() => {
-            eval(e, LedOn::from_request_str(a)?)
-        }
-        a if LedState::from_request_str(a).is_ok() => {
-            eval(e, LedState::from_request_str(a)?)
-        }
-        a if Export::from_request_str(a).is_ok() => {
-            eval(e, Export::from_request_str(a)?)
-        }
-        a if ExportInfo::from_request_str(a).is_ok() => {
-            eval(e, ExportInfo::from_request_str(a)?)
-        }
-        a if Import::from_request_str(a).is_ok() => {
-            eval(e, Import::from_request_str(a)?)
-        }
+        a if LedOff::from_request_str(a).is_ok() => eval(e, LedOff::from_request_str(a)?),
+        a if LedOn::from_request_str(a).is_ok() => eval(e, LedOn::from_request_str(a)?),
+        a if LedState::from_request_str(a).is_ok() => eval(e, LedState::from_request_str(a)?),
+        a if Export::from_request_str(a).is_ok() => eval(e, Export::from_request_str(a)?),
+        a if ExportInfo::from_request_str(a).is_ok() => eval(e, ExportInfo::from_request_str(a)?),
+        a if Import::from_request_str(a).is_ok() => eval(e, Import::from_request_str(a)?),
         a if OutputEnableConductivity::from_request_str(a).is_ok() => {
             eval(e, OutputEnableConductivity::from_request_str(a)?)
         }
@@ -129,9 +119,7 @@ fn match_and_eval(s: &str, e: &ConductivityResponder) -> Result<String> {
         a if OutputDisableSpecificGravity::from_request_str(a).is_ok() => {
             eval(e, OutputDisableSpecificGravity::from_request_str(a)?)
         }
-        a if OutputState::from_request_str(a).is_ok() => {
-            eval(e, OutputState::from_request_str(a)?)
-        }
+        a if OutputState::from_request_str(a).is_ok() => eval(e, OutputState::from_request_str(a)?),
         a if ProtocolLockDisable::from_request_str(a).is_ok() => {
             eval(e, ProtocolLockDisable::from_request_str(a)?)
         }
@@ -141,15 +129,9 @@ fn match_and_eval(s: &str, e: &ConductivityResponder) -> Result<String> {
         a if ProtocolLockState::from_request_str(a).is_ok() => {
             eval(e, ProtocolLockState::from_request_str(a)?)
         }
-        a if Reading::from_request_str(a).is_ok() => {
-            eval(e, Reading::from_request_str(a)?)
-        }
-        a if Sleep::from_request_str(a).is_ok() => {
-            eval(e, Sleep::from_request_str(a)?)
-        }
-        a if Status::from_request_str(a).is_ok() => {
-            eval(e, Status::from_request_str(a)?)
-        }
+        a if Reading::from_request_str(a).is_ok() => eval(e, Reading::from_request_str(a)?),
+        a if Sleep::from_request_str(a).is_ok() => eval(e, Sleep::from_request_str(a)?),
+        a if Status::from_request_str(a).is_ok() => eval(e, Status::from_request_str(a)?),
         _ => {
             error!("bad sensor command");
             Ok(format!("{:?}", ReplyStatus::Err))

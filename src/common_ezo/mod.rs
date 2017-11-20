@@ -8,9 +8,14 @@ mod api {
         type SensorReply;
 
         /// Clear the sensor's calibration settings.
-        fn set_calibration_clear(&self) -> ::std::result::Result<Self::SensorReply, Self::SensorError>;
+        fn set_calibration_clear(
+            &self,
+        ) -> ::std::result::Result<Self::SensorReply, Self::SensorError>;
         /// change the sensor's I2C address.
-        fn set_device_address(&self, address: u16) -> ::std::result::Result<Self::SensorReply, Self::SensorError>;
+        fn set_device_address(
+            &self,
+            address: u16,
+        ) -> ::std::result::Result<Self::SensorReply, Self::SensorError>;
         /// get the sensor information.
         fn get_device_info(&self) -> ::std::result::Result<DeviceInfo, Self::SensorError>;
         /// get the sensor status.
@@ -24,7 +29,10 @@ mod api {
         /// set the sensor to find mode.
         fn set_find_mode(&self) -> ::std::result::Result<Self::SensorReply, Self::SensorError>;
         /// import a calibration line to the sensor.
-        fn set_import_line(&self, import: &str) -> ::std::result::Result<Self::SensorReply, Self::SensorError>;
+        fn set_import_line(
+            &self,
+            import: &str,
+        ) -> ::std::result::Result<Self::SensorReply, Self::SensorError>;
         /// set the LED off.
         fn set_led_off(&self) -> ::std::result::Result<Self::SensorReply, Self::SensorError>;
         /// set the LED on.
@@ -32,11 +40,17 @@ mod api {
         /// get the current LED status.
         fn get_led_status(&self) -> ::std::result::Result<LedStatus, Self::SensorError>;
         /// set the protocol lock off.
-        fn set_protocol_lock_off(&self) -> ::std::result::Result<Self::SensorReply, Self::SensorError>;
+        fn set_protocol_lock_off(
+            &self,
+        ) -> ::std::result::Result<Self::SensorReply, Self::SensorError>;
         /// set the protocol lock on.
-        fn set_protocol_lock_on(&self) -> ::std::result::Result<Self::SensorReply, Self::SensorError>;
+        fn set_protocol_lock_on(
+            &self,
+        ) -> ::std::result::Result<Self::SensorReply, Self::SensorError>;
         /// get the current protocol lock status.
-        fn get_protocol_lock_status(&self) -> ::std::result::Result<ProtocolLockStatus, Self::SensorError>;
+        fn get_protocol_lock_status(
+            &self,
+        ) -> ::std::result::Result<ProtocolLockStatus, Self::SensorError>;
         /// set the sensor to sleep (low-power) mode.
         fn set_sleep(&self) -> ::std::result::Result<Self::SensorReply, Self::SensorError>;
     }

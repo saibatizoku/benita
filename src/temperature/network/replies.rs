@@ -1,16 +1,15 @@
 //! Replies from the conductivity sensor. `Reply`s are received after a `Request`.
 pub mod errors {
-    error_chain! {
-    }
+    error_chain!{}
 }
 
 use errors::*;
 use network::{Endpoint, SocketReply};
 
 pub use temperature::device::responses::{CalibrationStatus, DataLoggerStorageIntervalSeconds,
-                                          DeviceInfo, DeviceStatus, Exported, ExportedInfo,
-                                          LedStatus, MemoryReading, ProtocolLockStatus,
-                                          SensorReading, TemperatureScale};
+                                         DeviceInfo, DeviceStatus, Exported, ExportedInfo,
+                                         LedStatus, MemoryReading, ProtocolLockStatus,
+                                         SensorReading, TemperatureScale};
 
 // Basically, wrap existing responses from the original sensor crate.
 impl_SocketReply_for!(CalibrationStatus);

@@ -1,7 +1,6 @@
 //! Requests for the temperature sensor. Requests are sent to a temperature `Endpoint`.
 pub mod errors {
-    error_chain! {
-    }
+    error_chain!{}
 }
 
 use errors::*;

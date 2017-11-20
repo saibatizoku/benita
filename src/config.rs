@@ -2,8 +2,7 @@
 //!
 //! `benita` sets up sensors and network configurations using `toml` and `serde`.
 pub mod errors {
-    error_chain! {
-    }
+    error_chain!{}
 }
 
 use std::path::PathBuf;

@@ -3,7 +3,7 @@
 /// A request sent over a socket
 pub trait SensorCommand
 where
-Self: ::std::marker::Sized,
+    Self: ::std::marker::Sized,
 {
     type Error;
     /// The expected response type.
@@ -20,7 +20,7 @@ Self: ::std::marker::Sized,
 /// A response sent over a socket
 pub trait SensorResponse
 where
-Self: ::std::marker::Sized,
+    Self: ::std::marker::Sized,
 {
     type Error;
 

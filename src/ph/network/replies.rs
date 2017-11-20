@@ -1,15 +1,13 @@
 //! Replies from the pH sensor. `Reply`s are received after a `Request`.
 pub mod errors {
-    error_chain! {
-    }
+    error_chain!{}
 }
 
 use errors::*;
 use network::{Endpoint, SocketReply};
 
-pub use ph::device::responses::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus,
-                                 Exported, ExportedInfo, LedStatus, ProbeSlope,
-                                 ProtocolLockStatus, SensorReading};
+pub use ph::response::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus, Exported,
+                       ExportedInfo, LedStatus, ProbeSlope, ProtocolLockStatus, SensorReading};
 
 // Basically, wrap existing responses from the original sensor crate.
 impl_SocketReply_for!(CalibrationStatus);

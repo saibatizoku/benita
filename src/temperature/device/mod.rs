@@ -24,8 +24,7 @@ pub mod responses {
 
 /// Temperature I2C device `Error`, and `ErrorKind` definitions.
 pub mod errors {
-    error_chain! {
-    }
+    error_chain!{}
 }
 
 use std::cell::RefCell;
