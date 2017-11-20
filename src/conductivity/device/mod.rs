@@ -14,6 +14,7 @@ use super::command::*;
 use super::errors::*;
 use super::response::*;
 
+use common_ezo::EzoChipAPI;
 use config::SensorConfig;
 use network::ReplyStatus;
 
@@ -29,13 +30,20 @@ device_i2cdev!(
     "EZO-EC Submersible Electrical Conductivity Sensor."
 );
 
+impl EzoChipAPI for ConductivitySensor {
+    type SensorError = Error;
+    type SensorReply = ReplyStatus;
+
+    sensor_commands!(device_common);
+    sensor_commands!(calibration_common);
+}
+
 impl ConductivityAPI for ConductivitySensor {
     type Error = Error;
     type DefaultReply = ReplyStatus;
 
-    sensor_commands!(device_common);
-
-    sensor_commands!(calibration_common);
+    sensor_commands!(calibration_status);
+    sensor_commands!(reading);
 
     /// Set the value for dry calibration.
     fn set_calibration_dry(&self) -> Result<ReplyStatus> {

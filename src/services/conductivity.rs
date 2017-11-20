@@ -1,6 +1,7 @@
 //! Network services for Conductivity sensors.
 
 use cli::conductivity::ConductivityCommandApp;
+use common_ezo::EzoChipAPI;
 use conductivity::ConductivityAPI;
 use conductivity::device::ConductivitySensor;
 use conductivity::network::ConductivityResponder;

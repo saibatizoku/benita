@@ -8,6 +8,7 @@ use super::replies::*;
 use super::requests::*;
 use super::super::ConductivityAPI;
 
+use common_ezo::EzoChipAPI;
 use errors::*;
 use network::{Endpoint, ReplyStatus, SocketRequest};
 
@@ -20,9 +21,15 @@ network_socket! {
     "Socket that makes requests to the Conductivity sensor socket."
 }
 
-impl ConductivityAPI for ConductivityRequester {
-    type Error = Error;
-    type DefaultReply = ReplyStatus;
+impl EzoChipAPI for ConductivityRequester {
+    type SensorError = Error;
+    type SensorReply = ReplyStatus;
+
+    /// Clear the sensor's calibration settings.
+    fn set_calibration_clear(&self) -> Result<ReplyStatus> {
+        let reply = CalibrationClear.send_to(self)?;
+        Ok(reply)
+    }
 
     /// get the export information from the sensor.
     fn get_export_info(&self) -> Result<ExportedInfo> {
@@ -107,15 +114,20 @@ impl ConductivityAPI for ConductivityRequester {
         let reply = ProtocolLockState.send_to(self)?;
         Ok(reply)
     }
+    /// set the sensor to sleep (low-power) mode.
+    fn set_sleep(&self) -> Result<ReplyStatus> {
+        let reply = Sleep.send_to(self)?;
+        Ok(reply)
+    }
+}
+
+impl ConductivityAPI for ConductivityRequester {
+    type Error = Error;
+    type DefaultReply = ReplyStatus;
 
     /// get the output string with sensor readings.
     fn get_reading(&self) -> Result<SensorReading> {
         let reply = Reading.send_to(self)?;
-        Ok(reply)
-    }
-    /// set the sensor to sleep (low-power) mode.
-    fn set_sleep(&self) -> Result<ReplyStatus> {
-        let reply = Sleep.send_to(self)?;
         Ok(reply)
     }
 
@@ -128,12 +140,6 @@ impl ConductivityAPI for ConductivityRequester {
     /// Get the current compensated temperature value.
     fn get_compensation(&self) -> Result<CompensationValue> {
         let reply = CompensationGet.send_to(self)?;
-        Ok(reply)
-    }
-
-    /// Clear the sensor's calibration settings.
-    fn set_calibration_clear(&self) -> Result<ReplyStatus> {
-        let reply = CalibrationClear.send_to(self)?;
         Ok(reply)
     }
 

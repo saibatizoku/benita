@@ -8,6 +8,7 @@ use super::replies::*;
 use super::super::ConductivityAPI;
 use super::super::device::ConductivitySensor;
 
+use common_ezo::EzoChipAPI;
 use errors::*;
 use network::{Endpoint, ReplyStatus};
 
@@ -22,13 +23,21 @@ network_sensor_socket! {
     "Socket that responds to Conductivity sensor commands."
 }
 
+impl EzoChipAPI for ConductivityResponder {
+    type SensorError = Error;
+    type SensorReply = ReplyStatus;
+
+    sensor_socket_commands!(device_common);
+    sensor_socket_commands!(calibration_common);
+}
+
 impl ConductivityAPI for ConductivityResponder {
     type Error = Error;
     type DefaultReply = ReplyStatus;
 
-    sensor_socket_commands!(device_common);
+    sensor_socket_commands!(calibration_status);
 
-    sensor_socket_commands!(calibration_common);
+    sensor_socket_commands!(reading);
 
     /// set dry calibration settings.
     fn set_calibration_dry(&self) -> Result<ReplyStatus> {

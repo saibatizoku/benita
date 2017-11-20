@@ -2,6 +2,7 @@
 use std::thread;
 use std::time::Duration;
 
+use common_ezo::EzoChipAPI;
 use conductivity::ConductivityAPI;
 use conductivity::network::ConductivityRequester;
 use config::SensorServiceConfig;
