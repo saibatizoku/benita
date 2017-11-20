@@ -8,6 +8,7 @@ use super::replies::*;
 use super::requests::*;
 use super::super::TemperatureAPI;
 
+use common_ezo::EzoChipAPI;
 use errors::*;
 use network::{Endpoint, ReplyStatus, SocketRequest};
 
@@ -20,9 +21,15 @@ network_socket!(
     "Socket that communicates with the pH sensor."
 );
 
-impl TemperatureAPI for TemperatureRequester {
-    type Error = Error;
-    type DefaultReply = ReplyStatus;
+impl EzoChipAPI for TemperatureRequester {
+    type SensorError = Error;
+    type SensorReply = ReplyStatus;
+
+    /// Clear the sensor's calibration settings.
+    fn set_calibration_clear(&self) -> Result<ReplyStatus> {
+        let reply = CalibrationClear.send_to(self)?;
+        Ok(reply)
+    }
 
     /// get the export information from the sensor.
     fn get_export_info(&self) -> Result<ExportedInfo> {
@@ -107,23 +114,16 @@ impl TemperatureAPI for TemperatureRequester {
         let reply = ProtocolLockState.send_to(self)?;
         Ok(reply)
     }
-
-    /// get the output string with sensor readings.
-    fn get_reading(&self) -> Result<SensorReading> {
-        let reply = Reading.send_to(self)?;
-        Ok(reply)
-    }
     /// set the sensor to sleep (low-power) mode.
     fn set_sleep(&self) -> Result<ReplyStatus> {
         let reply = Sleep.send_to(self)?;
         Ok(reply)
     }
+}
 
-    /// Clear the sensor's calibration settings.
-    fn set_calibration_clear(&self) -> Result<ReplyStatus> {
-        let reply = CalibrationClear.send_to(self)?;
-        Ok(reply)
-    }
+impl TemperatureAPI for TemperatureRequester {
+    type Error = Error;
+    type DefaultReply = ReplyStatus;
 
     /// Get the sensor's current calibration settings.
     fn get_calibration_status(&self) -> Result<CalibrationStatus> {
@@ -172,6 +172,12 @@ impl TemperatureAPI for TemperatureRequester {
     /// Recall the last memory reading on the stack.
     fn get_memory_recall_last(&self) -> Result<MemoryReading> {
         let reply = MemoryRecallLast.send_to(self)?;
+        Ok(reply)
+    }
+
+    /// get the output string with sensor readings.
+    fn get_reading(&self) -> Result<SensorReading> {
+        let reply = Reading.send_to(self)?;
         Ok(reply)
     }
 

@@ -1,6 +1,7 @@
 //! Network services for Temperature sensors.
 
 use cli::temperature::TemperatureCommandApp;
+use common_ezo::EzoChipAPI;
 use config::{SensorConfig, SocketConfig};
 use errors::*;
 use network::{Endpoint, SocketReply};

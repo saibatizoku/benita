@@ -8,6 +8,7 @@ use super::replies::*;
 use super::super::TemperatureAPI;
 use super::super::device::TemperatureSensor;
 
+use common_ezo::EzoChipAPI;
 use errors::*;
 use network::{Endpoint, ReplyStatus};
 
@@ -22,13 +23,20 @@ network_sensor_socket! {
     "Socket that responds to Temperature sensor commands."
 }
 
+impl EzoChipAPI for TemperatureResponder {
+    type SensorError = Error;
+    type SensorReply = ReplyStatus;
+
+    sensor_socket_commands!(device_common);
+    sensor_socket_commands!(calibration_common);
+}
+
 impl TemperatureAPI for TemperatureResponder {
     type Error = Error;
     type DefaultReply = ReplyStatus;
 
-    sensor_socket_commands!(device_common);
-
-    sensor_socket_commands!(calibration_common);
+    sensor_socket_commands!(calibration_status);
+    sensor_socket_commands!(reading);
 
     /// Set the calibration mid-point for the sensor.
     fn set_calibration_temperature(&self, c: f64) -> Result<ReplyStatus> {

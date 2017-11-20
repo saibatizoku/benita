@@ -37,6 +37,7 @@ use self::responses::*;
 use super::TemperatureAPI;
 use super::errors::*;
 
+use common_ezo::EzoChipAPI;
 use config::SensorConfig;
 use network::ReplyStatus;
 
@@ -47,13 +48,20 @@ use ezo_common::BpsRate;
 // Use macro to define `TemperatureSensor`
 device_i2cdev!(TemperatureSensor, "EZO-RTD Submersible Temperature Sensor");
 
+impl EzoChipAPI for TemperatureSensor {
+    type SensorError = Error;
+    type SensorReply = ReplyStatus;
+
+    sensor_commands!(device_common);
+    sensor_commands!(calibration_common);
+}
+
 impl TemperatureAPI for TemperatureSensor {
     type Error = Error;
     type DefaultReply = ReplyStatus;
 
-    sensor_commands!(device_common);
-
-    sensor_commands!(calibration_common);
+    sensor_commands!(calibration_status);
+    sensor_commands!(reading);
 
     /// Set the calibration temperature for the sensor.
     fn set_calibration_temperature(&self, t: f64) -> Result<ReplyStatus> {
