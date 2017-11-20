@@ -1,7 +1,6 @@
 //! Client for Conductivity sensing.
 pub mod errors {
-    error_chain! {
-    }
+    error_chain!{}
 }
 
 use super::replies::*;

@@ -1,17 +1,26 @@
 //! Requests for the conductivity sensor. Requests are sent to a conductivity `Endpoint`.
 pub mod errors {
-    error_chain! {
-    }
+    error_chain!{}
 }
 
+use conductivity::response::{CalibrationStatus, CompensationValue, OutputStringStatus, ProbeType,
+                             SensorReading};
 use errors::*;
-use network::{Endpoint, ReplyStatus, SocketReply, SocketRequest};
-use conductivity::response::*;
+use network::{Endpoint, ReplyStatus, SocketReply};
 use utilities::atof;
 
-pub use common_ezo::command::*;
-pub use common_ezo::response::*;
-pub use conductivity::command::*;
+pub use conductivity::command::{Baud, CalibrationClear, CalibrationDry, CalibrationHigh,
+                                CalibrationLow, CalibrationOnePoint, CalibrationState,
+                                CompensationGet, CompensationSet, DeviceAddress,
+                                DeviceInformation, Export, ExportInfo, Factory, Find, Import,
+                                LedOff, LedOn, LedState, OutputDisableConductivity,
+                                OutputDisableSalinity, OutputDisableSpecificGravity,
+                                OutputDisableTds, OutputEnableConductivity, OutputEnableSalinity,
+                                OutputEnableSpecificGravity, OutputEnableTds, OutputState,
+                                ProbeTypeOne, ProbeTypePointOne, ProbeTypeState, ProbeTypeTen,
+                                ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState,
+                                Reading, Sleep, Status};
+pub use network::SocketRequest;
 
 
 impl_SocketRequest_for! {
