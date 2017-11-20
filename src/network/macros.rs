@@ -95,7 +95,8 @@ macro_rules! sensor_socket_commands {
                 .chain_err(|| ErrorKind::CommandRequest)?;
             Ok(ReplyStatus::Ok)
         }
-
+    };
+    ( calibration_status ) => {
         /// get the calibration status.
         fn get_calibration_status(&self) -> Result<CalibrationStatus> {
             let response = self.sensor
@@ -218,19 +219,22 @@ macro_rules! sensor_socket_commands {
             Ok(response)
         }
 
-        /// get the output string with sensor readings.
-        fn get_reading(&self) -> Result<SensorReading> {
-            let response = self.sensor
-                .get_reading()
-                .chain_err(|| ErrorKind::CommandRequest)?;
-            Ok(response)
-        }
         /// set the sensor to sleep (low-power) mode.
         fn set_sleep(&self) -> Result<ReplyStatus> {
             let _sleep = self.sensor
                 .set_sleep()
                 .chain_err(|| ErrorKind::CommandRequest)?;
             Ok(ReplyStatus::Ok)
+        }
+    };
+
+    ( reading ) => {
+        /// get the output string with sensor readings.
+        fn get_reading(&self) -> Result<SensorReading> {
+            let response = self.sensor
+                .get_reading()
+                .chain_err(|| ErrorKind::CommandRequest)?;
+            Ok(response)
         }
     };
 

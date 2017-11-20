@@ -64,7 +64,9 @@ macro_rules! sensor_commands {
                 .chain_err(|| ErrorKind::SensorTrouble)?;
             Ok(ReplyStatus::Ok)
         }
+    };
 
+    ( calibration_status ) => {
         /// Get the sensor's current calibration settings.
         fn get_calibration_status(&self) -> Result<CalibrationStatus> {
             let cal = CalibrationState
@@ -196,14 +198,6 @@ macro_rules! sensor_commands {
             Ok(status)
         }
 
-        /// Get the current sensor reading. Returns a `SensorReading` result.
-        fn get_reading(&self) -> Result<SensorReading> {
-            let reading = Reading
-                .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
-            Ok(reading)
-        }
-
         /// Set the sensor chip to sleep.
         ///
         /// __NOTE:__ using this command will make the sensor device sleep until:
@@ -215,6 +209,16 @@ macro_rules! sensor_commands {
                 .run(&mut self.i2cdev.borrow_mut())
                 .chain_err(|| ErrorKind::SensorTrouble)?;
             Ok(ReplyStatus::Ok)
+        }
+    };
+
+    ( reading ) => {
+        /// Get the current sensor reading. Returns a `SensorReading` result.
+        fn get_reading(&self) -> Result<SensorReading> {
+            let reading = Reading
+                .run(&mut self.i2cdev.borrow_mut())
+                .chain_err(|| ErrorKind::SensorTrouble)?;
+            Ok(reading)
         }
     };
 
