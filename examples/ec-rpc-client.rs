@@ -9,6 +9,7 @@ extern crate benita;
 extern crate clap;
 extern crate neuras;
 
+use benita::common_ezo::EzoChipAPI;
 use benita::conductivity::ConductivityAPI;
 use benita::conductivity::network::ConductivityRequester;
 use benita::errors::{ErrorKind, Result};

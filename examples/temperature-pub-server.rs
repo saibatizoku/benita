@@ -14,6 +14,7 @@ extern crate neuras;
 use std::thread;
 use std::time::Duration;
 
+use benita::common_ezo::EzoChipAPI;
 use benita::temperature::TemperatureAPI;
 use benita::temperature::device::TemperatureSensor;
 use benita::errors::{Result, ResultExt};
