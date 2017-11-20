@@ -39,6 +39,7 @@ pub mod network;
 pub mod services;
 pub mod utilities;
 
+pub mod common_ezo;
 pub mod conductivity;
 pub mod ph;
 pub mod temperature;
