@@ -8,6 +8,7 @@ use super::replies::*;
 use super::requests::*;
 use super::super::PhAPI;
 
+use common_ezo::EzoChipAPI;
 use errors::*;
 use network::{Endpoint, ReplyStatus, SocketRequest};
 
@@ -17,9 +18,15 @@ use neuras;
 // Creates a client for network requests to the `PhResponder`.
 network_socket!(PhRequester, "Socket that communicates with the pH sensor.");
 
-impl PhAPI for PhRequester {
-    type Error = Error;
-    type DefaultReply = ReplyStatus;
+impl EzoChipAPI for PhRequester {
+    type SensorError = Error;
+    type SensorReply = ReplyStatus;
+
+    /// Clear the sensor's calibration settings.
+    fn set_calibration_clear(&self) -> Result<ReplyStatus> {
+        let reply = CalibrationClear.send_to(self)?;
+        Ok(reply)
+    }
 
     /// get the export information from the sensor.
     fn get_export_info(&self) -> Result<ExportedInfo> {
@@ -104,23 +111,16 @@ impl PhAPI for PhRequester {
         let reply = ProtocolLockState.send_to(self)?;
         Ok(reply)
     }
-
-    /// get the output string with sensor readings.
-    fn get_reading(&self) -> Result<SensorReading> {
-        let reply = Reading.send_to(self)?;
-        Ok(reply)
-    }
     /// set the sensor to sleep (low-power) mode.
     fn set_sleep(&self) -> Result<ReplyStatus> {
         let reply = Sleep.send_to(self)?;
         Ok(reply)
     }
+}
 
-    /// Clear the sensor's calibration settings.
-    fn set_calibration_clear(&self) -> Result<ReplyStatus> {
-        let reply = CalibrationClear.send_to(self)?;
-        Ok(reply)
-    }
+impl PhAPI for PhRequester {
+    type Error = Error;
+    type DefaultReply = ReplyStatus;
 
     /// Get the sensor's current calibration settings.
     fn get_calibration_status(&self) -> Result<CalibrationStatus> {
@@ -154,6 +154,12 @@ impl PhAPI for PhRequester {
     /// Get the current compensated temperature value.
     fn get_compensation(&self) -> Result<CompensationValue> {
         let reply = CompensationGet.send_to(self)?;
+        Ok(reply)
+    }
+
+    /// get the output string with sensor readings.
+    fn get_reading(&self) -> Result<SensorReading> {
+        let reply = Reading.send_to(self)?;
         Ok(reply)
     }
 

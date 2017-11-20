@@ -1,27 +1,5 @@
 //! EZO PH submersible pH sensor. Command-API for the EZO PH chipset.
 
-pub mod commands {
-    //! Commands from EZO PH chipset.
-    pub use ezo_ph::command::Baud;
-    pub use ezo_ph::command::Command;
-    pub use ezo_ph::command::{CalibrationClear, CalibrationHigh, CalibrationLow, CalibrationMid,
-                              CalibrationState};
-    pub use ezo_ph::command::{CompensatedTemperatureValue as CompensationGet, DeviceAddress,
-                              TemperatureCompensation as CompensationSet};
-    pub use ezo_ph::command::{DeviceInformation, Factory, Find, Reading, Sleep, Status};
-    pub use ezo_ph::command::{Export, ExportInfo, Import};
-    pub use ezo_ph::command::{LedOff, LedOn, LedState};
-    pub use ezo_ph::command::{ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState};
-    pub use ezo_ph::command::Slope;
-}
-
-pub mod responses {
-    //! Responses from EZO PH chipset.
-    pub use ezo_ph::response::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus,
-                               Exported, ExportedInfo, LedStatus, ProbeSlope, ProtocolLockStatus,
-                               SensorReading};
-}
-
 /// pH I2C device `Error`, and `ErrorKind` definitions.
 pub mod errors {
     error_chain! {
@@ -31,28 +9,38 @@ pub mod errors {
 use std::cell::RefCell;
 use std::fmt;
 
-use self::commands::*;
-use self::responses::*;
-
 use super::PhAPI;
+use super::command::*;
 use super::errors::*;
+use super::response::*;
 
+use common_ezo::EzoChipAPI;
 use config::SensorConfig;
 use network::ReplyStatus;
 
 use ezo_common::BpsRate;
 use i2cdev::linux::LinuxI2CDevice;
 
+pub use super::command as commands;
+pub use super::response as responses;
+
 // Use macro to define `PhSensor`
 device_i2cdev!(PhSensor, "EZO-EC Submersible pH Sensor.");
+
+impl EzoChipAPI for PhSensor {
+    type SensorError = Error;
+    type SensorReply = ReplyStatus;
+
+    sensor_commands!(device_common);
+    sensor_commands!(calibration_common);
+}
 
 impl PhAPI for PhSensor {
     type Error = Error;
     type DefaultReply = ReplyStatus;
 
-    sensor_commands!(device_common);
-
-    sensor_commands!(calibration_common);
+    sensor_commands!(calibration_status);
+    sensor_commands!(reading);
 
     /// Set the calibration high-point for the sensor.
     fn set_calibration_high(&self, t: f64) -> Result<ReplyStatus> {

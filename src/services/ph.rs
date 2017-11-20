@@ -1,6 +1,7 @@
 //! Network services for pH sensors.
 
 use cli::ph::PhCommandApp;
+use common_ezo::EzoChipAPI;
 use config::{SensorConfig, SocketConfig};
 use errors::*;
 use network::{Endpoint, SocketReply};
