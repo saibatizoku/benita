@@ -56,15 +56,15 @@ mod tests {
 
     #[test]
     fn parse_memory_reading_reply_from_valid_str() {
-        let reply = MemoryReading::from_str("10,0").unwrap();
+        let reply = <MemoryReading as SocketReply>::from_str("10,0").unwrap();
         assert_eq!("10,0", SocketReply::to_string(&reply));
-        let reply = MemoryReading::from_str("1,320000").unwrap();
+        let reply = <MemoryReading as SocketReply>::from_str("1,320000").unwrap();
         assert_eq!("1,320000", SocketReply::to_string(&reply));
     }
 
     #[test]
     fn parse_memory_reading_reply_from_invalid_str_yields_err() {
-        let reply = MemoryReading::from_str("D,320_001");
+        let reply = <MemoryReading as SocketReply>::from_str("D,320_001");
         assert!(reply.is_err());
     }
 
@@ -94,7 +94,7 @@ mod tests {
 
     #[test]
     fn parse_temperature_scale_reply_from_invalid_str_yields_err() {
-        let reply = TemperatureScale::from_str("");
+        let reply = <TemperatureScale as SocketReply>::from_str("");
         assert!(reply.is_err());
     }
 }

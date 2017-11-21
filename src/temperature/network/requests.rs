@@ -193,193 +193,193 @@ mod tests {
     #[test]
     fn parse_temperature_calibration_set_request_from_valid_str() {
         let request =
-            CalibrationTemperature::from_str("calibration-set 1000.3324").unwrap();
-        assert_eq!("calibration-set 1000.332", &request.to_string());
+            <CalibrationTemperature as SocketRequest>::from_str("calibration-set 1000.3324").unwrap();
+        assert_eq!("calibration-set 1000.332", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_temperature_calibration_set_request_from_invalid_str_yields_err() {
-        let request = CalibrationTemperature::from_str("calibration-set");
+        let request = <CalibrationTemperature as SocketRequest>::from_str("calibration-set");
         assert!(request.is_err());
 
-        let request = CalibrationTemperature::from_str("calibration-sets");
+        let request = <CalibrationTemperature as SocketRequest>::from_str("calibration-sets");
         assert!(request.is_err());
 
-        let request = CalibrationTemperature::from_str("calibration-set 123 2342");
+        let request = <CalibrationTemperature as SocketRequest>::from_str("calibration-set 123 2342");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_calibration_status_request_from_valid_str() {
-        let request = CalibrationState::from_str("calibration-status").unwrap();
-        assert_eq!("calibration-status", &request.to_string());
+        let request = <CalibrationState as SocketRequest>::from_str("calibration-status").unwrap();
+        assert_eq!("calibration-status", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_temperature_calibration_status_request_from_invalid_str_yields_err() {
-        let request = CalibrationState::from_str("calibration-statuss");
+        let request = <CalibrationState as SocketRequest>::from_str("calibration-statuss");
         assert!(request.is_err());
 
-        let request = CalibrationState::from_str("calibration-status 123");
+        let request = <CalibrationState as SocketRequest>::from_str("calibration-status 123");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_datalogger_off_request_from_valid_str() {
-        let request = DataloggerDisable::from_str("datalogger-off").unwrap();
-        assert_eq!("datalogger-off", &request.to_string());
+        let request = <DataloggerDisable as SocketRequest>::from_str("datalogger-off").unwrap();
+        assert_eq!("datalogger-off", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_temperature_datalogger_off_request_from_invalid_str_yields_err() {
-        let request = DataloggerDisable::from_str("datalogger-off ");
+        let request = <DataloggerDisable as SocketRequest>::from_str("datalogger-off ");
         assert!(request.is_err());
 
-        let request = DataloggerDisable::from_str("datalogger-off,10.5869");
+        let request = <DataloggerDisable as SocketRequest>::from_str("datalogger-off,10.5869");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_datalogger_set_request_from_valid_str() {
-        let request = DataloggerPeriod::from_str("datalogger-set 10").unwrap();
-        assert_eq!("datalogger-set 10", &request.to_string());
+        let request = <DataloggerPeriod as SocketRequest>::from_str("datalogger-set 10").unwrap();
+        assert_eq!("datalogger-set 10", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_temperature_datalogger_set_request_from_invalid_str_yields_err() {
-        let request = DataloggerInterval::from_str("datalogger-set ");
+        let request = <DataloggerInterval as SocketRequest>::from_str("datalogger-set ");
         assert!(request.is_err());
 
-        let request = DataloggerInterval::from_str("datalogger-set 9");
+        let request = <DataloggerInterval as SocketRequest>::from_str("datalogger-set 9");
         assert!(request.is_err());
 
-        let request = DataloggerInterval::from_str("datalogger-set 1_000_000_000");
+        let request = <DataloggerInterval as SocketRequest>::from_str("datalogger-set 1_000_000_000");
         assert!(request.is_err());
 
-        let request = DataloggerInterval::from_str("datalogger-set,10.5869");
+        let request = <DataloggerInterval as SocketRequest>::from_str("datalogger-set,10.5869");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_datalogger_status_request_from_valid_str() {
-        let request = DataloggerInterval::from_str("datalogger-status").unwrap();
-        assert_eq!("datalogger-status", &request.to_string());
+        let request = <DataloggerInterval as SocketRequest>::from_str("datalogger-status").unwrap();
+        assert_eq!("datalogger-status", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_temperature_datalogger_status_request_from_invalid_str_yields_err() {
-        let request = DataloggerInterval::from_str("datalogger-status ");
+        let request = <DataloggerInterval as SocketRequest>::from_str("datalogger-status ");
         assert!(request.is_err());
 
-        let request = DataloggerInterval::from_str("datalogger-status 1_000_000_000");
+        let request = <DataloggerInterval as SocketRequest>::from_str("datalogger-status 1_000_000_000");
         assert!(request.is_err());
 
-        let request = DataloggerInterval::from_str("datalogger-status,10.5869");
+        let request = <DataloggerInterval as SocketRequest>::from_str("datalogger-status,10.5869");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_memory_clear_request_from_valid_str() {
-        let request = MemoryClear::from_str("memory-clear").unwrap();
-        assert_eq!("memory-clear", &request.to_string());
+        let request = <MemoryClear as SocketRequest>::from_str("memory-clear").unwrap();
+        assert_eq!("memory-clear", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_temperature_memory_clear_request_from_invalid_str_yields_err() {
-        let request = MemoryClear::from_str("memory-clearo");
+        let request = <MemoryClear as SocketRequest>::from_str("memory-clearo");
         assert!(request.is_err());
 
-        let request = MemoryClear::from_str("memory-clear 10");
+        let request = <MemoryClear as SocketRequest>::from_str("memory-clear 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_memory_recall_request_from_valid_str() {
-        let request = MemoryRecall::from_str("memory-recall").unwrap();
-        assert_eq!("memory-recall", &request.to_string());
+        let request = <MemoryRecall as SocketRequest>::from_str("memory-recall").unwrap();
+        assert_eq!("memory-recall", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_temperature_memory_recall_request_from_invalid_str_yields_err() {
-        let request = MemoryRecall::from_str("memory-recallo");
+        let request = <MemoryRecall as SocketRequest>::from_str("memory-recallo");
         assert!(request.is_err());
 
-        let request = MemoryRecall::from_str("memory-recall 10");
+        let request = <MemoryRecall as SocketRequest>::from_str("memory-recall 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_memory_recall_last_request_from_valid_str() {
-        let request = MemoryRecallLast::from_str("memory-recall-last").unwrap();
-        assert_eq!("memory-recall-last", &request.to_string());
+        let request = <MemoryRecallLast as SocketRequest>::from_str("memory-recall-last").unwrap();
+        assert_eq!("memory-recall-last", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_temperature_memory_recall_last_request_from_invalid_str_yields_err() {
-        let request = MemoryRecallLast::from_str("memory-recall-lasto");
+        let request = <MemoryRecallLast as SocketRequest>::from_str("memory-recall-lasto");
         assert!(request.is_err());
 
-        let request = MemoryRecallLast::from_str("memory-recall-last 10");
+        let request = <MemoryRecallLast as SocketRequest>::from_str("memory-recall-last 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_read_request_from_valid_str() {
-        let request = Reading::from_str("read").unwrap();
-        assert_eq!("read", &request.to_string());
+        let request = <Reading as SocketRequest>::from_str("read").unwrap();
+        assert_eq!("read", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_temperature_read_request_from_invalid_str_yields_err() {
-        let request = Reading::from_str("reading");
+        let request = <Reading as SocketRequest>::from_str("reading");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_scale_celsius_request_from_valid_str() {
-        let request = ScaleCelsius::from_str("scale-celsius").unwrap();
-        assert_eq!("scale-celsius", &request.to_string());
+        let request = <ScaleCelsius as SocketRequest>::from_str("scale-celsius").unwrap();
+        assert_eq!("scale-celsius", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_temperature_scale_celsius_request_from_invalid_str_yields_err() {
-        let request = ScaleCelsius::from_str("scale-celsiusing");
+        let request = <ScaleCelsius as SocketRequest>::from_str("scale-celsiusing");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_scale_fahrenheit_request_from_valid_str() {
-        let request = ScaleFahrenheit::from_str("scale-fahrenheit").unwrap();
-        assert_eq!("scale-fahrenheit", &request.to_string());
+        let request = <ScaleFahrenheit as SocketRequest>::from_str("scale-fahrenheit").unwrap();
+        assert_eq!("scale-fahrenheit", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_temperature_scale_fahrenheit_request_from_invalid_str_yields_err() {
-        let request = ScaleFahrenheit::from_str("scale-fahrenheiting");
+        let request = <ScaleFahrenheit as SocketRequest>::from_str("scale-fahrenheiting");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_scale_kelvin_request_from_valid_str() {
-        let request = ScaleKelvin::from_str("scale-kelvin").unwrap();
-        assert_eq!("scale-kelvin", &request.to_string());
+        let request = <ScaleKelvin as SocketRequest>::from_str("scale-kelvin").unwrap();
+        assert_eq!("scale-kelvin", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_temperature_scale_kelvin_request_from_invalid_str_yields_err() {
-        let request = ScaleKelvin::from_str("scale-kelvining");
+        let request = <ScaleKelvin as SocketRequest>::from_str("scale-kelvining");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_scale_status_request_from_valid_str() {
-        let request = ScaleState::from_str("scale-status").unwrap();
-        assert_eq!("scale-status", &request.to_string());
+        let request = <ScaleState as SocketRequest>::from_str("scale-status").unwrap();
+        assert_eq!("scale-status", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_temperature_scale_status_request_from_invalid_str_yields_err() {
-        let request = ScaleState::from_str("scale-statusing");
+        let request = <ScaleState as SocketRequest>::from_str("scale-statusing");
         assert!(request.is_err());
     }
 }
