@@ -278,7 +278,7 @@ macro_rules! impl_SocketRequest_for {
             }
 
             fn send<T: Endpoint>(&self, endpoint: &T) -> Result<$response> {
-                let req = self.to_string();
+                let req = <$request as SocketRequest>::to_string(&self);
                 debug!("sending socket request: {:?}", &req);
                 let _read = endpoint.send(req.as_bytes())
                     .chain_err(|| ErrorKind::CommandRequest)?;
