@@ -5,13 +5,12 @@ pub mod errors {
 
 use errors::*;
 use network::{Endpoint, ReplyStatus, SocketReply, SocketRequest};
-
-pub use common_ezo::command::*;
-pub use temperature::device::commands::*;
-
 use temperature::device::responses::*;
 use utilities::atof;
 
+pub use common_ezo::command::*;
+pub use common_ezo::response::*;
+pub use temperature::command::*;
 
 impl_SocketRequest_for! {
     CalibrationTemperature: ReplyStatus,

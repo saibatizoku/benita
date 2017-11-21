@@ -1,27 +1,5 @@
 //! EZO RTD submersible temperature sensor. Command-API for the EZO RTD chipset.
 
-pub mod commands {
-    //! Commands from EZO RTD chipset.
-    pub use ezo_rtd::command::Baud;
-    pub use ezo_rtd::command::Command;
-    pub use ezo_rtd::command::{CalibrationClear, CalibrationState, CalibrationTemperature};
-    pub use ezo_rtd::command::{DataloggerDisable, DataloggerInterval, DataloggerPeriod};
-    pub use ezo_rtd::command::{DeviceAddress, DeviceInformation, Factory, Find, Reading, Sleep,
-                               Status};
-    pub use ezo_rtd::command::{Export, ExportInfo, Import};
-    pub use ezo_rtd::command::{LedOff, LedOn, LedState};
-    pub use ezo_rtd::command::{MemoryClear, MemoryRecall, MemoryRecallLast};
-    pub use ezo_rtd::command::{ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState};
-    pub use ezo_rtd::command::{ScaleCelsius, ScaleFahrenheit, ScaleKelvin, ScaleState};
-}
-
-pub mod responses {
-    //! Responses from EZO RTD chipset.
-    pub use ezo_rtd::response::{CalibrationStatus, DataLoggerStorageIntervalSeconds, DeviceInfo,
-                                DeviceStatus, Exported, ExportedInfo, LedStatus, MemoryReading,
-                                ProtocolLockStatus, SensorReading, TemperatureScale};
-}
-
 /// Temperature I2C device `Error`, and `ErrorKind` definitions.
 pub mod errors {
     error_chain!{}
@@ -30,20 +8,21 @@ pub mod errors {
 use std::cell::RefCell;
 use std::fmt;
 
-use self::commands::*;
-use self::responses::*;
-
 use super::TemperatureAPI;
+use super::command::*;
 use super::errors::*;
+use super::response::*;
 
 use common_ezo::EzoChipAPI;
 use config::SensorConfig;
 use devices::{I2CCommand, I2CResponse, SensorDevice};
 use network::ReplyStatus;
 
-use i2cdev::linux::LinuxI2CDevice;
 use ezo_common::BpsRate;
+use i2cdev::linux::LinuxI2CDevice;
 
+pub use super::command as commands;
+pub use super::response as responses;
 
 // Use macro to define `TemperatureSensor`
 device_i2cdev!(TemperatureSensor, "EZO-RTD Submersible Temperature Sensor");
