@@ -67,6 +67,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "benita-ezo"
+version = "0.1.0"
+dependencies = [
+ "benita 0.1.8",
+]
+
+[[package]]
 name = "bitflags"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -149,7 +156,7 @@ dependencies = [
 [[package]]
 name = "ezo_common"
 version = "0.1.0"
-source = "git+https://github.com/saibatizoku/ezo-common-rs.git#a7cc5dab596181a37db39a3779f026efcf57a1dc"
+source = "git+https://github.com/saibatizoku/ezo-common-rs.git#07f04a658a3164ad5e1d7d5e468cfbce28767d4e"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -159,7 +166,7 @@ dependencies = [
 [[package]]
 name = "ezo_ec"
 version = "0.1.1"
-source = "git+https://github.com/saibatizoku/ezo-ec-rs.git#1efcb19c29e4994e92c8186e3f5c544f37090570"
+source = "git+https://github.com/saibatizoku/ezo-ec-rs.git#46ac2ebc616a4a634b0ec09977bdfef1790b020e"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -170,7 +177,7 @@ dependencies = [
 [[package]]
 name = "ezo_ph"
 version = "0.1.1"
-source = "git+https://github.com/saibatizoku/ezo-ph-rs.git#341f55d8b12ad594e85d42e36c20e08ea437b9f1"
+source = "git+https://github.com/saibatizoku/ezo-ph-rs.git#d098a8ca37bd555b8b52108a964e929052b8e6d3"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -181,7 +188,7 @@ dependencies = [
 [[package]]
 name = "ezo_rtd"
 version = "0.1.1"
-source = "git+https://github.com/saibatizoku/ezo-rtd-rs.git#9889b5b05608efa222e1d4d5cd16cede2e5a6739"
+source = "git+https://github.com/saibatizoku/ezo-rtd-rs.git#ccb3a3ac67a64192caa6b28023190adb7d8a03d0"
 dependencies = [
  "chrono 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "error-chain 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",

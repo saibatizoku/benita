@@ -1,0 +1,8 @@
+[package]
+name = "benita-ezo"
+version = "0.1.0"
+authors = ["Joaquin Rosales <globojorro@gmail.com>"]
+description = "Software library for connecting EZO, manufactured by Atlas-Scientific, sensors to the network"
+
+[dependencies]
+benita = { path = "../" }

@@ -2,6 +2,7 @@
 name = "benita"
 version = "0.1.8"
 authors = ["Joaquín R <globojorro@gmail.com>"]
+description = "Software library for connecting sensors to the network"
 
 [dependencies]
 chrono = "0.4.0"
@@ -22,3 +23,6 @@ toml = "0.4"
 
 [profile.release]
 lto = true
+
+[workspace]
+members = ['benita-ezo']
