@@ -43,16 +43,16 @@ mod tests {
 
     #[test]
     fn create_status_reply_from_valid_str() {
-        let reply = ReplyStatus::parse_response("ok").unwrap();
+        let reply = <ReplyStatus as SocketReply>::from_str("ok").unwrap();
         assert_eq!(reply, ReplyStatus::Ok);
 
-        let reply = ReplyStatus::parse_response("err").unwrap();
+        let reply = <ReplyStatus as SocketReply>::from_str("err").unwrap();
         assert_eq!(reply, ReplyStatus::Err);
     }
 
     #[test]
     fn create_status_reply_from_invalid_str_yields_err() {
-        let reply = ReplyStatus::parse_response("okerr");
+        let reply = <ReplyStatus as SocketReply>::from_str("okerr");
         assert!(reply.is_err());
     }
 }

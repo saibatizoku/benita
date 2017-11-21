@@ -267,22 +267,22 @@ macro_rules! impl_SocketRequest_for {
         impl SocketRequest for $request {
             type Response = $response;
 
-            fn from_request_str(req_str: &str) -> Result<$request> {
+            fn from_str(req_str: &str) -> Result<$request> {
                 let $reqvalue = req_str;
                 $fromstr
             }
 
-            fn to_request_string(&self) -> String {
+            fn to_string(&self) -> String {
                 let $self = self;
                 $tostring
             }
 
-            fn send_to<T: Endpoint>(&self, endpoint: &T) -> Result<$response> {
-                let req = self.to_request_string();
+            fn send<T: Endpoint>(&self, endpoint: &T) -> Result<$response> {
+                let req = self.to_string();
                 debug!("sending socket request: {:?}", &req);
-                let _read = endpoint.send(self.to_request_string().as_bytes())
+                let _read = endpoint.send(req.as_bytes())
                     .chain_err(|| ErrorKind::CommandRequest)?;
-                let response = $response::recv_from(endpoint)?;
+                let response = <$response as SocketReply>::recv(endpoint)?;
                 debug!("parsed socket reply: {:?}", &response);
                 Ok(response)
             }
@@ -294,19 +294,20 @@ macro_rules! impl_SocketRequest_for {
 macro_rules! impl_SocketReply_for {
     ( $name:ident ) => {
         impl SocketReply for $name {
-            fn parse_response(rep_str: &str) -> Result<$name> {
+
+            fn from_str(rep_str: &str) -> Result<$name> {
                 $name::parse(rep_str)
                     .chain_err(|| ErrorKind::CommandReply)
             }
 
-            fn to_reply_string(&self) -> String {
+            fn to_string(&self) -> String {
                 format!("{}", self)
             }
 
-            fn recv_from<T: Endpoint>(endpoint: &T) -> Result<$name> {
+            fn recv<T: Endpoint>(endpoint: &T) -> Result<$name> {
                 let rep_string = endpoint.recv()?;
                 debug!("received socket reply string: {:?}", &rep_string);
-                let response = $name::parse_response(&rep_string)?;
+                let response = <$name as SocketReply>::from_str(&rep_string)?;
                 debug!("parsed socket reply: {:?}", &response);
                 Ok(response)
             }
