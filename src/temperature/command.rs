@@ -16,6 +16,47 @@ pub use network::ReplyStatus;
 
 use errors::*;
 
+macro_rules! impl_I2CResponse_for {
+    ( $name:ident ) => {
+        impl I2CResponse for $name {
+            fn from_str(s: &str) -> Result<$name> {
+                unimplemented!();
+            }
+
+            fn to_string(&self) -> String {
+                unimplemented!();
+            }
+
+            fn read<T: SensorDevice>(device: &T) -> Result<$name> {
+                unimplemented!();
+            }
+        }
+    }
+}
+
+impl_I2CResponse_for!(ReplyStatus);
+
+macro_rules! impl_I2CCommand_for {
+    ( $name:ident , $response:ty ) => {
+        impl I2CCommand for $name {
+            type Response = $response;
+
+            fn from_str(s: &str) -> Result<$name> {
+                unimplemented!();
+            }
+
+            fn to_string(&self) -> String {
+                unimplemented!();
+            }
+
+            fn write<T: SensorDevice>(&self, device: &T) -> Result<$response> {
+                unimplemented!();
+            }
+        }
+    }
+}
+
+impl_I2CCommand_for!(CalibrationTemperature, ReplyStatus);
 
 #[cfg(test)]
 mod tests {
