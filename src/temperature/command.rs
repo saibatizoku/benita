@@ -3,8 +3,7 @@ pub use ezo_rtd::command::Baud;
 pub use ezo_rtd::command::Command;
 pub use ezo_rtd::command::{CalibrationClear, CalibrationState, CalibrationTemperature};
 pub use ezo_rtd::command::{DataloggerDisable, DataloggerInterval, DataloggerPeriod};
-pub use ezo_rtd::command::{DeviceAddress, DeviceInformation, Factory, Find, Reading, Sleep,
-                           Status};
+pub use ezo_rtd::command::{DeviceAddress, DeviceInformation, Factory, Find, Reading, Sleep, Status};
 pub use ezo_rtd::command::{Export, ExportInfo, Import};
 pub use ezo_rtd::command::{LedOff, LedOn, LedState};
 pub use ezo_rtd::command::{MemoryClear, MemoryRecall, MemoryRecallLast};
@@ -12,29 +11,10 @@ pub use ezo_rtd::command::{ProtocolLockDisable, ProtocolLockEnable, ProtocolLock
 pub use ezo_rtd::command::{ScaleCelsius, ScaleFahrenheit, ScaleKelvin, ScaleState};
 
 pub use devices::{I2CCommand, I2CResponse, SensorDevice};
-pub use network::ReplyStatus;
+
+use super::response::*;
 
 use errors::*;
-
-macro_rules! impl_I2CResponse_for {
-    ( $name:ident ) => {
-        impl I2CResponse for $name {
-            fn from_str(s: &str) -> Result<$name> {
-                unimplemented!();
-            }
-
-            fn to_string(&self) -> String {
-                unimplemented!();
-            }
-
-            fn read<T: SensorDevice>(device: &T) -> Result<$name> {
-                unimplemented!();
-            }
-        }
-    }
-}
-
-impl_I2CResponse_for!(ReplyStatus);
 
 macro_rules! impl_I2CCommand_for {
     ( $name:ident , $response:ty ) => {
@@ -42,11 +22,13 @@ macro_rules! impl_I2CCommand_for {
             type Response = $response;
 
             fn from_str(s: &str) -> Result<$name> {
-                unimplemented!();
+                let cmd = s.parse::<$name>()
+                    .chain_err(|| ErrorKind::CommandParse)?;
+                Ok(cmd)
             }
 
             fn to_string(&self) -> String {
-                unimplemented!();
+                <$name as Command>::get_command_string(&self)
             }
 
             fn write<T: SensorDevice>(&self, device: &T) -> Result<$response> {
@@ -56,7 +38,19 @@ macro_rules! impl_I2CCommand_for {
     }
 }
 
+impl_I2CCommand_for!(CalibrationState, CalibrationStatus);
 impl_I2CCommand_for!(CalibrationTemperature, ReplyStatus);
+impl_I2CCommand_for!(DataloggerDisable, ReplyStatus);
+impl_I2CCommand_for!(DataloggerInterval, DataLoggerStorageIntervalSeconds);
+impl_I2CCommand_for!(DataloggerPeriod, ReplyStatus);
+impl_I2CCommand_for!(Reading, SensorReading);
+impl_I2CCommand_for!(MemoryClear, ReplyStatus);
+impl_I2CCommand_for!(MemoryRecall, MemoryReading);
+impl_I2CCommand_for!(MemoryRecallLast, MemoryReading);
+impl_I2CCommand_for!(ScaleCelsius, ReplyStatus);
+impl_I2CCommand_for!(ScaleFahrenheit, ReplyStatus);
+impl_I2CCommand_for!(ScaleKelvin, ReplyStatus);
+impl_I2CCommand_for!(ScaleState, TemperatureScale);
 
 #[cfg(test)]
 mod tests {
@@ -64,12 +58,10 @@ mod tests {
 
     #[test]
     fn parse_temperature_calibration_set_request_from_valid_str() {
-        let request =
-            <CalibrationTemperature as I2CCommand>::from_str("cal,100.34").unwrap();
+        let request = <CalibrationTemperature as I2CCommand>::from_str("cal,100.34").unwrap();
         assert_eq!("CAL,100.34", I2CCommand::to_string(&request));
-        let request =
-            <CalibrationTemperature as I2CCommand>::from_str("CAL,1000.3324").unwrap();
-        assert_eq!("CAL,1000.332", I2CCommand::to_string(&request));
+        let request = <CalibrationTemperature as I2CCommand>::from_str("CAL,1000.3324").unwrap();
+        assert_eq!("CAL,1000.33", I2CCommand::to_string(&request));
     }
 
     #[test]
@@ -273,13 +265,21 @@ mod tests {
 
     #[test]
     fn parse_temperature_scale_status_request_from_valid_str() {
-        let request = <ScaleState as I2CCommand>::from_str("scale-status").unwrap();
-        assert_eq!("scale-status", <ScaleState as I2CCommand>::to_string(&request));
+        let request = <ScaleState as I2CCommand>::from_str("s,?").unwrap();
+        assert_eq!(
+            "S,?",
+            <ScaleState as I2CCommand>::to_string(&request)
+        );
+        let request = <ScaleState as I2CCommand>::from_str("S,?").unwrap();
+        assert_eq!(
+            "S,?",
+            <ScaleState as I2CCommand>::to_string(&request)
+        );
     }
 
     #[test]
     fn parse_temperature_scale_status_request_from_invalid_str_yields_err() {
-        let request = <ScaleState as I2CCommand>::from_str("scale-statusing");
+        let request = <ScaleState as I2CCommand>::from_str("s,?,");
         assert!(request.is_err());
     }
 }
