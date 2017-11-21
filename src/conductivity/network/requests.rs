@@ -309,339 +309,339 @@ mod tests {
 
     #[test]
     fn parse_conductivity_calibration_dry_request_from_valid_str() {
-        let request = CalibrationDry::from_request_str("calibration-dry").unwrap();
-        assert_eq!("calibration-dry", &request.to_request_string());
+        let request = CalibrationDry::from_str("calibration-dry").unwrap();
+        assert_eq!("calibration-dry", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_calibration_dry_request_from_invalid_str_yields_err() {
-        let request = CalibrationDry::from_request_str("calibration-drys");
+        let request = CalibrationDry::from_str("calibration-drys");
         assert!(request.is_err());
 
-        let request = CalibrationDry::from_request_str("calibration-dry 123");
+        let request = CalibrationDry::from_str("calibration-dry 123");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_calibration_high_request_from_valid_str() {
-        let request = CalibrationHigh::from_request_str("calibration-high 1000.3324").unwrap();
-        assert_eq!("calibration-high 1000.332", &request.to_request_string());
+        let request = CalibrationHigh::from_str("calibration-high 1000.3324").unwrap();
+        assert_eq!("calibration-high 1000.332", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_calibration_high_request_from_invalid_str_yields_err() {
-        let request = CalibrationHigh::from_request_str("calibration-high");
+        let request = CalibrationHigh::from_str("calibration-high");
         assert!(request.is_err());
 
-        let request = CalibrationHigh::from_request_str("calibration-highs");
+        let request = CalibrationHigh::from_str("calibration-highs");
         assert!(request.is_err());
 
-        let request = CalibrationHigh::from_request_str("calibration-high 123 2342");
+        let request = CalibrationHigh::from_str("calibration-high 123 2342");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_calibration_low_request_from_valid_str() {
-        let request = CalibrationLow::from_request_str("calibration-low 1000.3324").unwrap();
-        assert_eq!("calibration-low 1000.332", &request.to_request_string());
+        let request = CalibrationLow::from_str("calibration-low 1000.3324").unwrap();
+        assert_eq!("calibration-low 1000.332", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_calibration_low_request_from_invalid_str_yields_err() {
-        let request = CalibrationLow::from_request_str("calibration-low");
+        let request = CalibrationLow::from_str("calibration-low");
         assert!(request.is_err());
 
-        let request = CalibrationLow::from_request_str("calibration-lows");
+        let request = CalibrationLow::from_str("calibration-lows");
         assert!(request.is_err());
 
-        let request = CalibrationLow::from_request_str("calibration-low 123 2342");
+        let request = CalibrationLow::from_str("calibration-low 123 2342");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_calibration_onepoint_request_from_valid_str() {
         let request =
-            CalibrationOnePoint::from_request_str("calibration-onepoint 1000.3324").unwrap();
+            CalibrationOnePoint::from_str("calibration-onepoint 1000.3324").unwrap();
         assert_eq!(
             "calibration-onepoint 1000.332",
-            &request.to_request_string()
+            SocketRequest::to_string(&request)
         );
     }
 
     #[test]
     fn parse_conductivity_calibration_onepoint_request_from_invalid_str_yields_err() {
-        let request = CalibrationOnePoint::from_request_str("calibration-onepoint");
+        let request = CalibrationOnePoint::from_str("calibration-onepoint");
         assert!(request.is_err());
 
-        let request = CalibrationOnePoint::from_request_str("calibration-onepoints");
+        let request = CalibrationOnePoint::from_str("calibration-onepoints");
         assert!(request.is_err());
 
-        let request = CalibrationOnePoint::from_request_str("calibration-onepoint 123 2342");
+        let request = CalibrationOnePoint::from_str("calibration-onepoint 123 2342");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_calibration_status_request_from_valid_str() {
-        let request = CalibrationState::from_request_str("calibration-status").unwrap();
-        assert_eq!("calibration-status", &request.to_request_string());
+        let request = CalibrationState::from_str("calibration-status").unwrap();
+        assert_eq!("calibration-status", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_calibration_status_request_from_invalid_str_yields_err() {
-        let request = CalibrationState::from_request_str("calibration-statuss");
+        let request = CalibrationState::from_str("calibration-statuss");
         assert!(request.is_err());
 
-        let request = CalibrationState::from_request_str("calibration-status 123");
+        let request = CalibrationState::from_str("calibration-status 123");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_compensation_get_request_from_valid_str() {
-        let request = CompensationGet::from_request_str("compensation-get").unwrap();
-        assert_eq!("compensation-get", &request.to_request_string());
+        let request = CompensationGet::from_str("compensation-get").unwrap();
+        assert_eq!("compensation-get", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_compensation_get_request_from_invalid_str_yields_err() {
-        let request = CompensationGet::from_request_str("ompensation-get");
+        let request = CompensationGet::from_str("ompensation-get");
         assert!(request.is_err());
 
-        let request = CompensationGet::from_request_str("compensation-get 10.5829");
+        let request = CompensationGet::from_str("compensation-get 10.5829");
         assert!(request.is_err());
 
-        let request = CompensationGet::from_request_str("compensation-get,10.5869");
+        let request = CompensationGet::from_str("compensation-get,10.5869");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_compensation_set_request_from_valid_str() {
-        let request = CompensationSet::from_request_str("compensation-set 10.5829").unwrap();
-        assert_eq!("compensation-set 10.583", &request.to_request_string());
+        let request = CompensationSet::from_str("compensation-set 10.5829").unwrap();
+        assert_eq!("compensation-set 10.583", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_compensation_set_request_from_invalid_str_yields_err() {
-        let request = CompensationSet::from_request_str("compensation-set");
+        let request = CompensationSet::from_str("compensation-set");
         assert!(request.is_err());
 
-        let request = CompensationSet::from_request_str("compensation-set,10.5869");
+        let request = CompensationSet::from_str("compensation-set,10.5869");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_output_conductivity_off_request_from_valid_str() {
         let request =
-            OutputDisableConductivity::from_request_str("output-conductivity-off").unwrap();
-        assert_eq!("output-conductivity-off", &request.to_request_string());
+            OutputDisableConductivity::from_str("output-conductivity-off").unwrap();
+        assert_eq!("output-conductivity-off", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_output_conductivity_off_request_from_invalid_str_yields_err() {
-        let request = OutputDisableConductivity::from_request_str("output-conductivity-offo");
+        let request = OutputDisableConductivity::from_str("output-conductivity-offo");
         assert!(request.is_err());
 
-        let request = OutputDisableConductivity::from_request_str("output-conductivity-off 10");
+        let request = OutputDisableConductivity::from_str("output-conductivity-off 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_output_salinity_off_request_from_valid_str() {
-        let request = OutputDisableSalinity::from_request_str("output-salinity-off").unwrap();
-        assert_eq!("output-salinity-off", &request.to_request_string());
+        let request = OutputDisableSalinity::from_str("output-salinity-off").unwrap();
+        assert_eq!("output-salinity-off", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_output_salinity_off_request_from_invalid_str_yields_err() {
-        let request = OutputDisableSalinity::from_request_str("output-salinity-offo");
+        let request = OutputDisableSalinity::from_str("output-salinity-offo");
         assert!(request.is_err());
 
-        let request = OutputDisableSalinity::from_request_str("output-salinity-off 10");
+        let request = OutputDisableSalinity::from_str("output-salinity-off 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_output_sg_off_request_from_valid_str() {
-        let request = OutputDisableSpecificGravity::from_request_str("output-sg-off").unwrap();
-        assert_eq!("output-sg-off", &request.to_request_string());
+        let request = OutputDisableSpecificGravity::from_str("output-sg-off").unwrap();
+        assert_eq!("output-sg-off", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_output_sg_off_request_from_invalid_str_yields_err() {
-        let request = OutputDisableSpecificGravity::from_request_str("output-sg-offo");
+        let request = OutputDisableSpecificGravity::from_str("output-sg-offo");
         assert!(request.is_err());
 
-        let request = OutputDisableSpecificGravity::from_request_str("output-sg-off 10");
+        let request = OutputDisableSpecificGravity::from_str("output-sg-off 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_output_tds_off_request_from_valid_str() {
-        let request = OutputDisableTds::from_request_str("output-tds-off").unwrap();
-        assert_eq!("output-tds-off", &request.to_request_string());
+        let request = OutputDisableTds::from_str("output-tds-off").unwrap();
+        assert_eq!("output-tds-off", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_output_tds_off_request_from_invalid_str_yields_err() {
-        let request = OutputDisableTds::from_request_str("output-tds-offo");
+        let request = OutputDisableTds::from_str("output-tds-offo");
         assert!(request.is_err());
 
-        let request = OutputDisableTds::from_request_str("output-tds-off 10");
+        let request = OutputDisableTds::from_str("output-tds-off 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_output_conductivity_on_request_from_valid_str() {
-        let request = OutputEnableConductivity::from_request_str("output-conductivity-on").unwrap();
-        assert_eq!("output-conductivity-on", &request.to_request_string());
+        let request = OutputEnableConductivity::from_str("output-conductivity-on").unwrap();
+        assert_eq!("output-conductivity-on", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_output_conductivity_on_request_from_invalid_str_yields_err() {
-        let request = OutputEnableConductivity::from_request_str("output-conductivity-ono");
+        let request = OutputEnableConductivity::from_str("output-conductivity-ono");
         assert!(request.is_err());
 
-        let request = OutputEnableConductivity::from_request_str("output-conductivity-on 10");
+        let request = OutputEnableConductivity::from_str("output-conductivity-on 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_output_salinity_on_request_from_valid_str() {
-        let request = OutputEnableSalinity::from_request_str("output-salinity-on").unwrap();
-        assert_eq!("output-salinity-on", &request.to_request_string());
+        let request = OutputEnableSalinity::from_str("output-salinity-on").unwrap();
+        assert_eq!("output-salinity-on", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_output_salinity_on_request_from_invalid_str_yields_err() {
-        let request = OutputEnableSalinity::from_request_str("output-salinity-ono");
+        let request = OutputEnableSalinity::from_str("output-salinity-ono");
         assert!(request.is_err());
 
-        let request = OutputEnableSalinity::from_request_str("output-salinity-on 10");
+        let request = OutputEnableSalinity::from_str("output-salinity-on 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_output_sg_on_request_from_valid_str() {
-        let request = OutputEnableSpecificGravity::from_request_str("output-sg-on").unwrap();
-        assert_eq!("output-sg-on", &request.to_request_string());
+        let request = OutputEnableSpecificGravity::from_str("output-sg-on").unwrap();
+        assert_eq!("output-sg-on", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_output_sg_on_request_from_invalid_str_yields_err() {
-        let request = OutputEnableSpecificGravity::from_request_str("output-sg-ono");
+        let request = OutputEnableSpecificGravity::from_str("output-sg-ono");
         assert!(request.is_err());
 
-        let request = OutputEnableSpecificGravity::from_request_str("output-sg-on 10");
+        let request = OutputEnableSpecificGravity::from_str("output-sg-on 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_output_tds_on_request_from_valid_str() {
-        let request = OutputEnableTds::from_request_str("output-tds-on").unwrap();
-        assert_eq!("output-tds-on", &request.to_request_string());
+        let request = OutputEnableTds::from_str("output-tds-on").unwrap();
+        assert_eq!("output-tds-on", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_output_tds_on_request_from_invalid_str_yields_err() {
-        let request = OutputEnableTds::from_request_str("output-tds-ono");
+        let request = OutputEnableTds::from_str("output-tds-ono");
         assert!(request.is_err());
 
-        let request = OutputEnableTds::from_request_str("output-tds-on 10");
+        let request = OutputEnableTds::from_str("output-tds-on 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_output_status_request_from_valid_str() {
-        let request = OutputState::from_request_str("output-status").unwrap();
-        assert_eq!("output-status", &request.to_request_string());
+        let request = OutputState::from_str("output-status").unwrap();
+        assert_eq!("output-status", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_output_status_request_from_invalid_str_yields_err() {
-        let request = OutputState::from_request_str("output-statuso");
+        let request = OutputState::from_str("output-statuso");
         assert!(request.is_err());
 
-        let request = OutputState::from_request_str("output-status 10");
+        let request = OutputState::from_str("output-status 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_probe_type_one_request_from_valid_str() {
-        let request = ProbeTypeOne::from_request_str("probe-type-1.0").unwrap();
-        assert_eq!("probe-type-1.0", &request.to_request_string());
+        let request = ProbeTypeOne::from_str("probe-type-1.0").unwrap();
+        assert_eq!("probe-type-1.0", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_probe_type_one_request_from_invalid_str_yields_err() {
-        let request = ProbeTypeOne::from_request_str("probe-type-1.0 ");
+        let request = ProbeTypeOne::from_str("probe-type-1.0 ");
         assert!(request.is_err());
 
-        let request = ProbeTypeOne::from_request_str("probe-type-1.000000");
+        let request = ProbeTypeOne::from_str("probe-type-1.000000");
         assert!(request.is_err());
 
-        let request = ProbeTypeOne::from_request_str("probe-type-1.0 1234567890123");
+        let request = ProbeTypeOne::from_str("probe-type-1.0 1234567890123");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_probe_type_point_one_request_from_valid_str() {
-        let request = ProbeTypePointOne::from_request_str("probe-type-0.1").unwrap();
-        assert_eq!("probe-type-0.1", &request.to_request_string());
+        let request = ProbeTypePointOne::from_str("probe-type-0.1").unwrap();
+        assert_eq!("probe-type-0.1", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_probe_type_point_one_request_from_invalid_str_yields_err() {
-        let request = ProbeTypePointOne::from_request_str("probe-type-0.1 ");
+        let request = ProbeTypePointOne::from_str("probe-type-0.1 ");
         assert!(request.is_err());
 
-        let request = ProbeTypePointOne::from_request_str("probe-type-0.100000");
+        let request = ProbeTypePointOne::from_str("probe-type-0.100000");
         assert!(request.is_err());
 
-        let request = ProbeTypePointOne::from_request_str("probe-type-0.1 1234567890123");
+        let request = ProbeTypePointOne::from_str("probe-type-0.1 1234567890123");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_probe_type_ten_request_from_valid_str() {
-        let request = ProbeTypeTen::from_request_str("probe-type-10").unwrap();
-        assert_eq!("probe-type-10", &request.to_request_string());
+        let request = ProbeTypeTen::from_str("probe-type-10").unwrap();
+        assert_eq!("probe-type-10", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_probe_type_ten_request_from_invalid_str_yields_err() {
-        let request = ProbeTypeTen::from_request_str("probe-type-10 ");
+        let request = ProbeTypeTen::from_str("probe-type-10 ");
         assert!(request.is_err());
 
-        let request = ProbeTypeTen::from_request_str("probe-type-1000000");
+        let request = ProbeTypeTen::from_str("probe-type-1000000");
         assert!(request.is_err());
 
-        let request = ProbeTypeTen::from_request_str("probe-type-10 1234567890123");
+        let request = ProbeTypeTen::from_str("probe-type-10 1234567890123");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_probe_type_status_request_from_valid_str() {
-        let request = ProbeTypeState::from_request_str("probe-type-status").unwrap();
-        assert_eq!("probe-type-status", &request.to_request_string());
+        let request = ProbeTypeState::from_str("probe-type-status").unwrap();
+        assert_eq!("probe-type-status", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_probe_type_status_request_from_invalid_str_yields_err() {
-        let request = ProbeTypeState::from_request_str("probe-type-statuso");
+        let request = ProbeTypeState::from_str("probe-type-statuso");
         assert!(request.is_err());
 
-        let request = ProbeTypeState::from_request_str("probe-type-status 10");
+        let request = ProbeTypeState::from_str("probe-type-status 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_read_request_from_valid_str() {
-        let request = Reading::from_request_str("read").unwrap();
-        assert_eq!("read", &request.to_request_string());
+        let request = Reading::from_str("read").unwrap();
+        assert_eq!("read", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_read_request_from_invalid_str_yields_err() {
-        let request = Reading::from_request_str("reading");
+        let request = Reading::from_str("reading");
         assert!(request.is_err());
     }
 }

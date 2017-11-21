@@ -248,8 +248,8 @@ mod tests {
     use super::*;
 
     fn assert_valid_baud_request(test_str: &str, bps: BpsRate) {
-        let request = Baud::from_request_str(test_str).unwrap();
-        assert_eq!(test_str, &request.to_request_string());
+        let request = Baud::from_str(test_str).unwrap();
+        assert_eq!(test_str, SocketRequest::to_string(&request));
         assert_eq!(bps, request.0);
     }
 
@@ -267,257 +267,257 @@ mod tests {
 
     #[test]
     fn parse_baud_request_from_invalid_str_yields_err() {
-        let request = Baud::from_request_str("baud");
+        let request = Baud::from_str("baud");
         assert!(request.is_err());
 
-        let request = Baud::from_request_str("bauds 300");
+        let request = Baud::from_str("bauds 300");
         assert!(request.is_err());
 
-        let request = Baud::from_request_str("baud 0");
+        let request = Baud::from_str("baud 0");
         assert!(request.is_err());
 
-        let request = Baud::from_request_str("baud 10.5829");
+        let request = Baud::from_str("baud 10.5829");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_calibration_clear_request_from_valid_str() {
-        let request = CalibrationClear::from_request_str("calibration-clear").unwrap();
-        assert_eq!("calibration-clear", &request.to_request_string());
+        let request = CalibrationClear::from_str("calibration-clear").unwrap();
+        assert_eq!("calibration-clear", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_calibration_clear_request_from_invalid_str_yields_err() {
-        let request = CalibrationClear::from_request_str("calibration-clearEXTRA");
+        let request = CalibrationClear::from_str("calibration-clearEXTRA");
         assert!(request.is_err());
 
-        let request = CalibrationClear::from_request_str("calibration-clear 123");
+        let request = CalibrationClear::from_str("calibration-clear 123");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_device_address_request_from_valid_str() {
-        let request = DeviceAddress::from_request_str("device-address 90").unwrap();
-        assert_eq!("device-address 90", &request.to_request_string());
+        let request = DeviceAddress::from_str("device-address 90").unwrap();
+        assert_eq!("device-address 90", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_device_address_request_from_invalid_str_yields_err() {
-        let request = DeviceAddress::from_request_str("device-address");
+        let request = DeviceAddress::from_str("device-address");
         assert!(request.is_err());
 
-        let request = DeviceAddress::from_request_str("device-address10.5");
+        let request = DeviceAddress::from_str("device-address10.5");
         assert!(request.is_err());
 
-        let request = DeviceAddress::from_request_str("device-address 10.5");
+        let request = DeviceAddress::from_str("device-address 10.5");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_device_info_request_from_valid_str() {
-        let request = DeviceInformation::from_request_str("device-info").unwrap();
-        assert_eq!("device-info", &request.to_request_string());
+        let request = DeviceInformation::from_str("device-info").unwrap();
+        assert_eq!("device-info", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_device_info_request_from_invalid_str_yields_err() {
-        let request = DeviceInformation::from_request_str("device-infoo");
+        let request = DeviceInformation::from_str("device-infoo");
         assert!(request.is_err());
 
-        let request = DeviceInformation::from_request_str("device-info 10");
+        let request = DeviceInformation::from_str("device-info 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_export_request_from_valid_str() {
-        let request = Export::from_request_str("export").unwrap();
-        assert_eq!("export", &request.to_request_string());
+        let request = Export::from_str("export").unwrap();
+        assert_eq!("export", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_export_request_from_invalid_str_yields_err() {
-        let request = Export::from_request_str("exporto");
+        let request = Export::from_str("exporto");
         assert!(request.is_err());
 
-        let request = Export::from_request_str("export 10");
+        let request = Export::from_str("export 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_export_info_request_from_valid_str() {
-        let request = ExportInfo::from_request_str("export-info").unwrap();
-        assert_eq!("export-info", &request.to_request_string());
+        let request = ExportInfo::from_str("export-info").unwrap();
+        assert_eq!("export-info", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_export_info_request_from_invalid_str_yields_err() {
-        let request = ExportInfo::from_request_str("export-infoo");
+        let request = ExportInfo::from_str("export-infoo");
         assert!(request.is_err());
 
-        let request = ExportInfo::from_request_str("export-info 10");
+        let request = ExportInfo::from_str("export-info 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_import_request_from_valid_str() {
-        let request = Import::from_request_str("import 123456789012").unwrap();
-        assert_eq!("import 123456789012", &request.to_request_string());
+        let request = Import::from_str("import 123456789012").unwrap();
+        assert_eq!("import 123456789012", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_import_request_from_invalid_str_yields_err() {
-        let request = Import::from_request_str("import");
+        let request = Import::from_str("import");
         assert!(request.is_err());
 
-        let request = Import::from_request_str("import ");
+        let request = Import::from_str("import ");
         assert!(request.is_err());
 
-        let request = Import::from_request_str("import 1234567890123");
+        let request = Import::from_str("import 1234567890123");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_factory_request_from_valid_str() {
-        let request = Factory::from_request_str("factory").unwrap();
-        assert_eq!("factory", &request.to_request_string());
+        let request = Factory::from_str("factory").unwrap();
+        assert_eq!("factory", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_factory_request_from_invalid_str_yields_err() {
-        let request = Factory::from_request_str("factoryo");
+        let request = Factory::from_str("factoryo");
         assert!(request.is_err());
 
-        let request = Factory::from_request_str("factory 10");
+        let request = Factory::from_str("factory 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_find_request_from_valid_str() {
-        let request = Find::from_request_str("find").unwrap();
-        assert_eq!("find", &request.to_request_string());
+        let request = Find::from_str("find").unwrap();
+        assert_eq!("find", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_find_request_from_invalid_str_yields_err() {
-        let request = Find::from_request_str("findo");
+        let request = Find::from_str("findo");
         assert!(request.is_err());
 
-        let request = Find::from_request_str("find 10");
+        let request = Find::from_str("find 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_led_off_request_from_valid_str() {
-        let request = LedOff::from_request_str("led-off").unwrap();
-        assert_eq!("led-off", &request.to_request_string());
+        let request = LedOff::from_str("led-off").unwrap();
+        assert_eq!("led-off", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_led_off_request_from_invalid_str_yields_err() {
-        let request = LedOff::from_request_str("led-offo");
+        let request = LedOff::from_str("led-offo");
         assert!(request.is_err());
 
-        let request = LedOff::from_request_str("led-off 10");
+        let request = LedOff::from_str("led-off 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_led_on_request_from_valid_str() {
-        let request = LedOn::from_request_str("led-on").unwrap();
-        assert_eq!("led-on", &request.to_request_string());
+        let request = LedOn::from_str("led-on").unwrap();
+        assert_eq!("led-on", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_led_on_request_from_invalid_str_yields_err() {
-        let request = LedOn::from_request_str("led-ono");
+        let request = LedOn::from_str("led-ono");
         assert!(request.is_err());
 
-        let request = LedOn::from_request_str("led-on 10");
+        let request = LedOn::from_str("led-on 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_led_status_request_from_valid_str() {
-        let request = LedState::from_request_str("led-status").unwrap();
-        assert_eq!("led-status", &request.to_request_string());
+        let request = LedState::from_str("led-status").unwrap();
+        assert_eq!("led-status", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_led_status_request_from_invalid_str_yields_err() {
-        let request = LedState::from_request_str("led-statuso");
+        let request = LedState::from_str("led-statuso");
         assert!(request.is_err());
 
-        let request = LedState::from_request_str("led-status 10");
+        let request = LedState::from_str("led-status 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_protocol_lock_off_request_from_valid_str() {
-        let request = ProtocolLockDisable::from_request_str("protocol-lock-off").unwrap();
-        assert_eq!("protocol-lock-off", &request.to_request_string());
+        let request = ProtocolLockDisable::from_str("protocol-lock-off").unwrap();
+        assert_eq!("protocol-lock-off", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_protocol_lock_off_request_from_invalid_str_yields_err() {
-        let request = ProtocolLockDisable::from_request_str("protocol-lock-offo");
+        let request = ProtocolLockDisable::from_str("protocol-lock-offo");
         assert!(request.is_err());
 
-        let request = ProtocolLockDisable::from_request_str("protocol-lock-off 10");
+        let request = ProtocolLockDisable::from_str("protocol-lock-off 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_protocol_lock_on_request_from_valid_str() {
-        let request = ProtocolLockEnable::from_request_str("protocol-lock-on").unwrap();
-        assert_eq!("protocol-lock-on", &request.to_request_string());
+        let request = ProtocolLockEnable::from_str("protocol-lock-on").unwrap();
+        assert_eq!("protocol-lock-on", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_protocol_lock_on_request_from_invalid_str_yields_err() {
-        let request = ProtocolLockEnable::from_request_str("protocol-lock-ono");
+        let request = ProtocolLockEnable::from_str("protocol-lock-ono");
         assert!(request.is_err());
 
-        let request = ProtocolLockEnable::from_request_str("protocol-lock-on 10");
+        let request = ProtocolLockEnable::from_str("protocol-lock-on 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_protocol_lock_status_request_from_valid_str() {
-        let request = ProtocolLockState::from_request_str("protocol-lock-status").unwrap();
-        assert_eq!("protocol-lock-status", &request.to_request_string());
+        let request = ProtocolLockState::from_str("protocol-lock-status").unwrap();
+        assert_eq!("protocol-lock-status", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_protocol_lock_status_request_from_invalid_str_yields_err() {
-        let request = ProtocolLockState::from_request_str("protocol-lock-statuso");
+        let request = ProtocolLockState::from_str("protocol-lock-statuso");
         assert!(request.is_err());
 
-        let request = ProtocolLockState::from_request_str("protocol-lock-status 10");
+        let request = ProtocolLockState::from_str("protocol-lock-status 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_sleep_request_from_valid_str() {
-        let request = Sleep::from_request_str("sleep").unwrap();
-        assert_eq!("sleep", &request.to_request_string());
+        let request = Sleep::from_str("sleep").unwrap();
+        assert_eq!("sleep", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_sleep_request_from_invalid_str_yields_err() {
-        let request = Sleep::from_request_str("sleeping");
+        let request = Sleep::from_str("sleeping");
         assert!(request.is_err());
     }
 
 
     #[test]
     fn parse_status_request_from_valid_str() {
-        let request = Status::from_request_str("status").unwrap();
-        assert_eq!("status", &request.to_request_string());
+        let request = Status::from_str("status").unwrap();
+        assert_eq!("status", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_status_request_from_invalid_str_yields_err() {
-        let request = Status::from_request_str("statusing");
+        let request = Status::from_str("statusing");
         assert!(request.is_err());
     }
 }

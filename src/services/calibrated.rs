@@ -168,7 +168,7 @@ fn parse_calibration_value_msg(
     };
     // The third string is the temperature value of the sample.
     let temperature = match split.next() {
-        Some(temp) => SensorReading::parse_response(&temp)?,
+        Some(temp) => <SensorReading as SocketReply>::from_str(&temp)?,
         _ => {
             error!("NO valid date-time found");
             return Err(ErrorKind::ResponseParse.into());
@@ -176,7 +176,7 @@ fn parse_calibration_value_msg(
     };
     // The fourth string is the temperature scale of the sample.
     let scale: TemperatureScale = match split.next() {
-        Some(scale) => TemperatureScale::parse_response(&scale)?,
+        Some(scale) => <TemperatureScale as SocketReply>::from_str(&scale)?,
         _ => {
             error!("NO valid temperature scale found");
             return Err(ErrorKind::ResponseParse.into());

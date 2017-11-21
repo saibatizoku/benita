@@ -69,48 +69,48 @@ fn return_error(e: Error) -> String {
 // Match and evaluate commands
 fn match_and_eval(s: &str, e: &PhResponder) -> Result<String> {
     match s {
-        a if CalibrationState::from_request_str(a).is_ok() => {
-            let _req = CalibrationState::from_request_str(s)?;
+        a if CalibrationState::from_str(a).is_ok() => {
+            let _req = CalibrationState::from_str(s)?;
             let reply = match e.get_calibration_status() {
                 Ok(rep) => format!("{:?}", rep),
                 Err(e) => return_error(e),
             };
             Ok(reply)
         }
-        a if CompensationSet::from_request_str(a).is_ok() => {
-            let _req = CompensationSet::from_request_str(s)?;
+        a if CompensationSet::from_str(a).is_ok() => {
+            let _req = CompensationSet::from_str(s)?;
             let reply = match e.set_compensation(_req.0) {
                 Ok(rep) => format!("{:?}", rep),
                 Err(e) => return_error(e),
             };
             Ok(reply)
         }
-        a if DeviceInformation::from_request_str(a).is_ok() => {
-            let _req = DeviceInformation::from_request_str(s)?;
+        a if DeviceInformation::from_str(a).is_ok() => {
+            let _req = DeviceInformation::from_str(s)?;
             let reply = match e.get_device_info() {
                 Ok(rep) => format!("{:?}", rep),
                 Err(e) => return_error(e),
             };
             Ok(reply)
         }
-        a if Reading::from_request_str(a).is_ok() => {
-            let _req = Reading::from_request_str(s)?;
+        a if Reading::from_str(a).is_ok() => {
+            let _req = Reading::from_str(s)?;
             let reply = match e.get_reading() {
                 Ok(rep) => format!("{:?}", rep),
                 Err(e) => return_error(e),
             };
             Ok(reply)
         }
-        a if Sleep::from_request_str(a).is_ok() => {
-            let _req = Sleep::from_request_str(s)?;
+        a if Sleep::from_str(a).is_ok() => {
+            let _req = Sleep::from_str(s)?;
             let reply = match e.set_sleep() {
                 Ok(rep) => format!("{:?}", rep),
                 Err(e) => return_error(e),
             };
             Ok(reply)
         }
-        a if Status::from_request_str(a).is_ok() => {
-            let _req = Status::from_request_str(s)?;
+        a if Status::from_str(a).is_ok() => {
+            let _req = Status::from_str(s)?;
             let reply = match e.get_device_status() {
                 Ok(rep) => format!("{:?}", rep),
                 Err(e) => return_error(e),

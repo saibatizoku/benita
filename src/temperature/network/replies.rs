@@ -24,77 +24,77 @@ mod tests {
 
     #[test]
     fn parse_calibration_status_reply_from_valid_str() {
-        let reply = CalibrationStatus::parse_response("?CAL,0").unwrap();
-        assert_eq!("not-calibrated", &reply.to_reply_string());
-        let reply = CalibrationStatus::parse_response("?CAL,1").unwrap();
-        assert_eq!("calibrated", &reply.to_reply_string());
+        let reply = <CalibrationStatus as SocketReply>::from_str("?CAL,0").unwrap();
+        assert_eq!("not-calibrated", SocketReply::to_string(&reply));
+        let reply = <CalibrationStatus as SocketReply>::from_str("?CAL,1").unwrap();
+        assert_eq!("calibrated", SocketReply::to_string(&reply));
     }
 
     #[test]
     fn parse_calibration_status_reply_from_invalid_str_yields_err() {
-        let reply = CalibrationStatus::parse_response("?CAL,-1");
+        let reply = <CalibrationStatus as SocketReply>::from_str("?CAL,-1");
         assert!(reply.is_err());
-        let reply = CalibrationStatus::parse_response("?CAL,2");
+        let reply = <CalibrationStatus as SocketReply>::from_str("?CAL,2");
         assert!(reply.is_err());
-        let reply = CalibrationStatus::parse_response("?CAL,11");
+        let reply = <CalibrationStatus as SocketReply>::from_str("?CAL,11");
         assert!(reply.is_err());
     }
 
     #[test]
     fn parse_data_logger_storage_interval_reply_from_valid_str() {
-        let reply = DataLoggerStorageIntervalSeconds::parse_response("?D,0").unwrap();
-        assert_eq!("0", &reply.to_reply_string());
-        let reply = DataLoggerStorageIntervalSeconds::parse_response("?D,320000").unwrap();
-        assert_eq!("320000", &reply.to_reply_string());
+        let reply = <DataLoggerStorageIntervalSeconds as SocketReply>::from_str("?D,0").unwrap();
+        assert_eq!("0", SocketReply::to_string(&reply));
+        let reply = <DataLoggerStorageIntervalSeconds as SocketReply>::from_str("?D,320000").unwrap();
+        assert_eq!("320000", SocketReply::to_string(&reply));
     }
 
     #[test]
     fn parse_data_logger_storage_interval_reply_from_invalid_str_yields_err() {
-        let reply = DataLoggerStorageIntervalSeconds::parse_response("?D,320_001");
+        let reply = <DataLoggerStorageIntervalSeconds as SocketReply>::from_str("?D,320_001");
         assert!(reply.is_err());
     }
 
     #[test]
     fn parse_memory_reading_reply_from_valid_str() {
-        let reply = MemoryReading::parse_response("10,0").unwrap();
-        assert_eq!("10,0", &reply.to_reply_string());
-        let reply = MemoryReading::parse_response("1,320000").unwrap();
-        assert_eq!("1,320000", &reply.to_reply_string());
+        let reply = MemoryReading::from_str("10,0").unwrap();
+        assert_eq!("10,0", SocketReply::to_string(&reply));
+        let reply = MemoryReading::from_str("1,320000").unwrap();
+        assert_eq!("1,320000", SocketReply::to_string(&reply));
     }
 
     #[test]
     fn parse_memory_reading_reply_from_invalid_str_yields_err() {
-        let reply = MemoryReading::parse_response("D,320_001");
+        let reply = MemoryReading::from_str("D,320_001");
         assert!(reply.is_err());
     }
 
     #[test]
     fn parse_sensor_reading_reply_from_valid_str() {
-        let reply = SensorReading::parse_response("0.1").unwrap();
-        assert_eq!("0.100", &reply.to_reply_string());
+        let reply = <SensorReading as SocketReply>::from_str("0.1").unwrap();
+        assert_eq!("0.100", SocketReply::to_string(&reply));
     }
 
     #[test]
     fn parse_sensor_reading_reply_from_invalid_str_yields_err() {
-        let reply = SensorReading::parse_response("");
+        let reply = <SensorReading as SocketReply>::from_str("");
         assert!(reply.is_err());
-        let reply = SensorReading::parse_response("1.0,0.05");
+        let reply = <SensorReading as SocketReply>::from_str("1.0,0.05");
         assert!(reply.is_err());
     }
 
     #[test]
     fn parse_temperature_scale_reply_from_valid_str() {
-        let reply = TemperatureScale::parse_response("?S,C").unwrap();
-        assert_eq!("celsius", &reply.to_reply_string());
-        let reply = TemperatureScale::parse_response("?S,F").unwrap();
-        assert_eq!("fahrenheit", &reply.to_reply_string());
-        let reply = TemperatureScale::parse_response("?S,K").unwrap();
-        assert_eq!("kelvin", &reply.to_reply_string());
+        let reply = <TemperatureScale as SocketReply>::from_str("?S,C").unwrap();
+        assert_eq!("celsius", SocketReply::to_string(&reply));
+        let reply = <TemperatureScale as SocketReply>::from_str("?S,F").unwrap();
+        assert_eq!("fahrenheit", SocketReply::to_string(&reply));
+        let reply = <TemperatureScale as SocketReply>::from_str("?S,K").unwrap();
+        assert_eq!("kelvin", SocketReply::to_string(&reply));
     }
 
     #[test]
     fn parse_temperature_scale_reply_from_invalid_str_yields_err() {
-        let reply = TemperatureScale::parse_response("");
+        let reply = TemperatureScale::from_str("");
         assert!(reply.is_err());
     }
 }

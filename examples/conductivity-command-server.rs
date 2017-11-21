@@ -77,61 +77,61 @@ where
 // NOTE: It uses a custom subset of the `ConducivityAPI`.
 fn match_and_eval(s: &str, e: &ConductivityResponder) -> Result<String> {
     match s {
-        a if CalibrationState::from_request_str(a).is_ok() => {
-            eval(e, CalibrationState::from_request_str(a)?)
+        a if CalibrationState::from_str(a).is_ok() => {
+            eval(e, CalibrationState::from_str(a)?)
         }
-        a if CompensationGet::from_request_str(a).is_ok() => {
-            eval(e, CompensationGet::from_request_str(a)?)
+        a if CompensationGet::from_str(a).is_ok() => {
+            eval(e, CompensationGet::from_str(a)?)
         }
-        a if CompensationSet::from_request_str(a).is_ok() => {
-            eval(e, CompensationSet::from_request_str(a)?)
+        a if CompensationSet::from_str(a).is_ok() => {
+            eval(e, CompensationSet::from_str(a)?)
         }
-        a if DeviceInformation::from_request_str(a).is_ok() => {
-            eval(e, DeviceInformation::from_request_str(a)?)
+        a if DeviceInformation::from_str(a).is_ok() => {
+            eval(e, DeviceInformation::from_str(a)?)
         }
-        a if LedOff::from_request_str(a).is_ok() => eval(e, LedOff::from_request_str(a)?),
-        a if LedOn::from_request_str(a).is_ok() => eval(e, LedOn::from_request_str(a)?),
-        a if LedState::from_request_str(a).is_ok() => eval(e, LedState::from_request_str(a)?),
-        a if Export::from_request_str(a).is_ok() => eval(e, Export::from_request_str(a)?),
-        a if ExportInfo::from_request_str(a).is_ok() => eval(e, ExportInfo::from_request_str(a)?),
-        a if Import::from_request_str(a).is_ok() => eval(e, Import::from_request_str(a)?),
-        a if OutputEnableConductivity::from_request_str(a).is_ok() => {
-            eval(e, OutputEnableConductivity::from_request_str(a)?)
+        a if LedOff::from_str(a).is_ok() => eval(e, LedOff::from_str(a)?),
+        a if LedOn::from_str(a).is_ok() => eval(e, LedOn::from_str(a)?),
+        a if LedState::from_str(a).is_ok() => eval(e, LedState::from_str(a)?),
+        a if Export::from_str(a).is_ok() => eval(e, Export::from_str(a)?),
+        a if ExportInfo::from_str(a).is_ok() => eval(e, ExportInfo::from_str(a)?),
+        a if Import::from_str(a).is_ok() => eval(e, Import::from_str(a)?),
+        a if OutputEnableConductivity::from_str(a).is_ok() => {
+            eval(e, OutputEnableConductivity::from_str(a)?)
         }
-        a if OutputEnableTds::from_request_str(a).is_ok() => {
-            eval(e, OutputEnableTds::from_request_str(a)?)
+        a if OutputEnableTds::from_str(a).is_ok() => {
+            eval(e, OutputEnableTds::from_str(a)?)
         }
-        a if OutputEnableSalinity::from_request_str(a).is_ok() => {
-            eval(e, OutputEnableSalinity::from_request_str(a)?)
+        a if OutputEnableSalinity::from_str(a).is_ok() => {
+            eval(e, OutputEnableSalinity::from_str(a)?)
         }
-        a if OutputEnableSpecificGravity::from_request_str(a).is_ok() => {
-            eval(e, OutputEnableSpecificGravity::from_request_str(a)?)
+        a if OutputEnableSpecificGravity::from_str(a).is_ok() => {
+            eval(e, OutputEnableSpecificGravity::from_str(a)?)
         }
-        a if OutputDisableConductivity::from_request_str(a).is_ok() => {
-            eval(e, OutputDisableConductivity::from_request_str(a)?)
+        a if OutputDisableConductivity::from_str(a).is_ok() => {
+            eval(e, OutputDisableConductivity::from_str(a)?)
         }
-        a if OutputDisableTds::from_request_str(a).is_ok() => {
-            eval(e, OutputDisableTds::from_request_str(a)?)
+        a if OutputDisableTds::from_str(a).is_ok() => {
+            eval(e, OutputDisableTds::from_str(a)?)
         }
-        a if OutputDisableSalinity::from_request_str(a).is_ok() => {
-            eval(e, OutputDisableSalinity::from_request_str(a)?)
+        a if OutputDisableSalinity::from_str(a).is_ok() => {
+            eval(e, OutputDisableSalinity::from_str(a)?)
         }
-        a if OutputDisableSpecificGravity::from_request_str(a).is_ok() => {
-            eval(e, OutputDisableSpecificGravity::from_request_str(a)?)
+        a if OutputDisableSpecificGravity::from_str(a).is_ok() => {
+            eval(e, OutputDisableSpecificGravity::from_str(a)?)
         }
-        a if OutputState::from_request_str(a).is_ok() => eval(e, OutputState::from_request_str(a)?),
-        a if ProtocolLockDisable::from_request_str(a).is_ok() => {
-            eval(e, ProtocolLockDisable::from_request_str(a)?)
+        a if OutputState::from_str(a).is_ok() => eval(e, OutputState::from_str(a)?),
+        a if ProtocolLockDisable::from_str(a).is_ok() => {
+            eval(e, ProtocolLockDisable::from_str(a)?)
         }
-        a if ProtocolLockEnable::from_request_str(a).is_ok() => {
-            eval(e, ProtocolLockEnable::from_request_str(a)?)
+        a if ProtocolLockEnable::from_str(a).is_ok() => {
+            eval(e, ProtocolLockEnable::from_str(a)?)
         }
-        a if ProtocolLockState::from_request_str(a).is_ok() => {
-            eval(e, ProtocolLockState::from_request_str(a)?)
+        a if ProtocolLockState::from_str(a).is_ok() => {
+            eval(e, ProtocolLockState::from_str(a)?)
         }
-        a if Reading::from_request_str(a).is_ok() => eval(e, Reading::from_request_str(a)?),
-        a if Sleep::from_request_str(a).is_ok() => eval(e, Sleep::from_request_str(a)?),
-        a if Status::from_request_str(a).is_ok() => eval(e, Status::from_request_str(a)?),
+        a if Reading::from_str(a).is_ok() => eval(e, Reading::from_str(a)?),
+        a if Sleep::from_str(a).is_ok() => eval(e, Sleep::from_str(a)?),
+        a if Status::from_str(a).is_ok() => eval(e, Status::from_str(a)?),
         _ => {
             error!("bad sensor command");
             Ok(format!("{:?}", ReplyStatus::Err))

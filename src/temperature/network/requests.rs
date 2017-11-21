@@ -194,193 +194,193 @@ mod tests {
     #[test]
     fn parse_temperature_calibration_set_request_from_valid_str() {
         let request =
-            CalibrationTemperature::from_request_str("calibration-set 1000.3324").unwrap();
-        assert_eq!("calibration-set 1000.332", &request.to_request_string());
+            CalibrationTemperature::from_str("calibration-set 1000.3324").unwrap();
+        assert_eq!("calibration-set 1000.332", &request.to_string());
     }
 
     #[test]
     fn parse_temperature_calibration_set_request_from_invalid_str_yields_err() {
-        let request = CalibrationTemperature::from_request_str("calibration-set");
+        let request = CalibrationTemperature::from_str("calibration-set");
         assert!(request.is_err());
 
-        let request = CalibrationTemperature::from_request_str("calibration-sets");
+        let request = CalibrationTemperature::from_str("calibration-sets");
         assert!(request.is_err());
 
-        let request = CalibrationTemperature::from_request_str("calibration-set 123 2342");
+        let request = CalibrationTemperature::from_str("calibration-set 123 2342");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_calibration_status_request_from_valid_str() {
-        let request = CalibrationState::from_request_str("calibration-status").unwrap();
-        assert_eq!("calibration-status", &request.to_request_string());
+        let request = CalibrationState::from_str("calibration-status").unwrap();
+        assert_eq!("calibration-status", &request.to_string());
     }
 
     #[test]
     fn parse_temperature_calibration_status_request_from_invalid_str_yields_err() {
-        let request = CalibrationState::from_request_str("calibration-statuss");
+        let request = CalibrationState::from_str("calibration-statuss");
         assert!(request.is_err());
 
-        let request = CalibrationState::from_request_str("calibration-status 123");
+        let request = CalibrationState::from_str("calibration-status 123");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_datalogger_off_request_from_valid_str() {
-        let request = DataloggerDisable::from_request_str("datalogger-off").unwrap();
-        assert_eq!("datalogger-off", &request.to_request_string());
+        let request = DataloggerDisable::from_str("datalogger-off").unwrap();
+        assert_eq!("datalogger-off", &request.to_string());
     }
 
     #[test]
     fn parse_temperature_datalogger_off_request_from_invalid_str_yields_err() {
-        let request = DataloggerDisable::from_request_str("datalogger-off ");
+        let request = DataloggerDisable::from_str("datalogger-off ");
         assert!(request.is_err());
 
-        let request = DataloggerDisable::from_request_str("datalogger-off,10.5869");
+        let request = DataloggerDisable::from_str("datalogger-off,10.5869");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_datalogger_set_request_from_valid_str() {
-        let request = DataloggerPeriod::from_request_str("datalogger-set 10").unwrap();
-        assert_eq!("datalogger-set 10", &request.to_request_string());
+        let request = DataloggerPeriod::from_str("datalogger-set 10").unwrap();
+        assert_eq!("datalogger-set 10", &request.to_string());
     }
 
     #[test]
     fn parse_temperature_datalogger_set_request_from_invalid_str_yields_err() {
-        let request = DataloggerInterval::from_request_str("datalogger-set ");
+        let request = DataloggerInterval::from_str("datalogger-set ");
         assert!(request.is_err());
 
-        let request = DataloggerInterval::from_request_str("datalogger-set 9");
+        let request = DataloggerInterval::from_str("datalogger-set 9");
         assert!(request.is_err());
 
-        let request = DataloggerInterval::from_request_str("datalogger-set 1_000_000_000");
+        let request = DataloggerInterval::from_str("datalogger-set 1_000_000_000");
         assert!(request.is_err());
 
-        let request = DataloggerInterval::from_request_str("datalogger-set,10.5869");
+        let request = DataloggerInterval::from_str("datalogger-set,10.5869");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_datalogger_status_request_from_valid_str() {
-        let request = DataloggerInterval::from_request_str("datalogger-status").unwrap();
-        assert_eq!("datalogger-status", &request.to_request_string());
+        let request = DataloggerInterval::from_str("datalogger-status").unwrap();
+        assert_eq!("datalogger-status", &request.to_string());
     }
 
     #[test]
     fn parse_temperature_datalogger_status_request_from_invalid_str_yields_err() {
-        let request = DataloggerInterval::from_request_str("datalogger-status ");
+        let request = DataloggerInterval::from_str("datalogger-status ");
         assert!(request.is_err());
 
-        let request = DataloggerInterval::from_request_str("datalogger-status 1_000_000_000");
+        let request = DataloggerInterval::from_str("datalogger-status 1_000_000_000");
         assert!(request.is_err());
 
-        let request = DataloggerInterval::from_request_str("datalogger-status,10.5869");
+        let request = DataloggerInterval::from_str("datalogger-status,10.5869");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_memory_clear_request_from_valid_str() {
-        let request = MemoryClear::from_request_str("memory-clear").unwrap();
-        assert_eq!("memory-clear", &request.to_request_string());
+        let request = MemoryClear::from_str("memory-clear").unwrap();
+        assert_eq!("memory-clear", &request.to_string());
     }
 
     #[test]
     fn parse_temperature_memory_clear_request_from_invalid_str_yields_err() {
-        let request = MemoryClear::from_request_str("memory-clearo");
+        let request = MemoryClear::from_str("memory-clearo");
         assert!(request.is_err());
 
-        let request = MemoryClear::from_request_str("memory-clear 10");
+        let request = MemoryClear::from_str("memory-clear 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_memory_recall_request_from_valid_str() {
-        let request = MemoryRecall::from_request_str("memory-recall").unwrap();
-        assert_eq!("memory-recall", &request.to_request_string());
+        let request = MemoryRecall::from_str("memory-recall").unwrap();
+        assert_eq!("memory-recall", &request.to_string());
     }
 
     #[test]
     fn parse_temperature_memory_recall_request_from_invalid_str_yields_err() {
-        let request = MemoryRecall::from_request_str("memory-recallo");
+        let request = MemoryRecall::from_str("memory-recallo");
         assert!(request.is_err());
 
-        let request = MemoryRecall::from_request_str("memory-recall 10");
+        let request = MemoryRecall::from_str("memory-recall 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_memory_recall_last_request_from_valid_str() {
-        let request = MemoryRecallLast::from_request_str("memory-recall-last").unwrap();
-        assert_eq!("memory-recall-last", &request.to_request_string());
+        let request = MemoryRecallLast::from_str("memory-recall-last").unwrap();
+        assert_eq!("memory-recall-last", &request.to_string());
     }
 
     #[test]
     fn parse_temperature_memory_recall_last_request_from_invalid_str_yields_err() {
-        let request = MemoryRecallLast::from_request_str("memory-recall-lasto");
+        let request = MemoryRecallLast::from_str("memory-recall-lasto");
         assert!(request.is_err());
 
-        let request = MemoryRecallLast::from_request_str("memory-recall-last 10");
+        let request = MemoryRecallLast::from_str("memory-recall-last 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_read_request_from_valid_str() {
-        let request = Reading::from_request_str("read").unwrap();
-        assert_eq!("read", &request.to_request_string());
+        let request = Reading::from_str("read").unwrap();
+        assert_eq!("read", &request.to_string());
     }
 
     #[test]
     fn parse_temperature_read_request_from_invalid_str_yields_err() {
-        let request = Reading::from_request_str("reading");
+        let request = Reading::from_str("reading");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_scale_celsius_request_from_valid_str() {
-        let request = ScaleCelsius::from_request_str("scale-celsius").unwrap();
-        assert_eq!("scale-celsius", &request.to_request_string());
+        let request = ScaleCelsius::from_str("scale-celsius").unwrap();
+        assert_eq!("scale-celsius", &request.to_string());
     }
 
     #[test]
     fn parse_temperature_scale_celsius_request_from_invalid_str_yields_err() {
-        let request = ScaleCelsius::from_request_str("scale-celsiusing");
+        let request = ScaleCelsius::from_str("scale-celsiusing");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_scale_fahrenheit_request_from_valid_str() {
-        let request = ScaleFahrenheit::from_request_str("scale-fahrenheit").unwrap();
-        assert_eq!("scale-fahrenheit", &request.to_request_string());
+        let request = ScaleFahrenheit::from_str("scale-fahrenheit").unwrap();
+        assert_eq!("scale-fahrenheit", &request.to_string());
     }
 
     #[test]
     fn parse_temperature_scale_fahrenheit_request_from_invalid_str_yields_err() {
-        let request = ScaleFahrenheit::from_request_str("scale-fahrenheiting");
+        let request = ScaleFahrenheit::from_str("scale-fahrenheiting");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_scale_kelvin_request_from_valid_str() {
-        let request = ScaleKelvin::from_request_str("scale-kelvin").unwrap();
-        assert_eq!("scale-kelvin", &request.to_request_string());
+        let request = ScaleKelvin::from_str("scale-kelvin").unwrap();
+        assert_eq!("scale-kelvin", &request.to_string());
     }
 
     #[test]
     fn parse_temperature_scale_kelvin_request_from_invalid_str_yields_err() {
-        let request = ScaleKelvin::from_request_str("scale-kelvining");
+        let request = ScaleKelvin::from_str("scale-kelvining");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_temperature_scale_status_request_from_valid_str() {
-        let request = ScaleState::from_request_str("scale-status").unwrap();
-        assert_eq!("scale-status", &request.to_request_string());
+        let request = ScaleState::from_str("scale-status").unwrap();
+        assert_eq!("scale-status", &request.to_string());
     }
 
     #[test]
     fn parse_temperature_scale_status_request_from_invalid_str_yields_err() {
-        let request = ScaleState::from_request_str("scale-statusing");
+        let request = ScaleState::from_str("scale-statusing");
         assert!(request.is_err());
     }
 }
