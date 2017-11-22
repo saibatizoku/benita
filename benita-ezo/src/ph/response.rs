@@ -57,9 +57,9 @@ mod tests {
     #[test]
     fn parse_probe_slope_reply_from_valid_str() {
         let reply = ProbeSlope::from_str("?SLOPE,10,0").unwrap();
-        assert_eq!("10.000,0.000", I2CResponse::to_string(&reply));
+        assert_eq!("?SLOPE,10.000,0.000", I2CResponse::to_string(&reply));
         let reply = ProbeSlope::from_str("?SLOPE,1,320000").unwrap();
-        assert_eq!("1.000,320000.000", I2CResponse::to_string(&reply));
+        assert_eq!("?SLOPE,1.000,320000.000", I2CResponse::to_string(&reply));
     }
 
     #[test]

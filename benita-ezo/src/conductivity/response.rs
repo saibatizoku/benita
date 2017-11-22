@@ -58,8 +58,8 @@ mod tests {
     fn parse_output_string_status_reply_from_valid_str() {
         let reply = <OutputStringStatus as I2CResponse>::from_str("?O,EC,TDS,S,SG").unwrap();
         assert_eq!("?O,EC,TDS,S,SG", I2CResponse::to_string(&reply));
-        let reply = <OutputStringStatus as I2CResponse>::from_str("?O,None").unwrap();
-        assert_eq!("?O,None", I2CResponse::to_string(&reply));
+        let reply = <OutputStringStatus as I2CResponse>::from_str("?O,No output").unwrap();
+        assert_eq!("?O,No output", I2CResponse::to_string(&reply));
     }
 
     #[test]

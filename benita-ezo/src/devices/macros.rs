@@ -274,11 +274,13 @@ macro_rules! impl_I2CResponse_for {
     ( $name:ident ) => {
         impl I2CResponse for $name {
             fn from_str(s: &str) -> Result<$name> {
-                unimplemented!();
+                let response = $name::parse(s)
+                    .chain_err(|| ErrorKind::ResponseParse)?;
+                Ok(response)
             }
 
             fn to_string(&self) -> String {
-                unimplemented!();
+                format!("{:?}", self)
             }
         }
     }
