@@ -68,10 +68,7 @@ mod tests {
     #[test]
     fn parse_conductivity_calibration_high_request_from_valid_str() {
         let request = <CalibrationHigh as I2CCommand>::from_str("cal,high,1000.3324").unwrap();
-        assert_eq!(
-            "CAL,HIGH,1000.33",
-            I2CCommand::to_string(&request)
-        );
+        assert_eq!("CAL,HIGH,1000.33", I2CCommand::to_string(&request));
     }
 
     #[test]
@@ -89,10 +86,7 @@ mod tests {
     #[test]
     fn parse_conductivity_calibration_low_request_from_valid_str() {
         let request = <CalibrationLow as I2CCommand>::from_str("cal,low,1000.3324").unwrap();
-        assert_eq!(
-            "CAL,LOW,1000.33",
-            I2CCommand::to_string(&request)
-        );
+        assert_eq!("CAL,LOW,1000.33", I2CCommand::to_string(&request));
     }
 
     #[test]
@@ -110,10 +104,7 @@ mod tests {
     #[test]
     fn parse_conductivity_calibration_onepoint_request_from_valid_str() {
         let request = <CalibrationOnePoint as I2CCommand>::from_str("CAL,1000.3324").unwrap();
-        assert_eq!(
-            "CAL,1000.33",
-            I2CCommand::to_string(&request)
-        );
+        assert_eq!("CAL,1000.33", I2CCommand::to_string(&request));
     }
 
     #[test]
@@ -171,15 +162,9 @@ mod tests {
     #[test]
     fn parse_conductivity_compensation_set_request_from_valid_str() {
         let request = <CompensationSet as I2CCommand>::from_str("t,10.5829").unwrap();
-        assert_eq!(
-            "T,10.583",
-            I2CCommand::to_string(&request)
-        );
+        assert_eq!("T,10.583", I2CCommand::to_string(&request));
         let request = <CompensationSet as I2CCommand>::from_str("T,10.5829").unwrap();
-        assert_eq!(
-            "T,10.583",
-            I2CCommand::to_string(&request)
-        );
+        assert_eq!("T,10.583", I2CCommand::to_string(&request));
     }
 
     #[test]
@@ -197,15 +182,9 @@ mod tests {
     #[test]
     fn parse_conductivity_output_conductivity_off_request_from_valid_str() {
         let request = <OutputDisableConductivity as I2CCommand>::from_str("o,ec,0").unwrap();
-        assert_eq!(
-            "O,EC,0",
-            I2CCommand::to_string(&request)
-        );
+        assert_eq!("O,EC,0", I2CCommand::to_string(&request));
         let request = <OutputDisableConductivity as I2CCommand>::from_str("O,EC,0").unwrap();
-        assert_eq!(
-            "O,EC,0",
-            I2CCommand::to_string(&request)
-        );
+        assert_eq!("O,EC,0", I2CCommand::to_string(&request));
     }
 
     #[test]
@@ -237,18 +216,22 @@ mod tests {
 
     #[test]
     fn parse_conductivity_output_sg_off_request_from_valid_str() {
-        let request = <OutputDisableSpecificGravity as I2CCommand>::from_str("o,sg,0").unwrap();
+        let request =
+            <OutputDisableSpecificGravity as I2CCommand>::from_str("o,sg,0").unwrap();
         assert_eq!("O,SG,0", I2CCommand::to_string(&request));
-        let request = <OutputDisableSpecificGravity as I2CCommand>::from_str("O,SG,0").unwrap();
+        let request =
+            <OutputDisableSpecificGravity as I2CCommand>::from_str("O,SG,0").unwrap();
         assert_eq!("O,SG,0", I2CCommand::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_output_sg_off_request_from_invalid_str_yields_err() {
-        let request = <OutputDisableSpecificGravity as I2CCommand>::from_str("o,sg,");
+        let request =
+            <OutputDisableSpecificGravity as I2CCommand>::from_str("o,sg,");
         assert!(request.is_err());
 
-        let request = <OutputDisableSpecificGravity as I2CCommand>::from_str("o,sg,0,");
+        let request =
+            <OutputDisableSpecificGravity as I2CCommand>::from_str("o,sg,0,");
         assert!(request.is_err());
     }
 

@@ -2,7 +2,7 @@
 use errors::*;
 
 pub use common_ezo::response::{DeviceInfo, DeviceStatus, Exported, ExportedInfo, LedStatus,
-                               ResponseStatus, ProtocolLockStatus};
+                               ProtocolLockStatus, ResponseStatus};
 pub use ezo_rtd::response::{CalibrationStatus, DataLoggerStorageIntervalSeconds, MemoryReading,
                             SensorReading, TemperatureScale};
 

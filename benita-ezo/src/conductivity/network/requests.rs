@@ -325,7 +325,8 @@ mod tests {
 
     #[test]
     fn parse_conductivity_calibration_high_request_from_valid_str() {
-        let request = <CalibrationHigh as SocketRequest>::from_str("calibration-high 1000.3324").unwrap();
+        let request =
+            <CalibrationHigh as SocketRequest>::from_str("calibration-high 1000.3324").unwrap();
         assert_eq!(
             "calibration-high 1000.332",
             SocketRequest::to_string(&request)
@@ -346,7 +347,8 @@ mod tests {
 
     #[test]
     fn parse_conductivity_calibration_low_request_from_valid_str() {
-        let request = <CalibrationLow as SocketRequest>::from_str("calibration-low 1000.3324").unwrap();
+        let request =
+            <CalibrationLow as SocketRequest>::from_str("calibration-low 1000.3324").unwrap();
         assert_eq!(
             "calibration-low 1000.332",
             SocketRequest::to_string(&request)
@@ -367,7 +369,9 @@ mod tests {
 
     #[test]
     fn parse_conductivity_calibration_onepoint_request_from_valid_str() {
-        let request = <CalibrationOnePoint as SocketRequest>::from_str("calibration-onepoint 1000.3324").unwrap();
+        let request = <CalibrationOnePoint as SocketRequest>::from_str(
+            "calibration-onepoint 1000.3324",
+        ).unwrap();
         assert_eq!(
             "calibration-onepoint 1000.332",
             SocketRequest::to_string(&request)
@@ -382,7 +386,8 @@ mod tests {
         let request = <CalibrationOnePoint as SocketRequest>::from_str("calibration-onepoints");
         assert!(request.is_err());
 
-        let request = <CalibrationOnePoint as SocketRequest>::from_str("calibration-onepoint 123 2342");
+        let request =
+            <CalibrationOnePoint as SocketRequest>::from_str("calibration-onepoint 123 2342");
         assert!(request.is_err());
     }
 
@@ -421,7 +426,8 @@ mod tests {
 
     #[test]
     fn parse_conductivity_compensation_set_request_from_valid_str() {
-        let request = <CompensationSet as SocketRequest>::from_str("compensation-set 10.5829").unwrap();
+        let request =
+            <CompensationSet as SocketRequest>::from_str("compensation-set 10.5829").unwrap();
         assert_eq!(
             "compensation-set 10.583",
             SocketRequest::to_string(&request)
@@ -439,7 +445,9 @@ mod tests {
 
     #[test]
     fn parse_conductivity_output_conductivity_off_request_from_valid_str() {
-        let request = <OutputDisableConductivity as SocketRequest>::from_str("output-conductivity-off").unwrap();
+        let request = <OutputDisableConductivity as SocketRequest>::from_str(
+            "output-conductivity-off",
+        ).unwrap();
         assert_eq!(
             "output-conductivity-off",
             SocketRequest::to_string(&request)
@@ -448,16 +456,19 @@ mod tests {
 
     #[test]
     fn parse_conductivity_output_conductivity_off_request_from_invalid_str_yields_err() {
-        let request = <OutputDisableConductivity as SocketRequest>::from_str("output-conductivity-offo");
+        let request =
+            <OutputDisableConductivity as SocketRequest>::from_str("output-conductivity-offo");
         assert!(request.is_err());
 
-        let request = <OutputDisableConductivity as SocketRequest>::from_str("output-conductivity-off 10");
+        let request =
+            <OutputDisableConductivity as SocketRequest>::from_str("output-conductivity-off 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_output_salinity_off_request_from_valid_str() {
-        let request = <OutputDisableSalinity as SocketRequest>::from_str("output-salinity-off").unwrap();
+        let request =
+            <OutputDisableSalinity as SocketRequest>::from_str("output-salinity-off").unwrap();
         assert_eq!("output-salinity-off", SocketRequest::to_string(&request));
     }
 
@@ -472,16 +483,19 @@ mod tests {
 
     #[test]
     fn parse_conductivity_output_sg_off_request_from_valid_str() {
-        let request = <OutputDisableSpecificGravity as SocketRequest>::from_str("output-sg-off").unwrap();
+        let request =
+            <OutputDisableSpecificGravity as SocketRequest>::from_str("output-sg-off").unwrap();
         assert_eq!("output-sg-off", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_output_sg_off_request_from_invalid_str_yields_err() {
-        let request = <OutputDisableSpecificGravity as SocketRequest>::from_str("output-sg-offo");
+        let request =
+            <OutputDisableSpecificGravity as SocketRequest>::from_str("output-sg-offo");
         assert!(request.is_err());
 
-        let request = <OutputDisableSpecificGravity as SocketRequest>::from_str("output-sg-off 10");
+        let request =
+            <OutputDisableSpecificGravity as SocketRequest>::from_str("output-sg-off 10");
         assert!(request.is_err());
     }
 
@@ -502,22 +516,27 @@ mod tests {
 
     #[test]
     fn parse_conductivity_output_conductivity_on_request_from_valid_str() {
-        let request = <OutputEnableConductivity as SocketRequest>::from_str("output-conductivity-on").unwrap();
+        let request = <OutputEnableConductivity as SocketRequest>::from_str(
+            "output-conductivity-on",
+        ).unwrap();
         assert_eq!("output-conductivity-on", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_output_conductivity_on_request_from_invalid_str_yields_err() {
-        let request = <OutputEnableConductivity as SocketRequest>::from_str("output-conductivity-ono");
+        let request =
+            <OutputEnableConductivity as SocketRequest>::from_str("output-conductivity-ono");
         assert!(request.is_err());
 
-        let request = <OutputEnableConductivity as SocketRequest>::from_str("output-conductivity-on 10");
+        let request =
+            <OutputEnableConductivity as SocketRequest>::from_str("output-conductivity-on 10");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_conductivity_output_salinity_on_request_from_valid_str() {
-        let request = <OutputEnableSalinity as SocketRequest>::from_str("output-salinity-on").unwrap();
+        let request =
+            <OutputEnableSalinity as SocketRequest>::from_str("output-salinity-on").unwrap();
         assert_eq!("output-salinity-on", SocketRequest::to_string(&request));
     }
 
@@ -532,16 +551,19 @@ mod tests {
 
     #[test]
     fn parse_conductivity_output_sg_on_request_from_valid_str() {
-        let request = <OutputEnableSpecificGravity as SocketRequest>::from_str("output-sg-on").unwrap();
+        let request =
+            <OutputEnableSpecificGravity as SocketRequest>::from_str("output-sg-on").unwrap();
         assert_eq!("output-sg-on", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_output_sg_on_request_from_invalid_str_yields_err() {
-        let request = <OutputEnableSpecificGravity as SocketRequest>::from_str("output-sg-ono");
+        let request =
+            <OutputEnableSpecificGravity as SocketRequest>::from_str("output-sg-ono");
         assert!(request.is_err());
 
-        let request = <OutputEnableSpecificGravity as SocketRequest>::from_str("output-sg-on 10");
+        let request =
+            <OutputEnableSpecificGravity as SocketRequest>::from_str("output-sg-on 10");
         assert!(request.is_err());
     }
 
@@ -607,7 +629,8 @@ mod tests {
         let request = <ProbeTypePointOne as SocketRequest>::from_str("probe-type-0.100000");
         assert!(request.is_err());
 
-        let request = <ProbeTypePointOne as SocketRequest>::from_str("probe-type-0.1 1234567890123");
+        let request =
+            <ProbeTypePointOne as SocketRequest>::from_str("probe-type-0.1 1234567890123");
         assert!(request.is_err());
     }
 

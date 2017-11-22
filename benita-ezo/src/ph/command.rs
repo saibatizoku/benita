@@ -34,10 +34,7 @@ mod tests {
     #[test]
     fn parse_ph_calibration_high_command_from_valid_str() {
         let request = <CalibrationHigh as I2CCommand>::from_str("cal,high,1000.3324").unwrap();
-        assert_eq!(
-            "CAL,HIGH,1000.33",
-            I2CCommand::to_string(&request)
-        );
+        assert_eq!("CAL,HIGH,1000.33", I2CCommand::to_string(&request));
     }
 
     #[test]
@@ -55,10 +52,7 @@ mod tests {
     #[test]
     fn parse_ph_calibration_low_command_from_valid_str() {
         let request = <CalibrationLow as I2CCommand>::from_str("cal,low,1000.3324").unwrap();
-        assert_eq!(
-            "CAL,LOW,1000.33",
-            I2CCommand::to_string(&request)
-        );
+        assert_eq!("CAL,LOW,1000.33", I2CCommand::to_string(&request));
     }
 
     #[test]
@@ -76,15 +70,9 @@ mod tests {
     #[test]
     fn parse_ph_calibration_mid_command_from_valid_str() {
         let request = <CalibrationMid as I2CCommand>::from_str("cal,mid,-100.4").unwrap();
-        assert_eq!(
-            "CAL,MID,-100.40",
-            I2CCommand::to_string(&request)
-        );
+        assert_eq!("CAL,MID,-100.40", I2CCommand::to_string(&request));
         let request = <CalibrationMid as I2CCommand>::from_str("cal,mid,1000.3324").unwrap();
-        assert_eq!(
-            "CAL,MID,1000.33",
-            I2CCommand::to_string(&request)
-        );
+        assert_eq!("CAL,MID,1000.33", I2CCommand::to_string(&request));
     }
 
     #[test]
@@ -139,15 +127,9 @@ mod tests {
     #[test]
     fn parse_ph_compensation_set_command_from_valid_str() {
         let request = <CompensationSet as I2CCommand>::from_str("t,0.2999").unwrap();
-        assert_eq!(
-            "T,0.300",
-            I2CCommand::to_string(&request)
-        );
+        assert_eq!("T,0.300", I2CCommand::to_string(&request));
         let request = <CompensationSet as I2CCommand>::from_str("t,10.5829").unwrap();
-        assert_eq!(
-            "T,10.583",
-            I2CCommand::to_string(&request)
-        );
+        assert_eq!("T,10.583", I2CCommand::to_string(&request));
     }
 
     #[test]

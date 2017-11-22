@@ -5,10 +5,10 @@ use devices::{I2CCommand, SensorDevice};
 use errors::*;
 
 pub use ezo_common::Command;
-pub use ezo_common::command::{Baud, CalibrationClear, DeviceAddress, DeviceInformation,
-                              Export, ExportInfo, Factory, Find, Import, LedOff, LedOn,
-                              LedState, ProtocolLockDisable, ProtocolLockEnable,
-                              ProtocolLockState, Sleep, Status};
+pub use ezo_common::command::{Baud, CalibrationClear, DeviceAddress, DeviceInformation, Export,
+                              ExportInfo, Factory, Find, Import, LedOff, LedOn, LedState,
+                              ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState, Sleep,
+                              Status};
 
 impl_I2CCommand_for!(Baud, ResponseStatus);
 impl_I2CCommand_for!(CalibrationClear, ResponseStatus);

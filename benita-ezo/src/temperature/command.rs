@@ -245,15 +245,9 @@ mod tests {
     #[test]
     fn parse_temperature_scale_status_request_from_valid_str() {
         let request = <ScaleState as I2CCommand>::from_str("s,?").unwrap();
-        assert_eq!(
-            "S,?",
-            <ScaleState as I2CCommand>::to_string(&request)
-        );
+        assert_eq!("S,?", <ScaleState as I2CCommand>::to_string(&request));
         let request = <ScaleState as I2CCommand>::from_str("S,?").unwrap();
-        assert_eq!(
-            "S,?",
-            <ScaleState as I2CCommand>::to_string(&request)
-        );
+        assert_eq!("S,?", <ScaleState as I2CCommand>::to_string(&request));
     }
 
     #[test]

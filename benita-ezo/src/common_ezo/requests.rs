@@ -454,7 +454,8 @@ mod tests {
 
     #[test]
     fn parse_protocol_lock_off_request_from_valid_str() {
-        let request = <ProtocolLockDisable as SocketRequest>::from_str("protocol-lock-off").unwrap();
+        let request =
+            <ProtocolLockDisable as SocketRequest>::from_str("protocol-lock-off").unwrap();
         assert_eq!("protocol-lock-off", SocketRequest::to_string(&request));
     }
 
@@ -484,7 +485,8 @@ mod tests {
 
     #[test]
     fn parse_protocol_lock_status_request_from_valid_str() {
-        let request = <ProtocolLockState as SocketRequest>::from_str("protocol-lock-status").unwrap();
+        let request =
+            <ProtocolLockState as SocketRequest>::from_str("protocol-lock-status").unwrap();
         assert_eq!("protocol-lock-status", SocketRequest::to_string(&request));
     }
 

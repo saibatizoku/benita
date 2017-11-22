@@ -131,7 +131,8 @@ mod tests {
 
     #[test]
     fn parse_ph_calibration_high_request_from_valid_str() {
-        let request = <CalibrationHigh as SocketRequest>::from_str("calibration-high 1000.3324").unwrap();
+        let request =
+            <CalibrationHigh as SocketRequest>::from_str("calibration-high 1000.3324").unwrap();
         assert_eq!(
             "calibration-high 1000.332",
             SocketRequest::to_string(&request)
@@ -152,7 +153,8 @@ mod tests {
 
     #[test]
     fn parse_ph_calibration_low_request_from_valid_str() {
-        let request = <CalibrationLow as SocketRequest>::from_str("calibration-low 1000.3324").unwrap();
+        let request =
+            <CalibrationLow as SocketRequest>::from_str("calibration-low 1000.3324").unwrap();
         assert_eq!(
             "calibration-low 1000.332",
             SocketRequest::to_string(&request)
@@ -173,7 +175,8 @@ mod tests {
 
     #[test]
     fn parse_ph_calibration_mid_request_from_valid_str() {
-        let request = <CalibrationMid as SocketRequest>::from_str("calibration-mid 1000.3324").unwrap();
+        let request =
+            <CalibrationMid as SocketRequest>::from_str("calibration-mid 1000.3324").unwrap();
         assert_eq!(
             "calibration-mid 1000.332",
             SocketRequest::to_string(&request)
@@ -227,7 +230,8 @@ mod tests {
 
     #[test]
     fn parse_ph_compensation_set_request_from_valid_str() {
-        let request = <CompensationSet as SocketRequest>::from_str("compensation-set 10.5829").unwrap();
+        let request =
+            <CompensationSet as SocketRequest>::from_str("compensation-set 10.5829").unwrap();
         assert_eq!(
             "compensation-set 10.583",
             SocketRequest::to_string(&request)
