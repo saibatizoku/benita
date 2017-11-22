@@ -90,8 +90,19 @@ pub mod command {
 
 pub mod response {
     //! Shared responses for EZO sensors
+    use devices::{I2CCommand, I2CResponse, SensorDevice};
+    use errors::*;
+
     pub use ezo_common::response::{DeviceInfo, DeviceStatus, Exported, ExportedInfo, LedStatus,
                                    ProtocolLockStatus, ResponseStatus};
+
+    impl_I2CResponse_for!(DeviceInfo);
+    impl_I2CResponse_for!(DeviceStatus);
+    impl_I2CResponse_for!(Exported);
+    impl_I2CResponse_for!(ExportedInfo);
+    impl_I2CResponse_for!(LedStatus);
+    impl_I2CResponse_for!(ProtocolLockStatus);
+    impl_I2CResponse_for!(ResponseStatus);
 }
 
 pub use self::api::*;
