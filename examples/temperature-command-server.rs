@@ -18,15 +18,15 @@ extern crate neuras;
 use std::path::PathBuf;
 
 use benita::cli::shared::is_url;
-use benita::common_ezo::EzoChipAPI;
-use benita::config::{ConnectionType, SensorConfig, SocketConfig};
-use benita::errors::*;
-use benita::network::{Endpoint, ReplyStatus, SocketRequest};
-use benita::temperature::TemperatureAPI;
-use benita::temperature::device::TemperatureSensor;
-use benita::temperature::network::TemperatureResponder;
-use benita::temperature::network::requests::*;
-use benita::utilities::*;
+use benita::ezo::common_ezo::EzoChipAPI;
+use benita::ezo::config::{ConnectionType, SensorConfig, SocketConfig};
+use benita::ezo::errors::*;
+use benita::ezo::network::{Endpoint, ReplyStatus};
+use benita::ezo::temperature::TemperatureAPI;
+use benita::ezo::temperature::device::TemperatureSensor;
+use benita::ezo::temperature::network::TemperatureResponder;
+use benita::ezo::temperature::command::*;
+use benita::ezo::utilities::*;
 
 use clap::{App, Arg};
 
@@ -69,40 +69,40 @@ fn return_error(e: Error) -> String {
 // Match and evaluate commands
 fn match_and_eval(s: &str, e: &TemperatureResponder) -> Result<String> {
     match s {
-        a if CalibrationState::from_str(a).is_ok() => {
-            let _req = CalibrationState::from_str(s)?;
+        a if <CalibrationState as I2CCommand>::from_str(a).is_ok() => {
+            let _req = <CalibrationState as I2CCommand>::from_str(s)?;
             let reply = match e.get_calibration_status() {
                 Ok(rep) => format!("{:?}", rep),
                 Err(e) => return_error(e),
             };
             Ok(reply)
         }
-        a if DeviceInformation::from_str(a).is_ok() => {
-            let _req = DeviceInformation::from_str(s)?;
+        a if <DeviceInformation as I2CCommand>::from_str(a).is_ok() => {
+            let _req = <DeviceInformation as I2CCommand>::from_str(s)?;
             let reply = match e.get_device_info() {
                 Ok(rep) => format!("{:?}", rep),
                 Err(e) => return_error(e),
             };
             Ok(reply)
         }
-        a if Reading::from_str(a).is_ok() => {
-            let _req = Reading::from_str(s)?;
+        a if <Reading as I2CCommand>::from_str(a).is_ok() => {
+            let _req = <Reading as I2CCommand>::from_str(s)?;
             let reply = match e.get_reading() {
                 Ok(rep) => format!("{:?}", rep),
                 Err(e) => return_error(e),
             };
             Ok(reply)
         }
-        a if Sleep::from_str(a).is_ok() => {
-            let _req = Sleep::from_str(s)?;
+        a if <Sleep as I2CCommand>::from_str(a).is_ok() => {
+            let _req = <Sleep as I2CCommand>::from_str(s)?;
             let reply = match e.set_sleep() {
                 Ok(rep) => format!("{:?}", rep),
                 Err(e) => return_error(e),
             };
             Ok(reply)
         }
-        a if Status::from_str(a).is_ok() => {
-            let _req = Status::from_str(s)?;
+        a if <Status as I2CCommand>::from_str(a).is_ok() => {
+            let _req = <Status as I2CCommand>::from_str(s)?;
             let reply = match e.get_device_status() {
                 Ok(rep) => format!("{:?}", rep),
                 Err(e) => return_error(e),

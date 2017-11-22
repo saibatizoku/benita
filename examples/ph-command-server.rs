@@ -18,15 +18,15 @@ extern crate neuras;
 use std::path::PathBuf;
 
 use benita::cli::shared::is_url;
-use benita::common_ezo::EzoChipAPI;
-use benita::config::{ConnectionType, SensorConfig, SocketConfig};
-use benita::errors::*;
-use benita::network::{Endpoint, ReplyStatus, SocketRequest};
-use benita::ph::PhAPI;
-use benita::ph::device::PhSensor;
-use benita::ph::network::PhResponder;
-use benita::ph::network::requests::*;
-use benita::utilities::*;
+use benita::ezo::common_ezo::EzoChipAPI;
+use benita::ezo::config::{ConnectionType, SensorConfig, SocketConfig};
+use benita::ezo::errors::*;
+use benita::ezo::network::{Endpoint, ReplyStatus, SocketRequest};
+use benita::ezo::ph::PhAPI;
+use benita::ezo::ph::device::PhSensor;
+use benita::ezo::ph::network::PhResponder;
+use benita::ezo::ph::network::requests::*;
+use benita::ezo::utilities::*;
 
 use clap::{App, Arg};
 

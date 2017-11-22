@@ -19,14 +19,14 @@ use std::fmt;
 use std::path::PathBuf;
 
 use benita::cli::shared::is_url;
-use benita::config::{ConnectionType, SensorConfig, SocketConfig};
-use benita::conductivity::device::ConductivitySensor;
-use benita::conductivity::device::commands::Command;
-use benita::conductivity::network::ConductivityResponder;
-use benita::conductivity::network::requests::*;
-use benita::errors::*;
-use benita::network::{Endpoint, ReplyStatus, SocketRequest};
-use benita::utilities::*;
+use benita::ezo::config::{ConnectionType, SensorConfig, SocketConfig};
+use benita::ezo::conductivity::device::ConductivitySensor;
+use benita::ezo::conductivity::device::commands::Command;
+use benita::ezo::conductivity::network::ConductivityResponder;
+use benita::ezo::conductivity::network::requests::*;
+use benita::ezo::errors::*;
+use benita::ezo::network::{Endpoint, ReplyStatus, SocketRequest};
+use benita::ezo::utilities::*;
 
 use clap::{App, Arg};
 
@@ -77,18 +77,10 @@ where
 // NOTE: It uses a custom subset of the `ConducivityAPI`.
 fn match_and_eval(s: &str, e: &ConductivityResponder) -> Result<String> {
     match s {
-        a if CalibrationState::from_str(a).is_ok() => {
-            eval(e, CalibrationState::from_str(a)?)
-        }
-        a if CompensationGet::from_str(a).is_ok() => {
-            eval(e, CompensationGet::from_str(a)?)
-        }
-        a if CompensationSet::from_str(a).is_ok() => {
-            eval(e, CompensationSet::from_str(a)?)
-        }
-        a if DeviceInformation::from_str(a).is_ok() => {
-            eval(e, DeviceInformation::from_str(a)?)
-        }
+        a if CalibrationState::from_str(a).is_ok() => eval(e, CalibrationState::from_str(a)?),
+        a if CompensationGet::from_str(a).is_ok() => eval(e, CompensationGet::from_str(a)?),
+        a if CompensationSet::from_str(a).is_ok() => eval(e, CompensationSet::from_str(a)?),
+        a if DeviceInformation::from_str(a).is_ok() => eval(e, DeviceInformation::from_str(a)?),
         a if LedOff::from_str(a).is_ok() => eval(e, LedOff::from_str(a)?),
         a if LedOn::from_str(a).is_ok() => eval(e, LedOn::from_str(a)?),
         a if LedState::from_str(a).is_ok() => eval(e, LedState::from_str(a)?),
@@ -98,9 +90,7 @@ fn match_and_eval(s: &str, e: &ConductivityResponder) -> Result<String> {
         a if OutputEnableConductivity::from_str(a).is_ok() => {
             eval(e, OutputEnableConductivity::from_str(a)?)
         }
-        a if OutputEnableTds::from_str(a).is_ok() => {
-            eval(e, OutputEnableTds::from_str(a)?)
-        }
+        a if OutputEnableTds::from_str(a).is_ok() => eval(e, OutputEnableTds::from_str(a)?),
         a if OutputEnableSalinity::from_str(a).is_ok() => {
             eval(e, OutputEnableSalinity::from_str(a)?)
         }
@@ -110,9 +100,7 @@ fn match_and_eval(s: &str, e: &ConductivityResponder) -> Result<String> {
         a if OutputDisableConductivity::from_str(a).is_ok() => {
             eval(e, OutputDisableConductivity::from_str(a)?)
         }
-        a if OutputDisableTds::from_str(a).is_ok() => {
-            eval(e, OutputDisableTds::from_str(a)?)
-        }
+        a if OutputDisableTds::from_str(a).is_ok() => eval(e, OutputDisableTds::from_str(a)?),
         a if OutputDisableSalinity::from_str(a).is_ok() => {
             eval(e, OutputDisableSalinity::from_str(a)?)
         }
@@ -120,15 +108,9 @@ fn match_and_eval(s: &str, e: &ConductivityResponder) -> Result<String> {
             eval(e, OutputDisableSpecificGravity::from_str(a)?)
         }
         a if OutputState::from_str(a).is_ok() => eval(e, OutputState::from_str(a)?),
-        a if ProtocolLockDisable::from_str(a).is_ok() => {
-            eval(e, ProtocolLockDisable::from_str(a)?)
-        }
-        a if ProtocolLockEnable::from_str(a).is_ok() => {
-            eval(e, ProtocolLockEnable::from_str(a)?)
-        }
-        a if ProtocolLockState::from_str(a).is_ok() => {
-            eval(e, ProtocolLockState::from_str(a)?)
-        }
+        a if ProtocolLockDisable::from_str(a).is_ok() => eval(e, ProtocolLockDisable::from_str(a)?),
+        a if ProtocolLockEnable::from_str(a).is_ok() => eval(e, ProtocolLockEnable::from_str(a)?),
+        a if ProtocolLockState::from_str(a).is_ok() => eval(e, ProtocolLockState::from_str(a)?),
         a if Reading::from_str(a).is_ok() => eval(e, Reading::from_str(a)?),
         a if Sleep::from_str(a).is_ok() => eval(e, Sleep::from_str(a)?),
         a if Status::from_str(a).is_ok() => eval(e, Status::from_str(a)?),

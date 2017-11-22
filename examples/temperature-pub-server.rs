@@ -14,10 +14,10 @@ extern crate neuras;
 use std::thread;
 use std::time::Duration;
 
-use benita::common_ezo::EzoChipAPI;
-use benita::temperature::TemperatureAPI;
-use benita::temperature::device::TemperatureSensor;
-use benita::errors::{Result, ResultExt};
+use benita::ezo::common_ezo::EzoChipAPI;
+use benita::ezo::temperature::TemperatureAPI;
+use benita::ezo::temperature::device::TemperatureSensor;
+use benita::ezo::errors::{Result, ResultExt};
 
 use chrono::{DateTime, Utc};
 use clap::{App, Arg};
