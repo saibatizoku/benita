@@ -1,5 +1,8 @@
 //! Commands from EZO EC chipset.
+use errors::*;
+
 pub use ezo_ec::command::Command;
+
 pub use ezo_ec::command::Baud;
 pub use ezo_ec::command::{CalibrationClear, CalibrationDry, CalibrationHigh, CalibrationLow,
                           CalibrationOnePoint, CalibrationState};

@@ -90,7 +90,7 @@ pub mod command {
 
 pub mod response {
     //! Shared responses for EZO sensors
-    use devices::{I2CCommand, I2CResponse, SensorDevice};
+    use devices::I2CResponse;
     use errors::*;
 
     pub use ezo_common::response::{DeviceInfo, DeviceStatus, Exported, ExportedInfo, LedStatus,

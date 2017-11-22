@@ -14,7 +14,7 @@ use super::response::*;
 
 use config::SensorConfig;
 use common_ezo::EzoChipAPI;
-use devices::{I2CCommand, I2CResponse, SensorDevice};
+use devices::SensorDevice;
 use errors::*;
 use network::ReplyStatus;
 

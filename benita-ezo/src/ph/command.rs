@@ -1,6 +1,9 @@
 //! Commands from EZO PH chipset.
-pub use ezo_ph::command::Baud;
+use errors::*;
+
 pub use ezo_ph::command::Command;
+
+pub use ezo_ph::command::Baud;
 pub use ezo_ph::command::{CalibrationClear, CalibrationHigh, CalibrationLow, CalibrationMid,
                           CalibrationState};
 pub use ezo_ph::command::{CompensatedTemperatureValue as CompensationGet, DeviceAddress,

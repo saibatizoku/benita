@@ -1,5 +1,5 @@
 //! Responses from EZO PH chipset.
-use devices::{I2CCommand, I2CResponse, SensorDevice};
+use devices::I2CResponse;
 use errors::*;
 pub use common_ezo::response::{DeviceInfo, DeviceStatus, Exported, ExportedInfo, LedStatus,
                                ProtocolLockStatus, ResponseStatus};
