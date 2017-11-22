@@ -240,3 +240,28 @@ macro_rules! sensor_commands {
         }
     };
 }
+
+macro_rules! impl_I2CCommand_for {
+    ( $name:ident , $response:ty ) => {
+        impl I2CCommand for $name {
+            type Response = $response;
+
+            fn from_str(s: &str) -> Result<$name> {
+                let cmd = s.parse::<$name>()
+                    .chain_err(|| ErrorKind::CommandParse)?;
+                Ok(cmd)
+            }
+
+            fn to_string(&self) -> String {
+                <$name as Command>::get_command_string(&self)
+            }
+
+            fn write<A, T: SensorDevice<A>>(&self, device: &T) -> Result<$response> {
+                let reply = self
+                    .run(&mut device.i2c_mut())
+                    .chain_err(|| ErrorKind::SensorTrouble)?;
+                Ok(reply)
+            }
+        }
+    }
+}
