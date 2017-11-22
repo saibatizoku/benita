@@ -16,6 +16,16 @@ pub use ezo_ph::command::Slope;
 
 pub use devices::{I2CCommand, I2CResponse, SensorDevice};
 
+use super::response::*;
+
+impl_I2CCommand_for!(CalibrationHigh, ResponseStatus);
+impl_I2CCommand_for!(CalibrationLow, ResponseStatus);
+impl_I2CCommand_for!(CalibrationMid, ResponseStatus);
+impl_I2CCommand_for!(CalibrationState, CalibrationStatus);
+impl_I2CCommand_for!(CompensationGet, CompensationValue);
+impl_I2CCommand_for!(CompensationSet, ResponseStatus);
+impl_I2CCommand_for!(Reading, SensorReading);
+impl_I2CCommand_for!(Slope, ProbeSlope);
 
 #[cfg(test)]
 mod tests {

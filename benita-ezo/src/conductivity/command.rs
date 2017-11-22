@@ -20,6 +20,29 @@ pub use ezo_ec::command::{ProtocolLockDisable, ProtocolLockEnable, ProtocolLockS
 
 pub use devices::{I2CCommand, I2CResponse, SensorDevice};
 
+use super::response::*;
+
+impl_I2CCommand_for!(CalibrationDry, ResponseStatus);
+impl_I2CCommand_for!(CalibrationHigh, ResponseStatus);
+impl_I2CCommand_for!(CalibrationLow, ResponseStatus);
+impl_I2CCommand_for!(CalibrationOnePoint, ResponseStatus);
+impl_I2CCommand_for!(CalibrationState, CalibrationStatus);
+impl_I2CCommand_for!(CompensationGet, CompensationValue);
+impl_I2CCommand_for!(CompensationSet, ResponseStatus);
+impl_I2CCommand_for!(Reading, SensorReading);
+impl_I2CCommand_for!(OutputDisableConductivity, ResponseStatus);
+impl_I2CCommand_for!(OutputDisableSalinity, ResponseStatus);
+impl_I2CCommand_for!(OutputDisableSpecificGravity, ResponseStatus);
+impl_I2CCommand_for!(OutputDisableTds, ResponseStatus);
+impl_I2CCommand_for!(OutputEnableConductivity, ResponseStatus);
+impl_I2CCommand_for!(OutputEnableSalinity, ResponseStatus);
+impl_I2CCommand_for!(OutputEnableSpecificGravity, ResponseStatus);
+impl_I2CCommand_for!(OutputEnableTds, ResponseStatus);
+impl_I2CCommand_for!(OutputState, OutputStringStatus);
+impl_I2CCommand_for!(ProbeTypeOne, ResponseStatus);
+impl_I2CCommand_for!(ProbeTypePointOne, ResponseStatus);
+impl_I2CCommand_for!(ProbeTypeState, ProbeType);
+impl_I2CCommand_for!(ProbeTypeTen, ResponseStatus);
 
 #[cfg(test)]
 mod tests {
