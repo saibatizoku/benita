@@ -30,8 +30,12 @@ device_i2cdev!(
     "EZO-EC Submersible Electrical Conductivity Sensor."
 );
 
-impl SensorDevice for ConductivitySensor {
+impl SensorDevice<ConductivitySensor> for ConductivitySensor {
     type Error = Error;
+
+    fn i2c_mut(&self) -> ::std::cell::RefMut<LinuxI2CDevice> {
+        self.i2cdev.borrow_mut()
+    }
 }
 
 impl EzoChipAPI for ConductivitySensor {

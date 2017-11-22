@@ -32,6 +32,10 @@ macro_rules! device_i2cdev {
                 $name::new(config_path, config.address)
             }
 
+            pub fn device_mut(&self) -> ::std::cell::RefMut<LinuxI2CDevice> {
+                self.i2cdev.borrow_mut()
+            }
+
             /// Change the sensor to UART mode.
             ///
             /// __WARNING:__ after using this command, the chip will not be available

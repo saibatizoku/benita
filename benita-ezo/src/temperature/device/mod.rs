@@ -35,8 +35,12 @@ impl EzoChipAPI for TemperatureSensor {
     sensor_commands!(calibration_common);
 }
 
-impl SensorDevice for TemperatureSensor  {
+impl SensorDevice<TemperatureSensor> for TemperatureSensor {
     type Error = Error;
+
+    fn i2c_mut(&self) -> ::std::cell::RefMut<LinuxI2CDevice> {
+        self.i2cdev.borrow_mut()
+    }
 }
 
 impl TemperatureAPI for TemperatureSensor {
