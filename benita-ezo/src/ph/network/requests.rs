@@ -3,9 +3,9 @@ pub mod errors {
     error_chain!{}
 }
 
-use errors::*;
 use network::{Endpoint, ReplyStatus, SocketReply, SocketRequest};
-use ph::device::responses::*;
+use errors::*;
+use ph::response::*;
 use utilities::atof;
 
 pub use common_ezo::command::*;
@@ -132,7 +132,10 @@ mod tests {
     #[test]
     fn parse_ph_calibration_high_request_from_valid_str() {
         let request = CalibrationHigh::from_str("calibration-high 1000.3324").unwrap();
-        assert_eq!("calibration-high 1000.332", SocketRequest::to_string(&request));
+        assert_eq!(
+            "calibration-high 1000.332",
+            SocketRequest::to_string(&request)
+        );
     }
 
     #[test]
@@ -150,7 +153,10 @@ mod tests {
     #[test]
     fn parse_ph_calibration_low_request_from_valid_str() {
         let request = CalibrationLow::from_str("calibration-low 1000.3324").unwrap();
-        assert_eq!("calibration-low 1000.332", SocketRequest::to_string(&request));
+        assert_eq!(
+            "calibration-low 1000.332",
+            SocketRequest::to_string(&request)
+        );
     }
 
     #[test]
@@ -168,7 +174,10 @@ mod tests {
     #[test]
     fn parse_ph_calibration_mid_request_from_valid_str() {
         let request = CalibrationMid::from_str("calibration-mid 1000.3324").unwrap();
-        assert_eq!("calibration-mid 1000.332", SocketRequest::to_string(&request));
+        assert_eq!(
+            "calibration-mid 1000.332",
+            SocketRequest::to_string(&request)
+        );
     }
 
     #[test]
@@ -219,7 +228,10 @@ mod tests {
     #[test]
     fn parse_ph_compensation_set_request_from_valid_str() {
         let request = CompensationSet::from_str("compensation-set 10.5829").unwrap();
-        assert_eq!("compensation-set 10.583", SocketRequest::to_string(&request));
+        assert_eq!(
+            "compensation-set 10.583",
+            SocketRequest::to_string(&request)
+        );
     }
 
     #[test]

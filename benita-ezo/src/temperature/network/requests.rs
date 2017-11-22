@@ -3,9 +3,10 @@ pub mod errors {
     error_chain!{}
 }
 
-use errors::*;
 use network::{Endpoint, ReplyStatus, SocketReply, SocketRequest};
 use temperature::device::responses::*;
+
+use errors::*;
 use utilities::atof;
 
 pub use common_ezo::command::*;
@@ -192,9 +193,13 @@ mod tests {
 
     #[test]
     fn parse_temperature_calibration_set_request_from_valid_str() {
-        let request =
-            <CalibrationTemperature as SocketRequest>::from_str("calibration-set 1000.3324").unwrap();
-        assert_eq!("calibration-set 1000.332", SocketRequest::to_string(&request));
+        let request = <CalibrationTemperature as SocketRequest>::from_str(
+            "calibration-set 1000.3324",
+        ).unwrap();
+        assert_eq!(
+            "calibration-set 1000.332",
+            SocketRequest::to_string(&request)
+        );
     }
 
     #[test]
@@ -205,7 +210,8 @@ mod tests {
         let request = <CalibrationTemperature as SocketRequest>::from_str("calibration-sets");
         assert!(request.is_err());
 
-        let request = <CalibrationTemperature as SocketRequest>::from_str("calibration-set 123 2342");
+        let request =
+            <CalibrationTemperature as SocketRequest>::from_str("calibration-set 123 2342");
         assert!(request.is_err());
     }
 
@@ -253,7 +259,8 @@ mod tests {
         let request = <DataloggerInterval as SocketRequest>::from_str("datalogger-set 9");
         assert!(request.is_err());
 
-        let request = <DataloggerInterval as SocketRequest>::from_str("datalogger-set 1_000_000_000");
+        let request =
+            <DataloggerInterval as SocketRequest>::from_str("datalogger-set 1_000_000_000");
         assert!(request.is_err());
 
         let request = <DataloggerInterval as SocketRequest>::from_str("datalogger-set,10.5869");
@@ -271,7 +278,8 @@ mod tests {
         let request = <DataloggerInterval as SocketRequest>::from_str("datalogger-status ");
         assert!(request.is_err());
 
-        let request = <DataloggerInterval as SocketRequest>::from_str("datalogger-status 1_000_000_000");
+        let request =
+            <DataloggerInterval as SocketRequest>::from_str("datalogger-status 1_000_000_000");
         assert!(request.is_err());
 
         let request = <DataloggerInterval as SocketRequest>::from_str("datalogger-status,10.5869");

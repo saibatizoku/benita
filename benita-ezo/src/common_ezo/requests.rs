@@ -1,9 +1,9 @@
 //! Requests for the EZO sensors. Requests are sent to an `Endpoint`, and implement the
 //! `SocketRequest` trait.
+use super::response::*;
+
 use errors::*;
 use network::{Endpoint, ReplyStatus, SocketReply, SocketRequest};
-
-use super::response::*;
 
 use ezo_common::BpsRate;
 

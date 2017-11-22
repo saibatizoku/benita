@@ -1,6 +1,7 @@
 //! API for Temperature sensor funcionality.
+use super::response::*;
+
 use common_ezo::EzoChipAPI;
-use network::temperature::replies::*;
 
 /// API for pH commands and replies
 pub trait TemperatureAPI: EzoChipAPI {

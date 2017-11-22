@@ -44,7 +44,8 @@ mod tests {
     fn parse_data_logger_storage_interval_reply_from_valid_str() {
         let reply = <DataLoggerStorageIntervalSeconds as SocketReply>::from_str("?D,0").unwrap();
         assert_eq!("0", SocketReply::to_string(&reply));
-        let reply = <DataLoggerStorageIntervalSeconds as SocketReply>::from_str("?D,320000").unwrap();
+        let reply = <DataLoggerStorageIntervalSeconds as SocketReply>::from_str(
+            "?D,320000").unwrap();
         assert_eq!("320000", SocketReply::to_string(&reply));
     }
 

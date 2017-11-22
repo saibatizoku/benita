@@ -1,4 +1,6 @@
 //! Commands from EZO RTD chipset.
+use errors::*;
+
 pub use ezo_rtd::command::Baud;
 pub use ezo_rtd::command::Command;
 pub use ezo_rtd::command::{CalibrationClear, CalibrationState, CalibrationTemperature};
@@ -13,8 +15,6 @@ pub use ezo_rtd::command::{ScaleCelsius, ScaleFahrenheit, ScaleKelvin, ScaleStat
 pub use devices::{I2CCommand, I2CResponse, SensorDevice};
 
 use super::response::*;
-
-use errors::*;
 
 macro_rules! impl_I2CCommand_for {
     ( $name:ident , $response:ty ) => {

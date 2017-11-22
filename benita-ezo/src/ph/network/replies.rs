@@ -1,19 +1,64 @@
-//! Replies from EZO sensors.
+//! Replies from the pH sensor. `Reply`s are received after a `Request`.
+pub mod errors {
+    error_chain!{}
+}
+
 use errors::*;
 use network::{Endpoint, SocketReply};
 
-pub use super::response::*;
+pub use ph::response::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus, Exported,
+                       ExportedInfo, LedStatus, ProbeSlope, ProtocolLockStatus, SensorReading};
 
-impl_SocketReply_for!(DeviceInfo);
-impl_SocketReply_for!(DeviceStatus);
-impl_SocketReply_for!(Exported);
-impl_SocketReply_for!(ExportedInfo);
-impl_SocketReply_for!(LedStatus);
-impl_SocketReply_for!(ProtocolLockStatus);
+
+// Basically, wrap existing responses from the original sensor crate.
+impl_SocketReply_for!(CalibrationStatus);
+impl_SocketReply_for!(CompensationValue);
+impl_SocketReply_for!(ProbeSlope);
+impl_SocketReply_for!(SensorReading);
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn parse_calibration_status_reply_from_valid_str() {
+        let reply = CalibrationStatus::from_str("?CAL,0").unwrap();
+        assert_eq!("none", SocketReply::to_string(&reply));
+        let reply = CalibrationStatus::from_str("?CAL,1").unwrap();
+        assert_eq!("one-point", SocketReply::to_string(&reply));
+        let reply = CalibrationStatus::from_str("?CAL,2").unwrap();
+        assert_eq!("two-point", SocketReply::to_string(&reply));
+        let reply = CalibrationStatus::from_str("?CAL,3").unwrap();
+        assert_eq!("three-point", SocketReply::to_string(&reply));
+    }
+
+    #[test]
+    fn parse_calibration_status_reply_from_invalid_str_yields_err() {
+        let reply = CalibrationStatus::from_str("?CAL,");
+        assert!(reply.is_err());
+        let reply = CalibrationStatus::from_str("?CAL,4");
+        assert!(reply.is_err());
+        let reply = CalibrationStatus::from_str("?CAL,11");
+        assert!(reply.is_err());
+    }
+
+    #[test]
+    fn parse_compensation_value_reply_from_valid_str() {
+        let reply = CompensationValue::from_str("?T,0").unwrap();
+        assert_eq!("0.000", SocketReply::to_string(&reply));
+        let reply = CompensationValue::from_str("?T,-15.23").unwrap();
+        assert_eq!("-15.230", SocketReply::to_string(&reply));
+        let reply = CompensationValue::from_str("?T,1500.0446").unwrap();
+        assert_eq!("1500.045", SocketReply::to_string(&reply));
+    }
+
+    #[test]
+    fn parse_compensation_value_reply_from_invalid_str_yields_err() {
+        let reply = CompensationValue::from_str("?T,");
+        assert!(reply.is_err());
+        let reply = CompensationValue::from_str("?T,C11");
+        assert!(reply.is_err());
+    }
 
     #[test]
     fn parse_device_info_reply_from_valid_str() {
@@ -102,6 +147,20 @@ mod tests {
     }
 
     #[test]
+    fn parse_probe_slope_reply_from_valid_str() {
+        let reply = ProbeSlope::from_str("?SLOPE,10,0").unwrap();
+        assert_eq!("10.000,0.000", SocketReply::to_string(&reply));
+        let reply = ProbeSlope::from_str("?SLOPE,1,320000").unwrap();
+        assert_eq!("1.000,320000.000", SocketReply::to_string(&reply));
+    }
+
+    #[test]
+    fn parse_probe_slope_reply_from_invalid_str_yields_err() {
+        let reply = ProbeSlope::from_str("?SLOPE,D,320_001");
+        assert!(reply.is_err());
+    }
+
+    #[test]
     fn parse_protocol_lock_status_reply_from_valid_str() {
         let reply = ProtocolLockStatus::from_str("?PLOCK,0").unwrap();
         assert_eq!("off", SocketReply::to_string(&reply));
@@ -116,6 +175,20 @@ mod tests {
         let reply = ProtocolLockStatus::from_str("?PLOCK,1,0");
         assert!(reply.is_err());
         let reply = ProtocolLockStatus::from_str("?PLOCK,off");
+        assert!(reply.is_err());
+    }
+
+    #[test]
+    fn parse_sensor_reading_reply_from_valid_str() {
+        let reply = SensorReading::from_str("0.1").unwrap();
+        assert_eq!("0.100", SocketReply::to_string(&reply));
+    }
+
+    #[test]
+    fn parse_sensor_reading_reply_from_invalid_str_yields_err() {
+        let reply = SensorReading::from_str("");
+        assert!(reply.is_err());
+        let reply = SensorReading::from_str("1.0,0.05");
         assert!(reply.is_err());
     }
 }

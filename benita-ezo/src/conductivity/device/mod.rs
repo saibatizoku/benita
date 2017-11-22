@@ -10,12 +10,12 @@ use std::fmt;
 
 use super::ConductivityAPI;
 use super::command::*;
-use super::errors::*;
 use super::response::*;
 
-use common_ezo::EzoChipAPI;
 use config::SensorConfig;
+use common_ezo::EzoChipAPI;
 use devices::{I2CCommand, I2CResponse, SensorDevice};
+use errors::*;
 use network::ReplyStatus;
 
 use ezo_common::BpsRate;

@@ -5,24 +5,18 @@ authors = ["Joaquín R <globojorro@gmail.com>"]
 description = "Software library for connecting sensors to the network"
 
 [dependencies]
+benita-ezo = { path = "./benita-ezo" }
 chrono = "0.4.0"
 clap = "2"
 error-chain = "~0.11.0"
-ezo_common = { git = "https://github.com/saibatizoku/ezo-common-rs.git", branch = "master" }
-ezo_ec = { git = "https://github.com/saibatizoku/ezo-ec-rs.git", branch = "master" }
-ezo_ph = { git = "https://github.com/saibatizoku/ezo-ph-rs.git", branch = "master" }
-ezo_rtd = { git = "https://github.com/saibatizoku/ezo-rtd-rs.git", branch = "master" }
 fern = "0.4"
-i2cdev = "0.3.1"
 log = "0.3"
 neuras = { git = "https://github.com/saibatizoku/neuras.git", branch = "master" }
 serde = "1.0"
 serde_derive = "1.0"
-sysfs_gpio = "0.5"
 toml = "0.4"
 
 [profile.release]
 lto = true
 
 [workspace]
-members = ['benita-ezo']

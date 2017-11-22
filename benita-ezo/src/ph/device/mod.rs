@@ -10,12 +10,12 @@ use std::fmt;
 
 use super::PhAPI;
 use super::command::*;
-use super::errors::*;
 use super::response::*;
 
-use common_ezo::EzoChipAPI;
 use config::SensorConfig;
+use common_ezo::EzoChipAPI;
 use devices::{I2CCommand, I2CResponse, SensorDevice};
+use errors::*;
 use network::ReplyStatus;
 
 use ezo_common::BpsRate;
@@ -27,8 +27,12 @@ pub use super::response as responses;
 // Use macro to define `PhSensor`
 device_i2cdev!(PhSensor, "EZO-EC Submersible pH Sensor.");
 
-impl SensorDevice for PhSensor {
+impl SensorDevice<PhSensor> for PhSensor {
     type Error = Error;
+
+    fn i2c_mut(&self) -> ::std::cell::RefMut<LinuxI2CDevice> {
+        self.i2cdev.borrow_mut()
+    }
 }
 
 impl EzoChipAPI for PhSensor {

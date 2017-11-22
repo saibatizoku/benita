@@ -258,6 +258,7 @@ macro_rules! sensor_socket_commands {
 }
 
 // Implements SocketRequest for commands
+#[macro_export]
 macro_rules! impl_SocketRequest_for {
     (
         $request:ident : $response: ident ,
@@ -291,6 +292,7 @@ macro_rules! impl_SocketRequest_for {
 }
 
 // Macro for implementing the `SocketReply` trait on a type.
+#[macro_export]
 macro_rules! impl_SocketReply_for {
     ( $name:ident ) => {
         impl SocketReply for $name {
