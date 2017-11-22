@@ -1,4 +1,11 @@
 //! Responses from EZO PH chipset.
-pub use ezo_ph::response::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus,
-                           Exported, ExportedInfo, LedStatus, ProbeSlope, ProtocolLockStatus,
-                           SensorReading};
+use devices::{I2CCommand, I2CResponse, SensorDevice};
+use errors::*;
+pub use common_ezo::response::{DeviceInfo, DeviceStatus, Exported, ExportedInfo, LedStatus,
+                               ProtocolLockStatus, ResponseStatus};
+pub use ezo_ph::response::{CalibrationStatus, CompensationValue, ProbeSlope, SensorReading};
+
+impl_I2CResponse_for!(CalibrationStatus);
+impl_I2CResponse_for!(CompensationValue);
+impl_I2CResponse_for!(ProbeSlope);
+impl_I2CResponse_for!(SensorReading);
