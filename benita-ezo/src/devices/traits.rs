@@ -14,16 +14,16 @@ where
     fn i2c_mut(&self) -> ::std::cell::RefMut<LinuxI2CDevice>;
 
     /// Read a given `I2CResponse` from the device.
-    fn read<R: I2CResponse>(&self, response: &R) -> ::std::result::Result<(), Error> {
+    fn read<R: I2CResponse>(&self, _response: &R) -> ::std::result::Result<(), Error> {
         unimplemented!();
     }
 
     /// Write a given `I2CCommand` to the device.
-    fn write<C: I2CCommand>(&self, cmd: &C) -> ::std::result::Result<(), Error> {
+    fn write<C: I2CCommand>(&self, _cmd: &C) -> ::std::result::Result<(), Error> {
         unimplemented!();
     }
     /// Write a given `I2CCommand` to the device.
-    fn run<C: I2CCommand>(&self, cmd: &C) -> ::std::result::Result<(), Error> {
+    fn run<C: I2CCommand>(&self, _cmd: &C) -> ::std::result::Result<(), Error> {
         unimplemented!();
     }
 }
