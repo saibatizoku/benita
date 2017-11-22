@@ -269,3 +269,17 @@ macro_rules! impl_I2CCommand_for {
         }
     }
 }
+
+macro_rules! impl_I2CResponse_for {
+    ( $name:ident ) => {
+        impl I2CResponse for $name {
+            fn from_str(s: &str) -> Result<$name> {
+                unimplemented!();
+            }
+
+            fn to_string(&self) -> String {
+                unimplemented!();
+            }
+        }
+    }
+}
