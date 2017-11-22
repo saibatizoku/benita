@@ -18,7 +18,7 @@ extern crate neuras;
 use std::fmt;
 use std::path::PathBuf;
 
-use benita::cli::shared::is_url;
+use benita::cli::is_url;
 use benita::ezo::config::{ConnectionType, SensorConfig, SocketConfig};
 use benita::ezo::conductivity::device::ConductivitySensor;
 use benita::ezo::conductivity::device::commands::Command;

@@ -17,7 +17,7 @@ extern crate neuras;
 
 use std::path::PathBuf;
 
-use benita::cli::shared::is_url;
+use benita::cli::is_url;
 use benita::ezo::common_ezo::EzoChipAPI;
 use benita::ezo::config::{ConnectionType, SensorConfig, SocketConfig};
 use benita::ezo::errors::*;

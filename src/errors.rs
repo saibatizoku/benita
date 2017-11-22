@@ -1,5 +1,4 @@
 //! Library Error, and ErrorKind definitions.
-use super::config;
 use super::utilities;
 
 use neuras;
@@ -57,7 +56,6 @@ error_chain! {
     }
     links {
         // module error-chains
-        Config(config::errors::Error, config::errors::ErrorKind);
         Utilities(utilities::errors::Error, utilities::errors::ErrorKind);
 
         // external crate error-chains

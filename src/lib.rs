@@ -20,12 +20,8 @@ extern crate clap;
 #[macro_use]
 extern crate error_chain;
 extern crate neuras;
-#[macro_use]
-extern crate serde_derive;
-extern crate toml;
 
 pub mod cli;
-pub mod config;
 pub mod errors;
 pub mod utilities;
 

@@ -12,9 +12,6 @@ error-chain = "~0.11.0"
 fern = "0.4"
 log = "0.3"
 neuras = { git = "https://github.com/saibatizoku/neuras.git", branch = "master" }
-serde = "1.0"
-serde_derive = "1.0"
-toml = "0.4"
 
 [profile.release]
 lto = true
