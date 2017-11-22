@@ -58,16 +58,40 @@ mod api {
 
 pub mod command {
     //! Shared commands for EZO sensors
+    use super::response::*;
+
+    use devices::{I2CCommand, SensorDevice};
+    use errors::*;
+
+    pub use ezo_common::Command;
     pub use ezo_common::command::{Baud, CalibrationClear, DeviceAddress, DeviceInformation,
                                   Export, ExportInfo, Factory, Find, Import, LedOff, LedOn,
                                   LedState, ProtocolLockDisable, ProtocolLockEnable,
                                   ProtocolLockState, Sleep, Status};
+
+    impl_I2CCommand_for!(Baud, ResponseStatus);
+    impl_I2CCommand_for!(CalibrationClear, ResponseStatus);
+    impl_I2CCommand_for!(DeviceAddress, ResponseStatus);
+    impl_I2CCommand_for!(DeviceInformation, DeviceInfo);
+    impl_I2CCommand_for!(Export, Exported);
+    impl_I2CCommand_for!(ExportInfo, ExportedInfo);
+    impl_I2CCommand_for!(Factory, ResponseStatus);
+    impl_I2CCommand_for!(Find, ResponseStatus);
+    impl_I2CCommand_for!(Import, ResponseStatus);
+    impl_I2CCommand_for!(LedOff, ResponseStatus);
+    impl_I2CCommand_for!(LedOn, ResponseStatus);
+    impl_I2CCommand_for!(LedState, LedStatus);
+    impl_I2CCommand_for!(ProtocolLockDisable, ResponseStatus);
+    impl_I2CCommand_for!(ProtocolLockEnable, ResponseStatus);
+    impl_I2CCommand_for!(ProtocolLockState, ProtocolLockStatus);
+    impl_I2CCommand_for!(Sleep, ResponseStatus);
+    impl_I2CCommand_for!(Status, DeviceStatus);
 }
 
 pub mod response {
     //! Shared responses for EZO sensors
     pub use ezo_common::response::{DeviceInfo, DeviceStatus, Exported, ExportedInfo, LedStatus,
-                                   ProtocolLockStatus};
+                                   ProtocolLockStatus, ResponseStatus};
 }
 
 pub use self::api::*;

@@ -16,40 +16,19 @@ pub use devices::{I2CCommand, I2CResponse, SensorDevice};
 
 use super::response::*;
 
-macro_rules! impl_I2CCommand_for {
-    ( $name:ident , $response:ty ) => {
-        impl I2CCommand for $name {
-            type Response = $response;
-
-            fn from_str(s: &str) -> Result<$name> {
-                let cmd = s.parse::<$name>()
-                    .chain_err(|| ErrorKind::CommandParse)?;
-                Ok(cmd)
-            }
-
-            fn to_string(&self) -> String {
-                <$name as Command>::get_command_string(&self)
-            }
-
-            fn write<T: SensorDevice>(&self, device: &T) -> Result<$response> {
-                unimplemented!();
-            }
-        }
-    }
-}
 
 impl_I2CCommand_for!(CalibrationState, CalibrationStatus);
-impl_I2CCommand_for!(CalibrationTemperature, ReplyStatus);
-impl_I2CCommand_for!(DataloggerDisable, ReplyStatus);
+impl_I2CCommand_for!(CalibrationTemperature, ResponseStatus);
+impl_I2CCommand_for!(DataloggerDisable, ResponseStatus);
 impl_I2CCommand_for!(DataloggerInterval, DataLoggerStorageIntervalSeconds);
-impl_I2CCommand_for!(DataloggerPeriod, ReplyStatus);
+impl_I2CCommand_for!(DataloggerPeriod, ResponseStatus);
 impl_I2CCommand_for!(Reading, SensorReading);
-impl_I2CCommand_for!(MemoryClear, ReplyStatus);
+impl_I2CCommand_for!(MemoryClear, ResponseStatus);
 impl_I2CCommand_for!(MemoryRecall, MemoryReading);
 impl_I2CCommand_for!(MemoryRecallLast, MemoryReading);
-impl_I2CCommand_for!(ScaleCelsius, ReplyStatus);
-impl_I2CCommand_for!(ScaleFahrenheit, ReplyStatus);
-impl_I2CCommand_for!(ScaleKelvin, ReplyStatus);
+impl_I2CCommand_for!(ScaleCelsius, ResponseStatus);
+impl_I2CCommand_for!(ScaleFahrenheit, ResponseStatus);
+impl_I2CCommand_for!(ScaleKelvin, ResponseStatus);
 impl_I2CCommand_for!(ScaleState, TemperatureScale);
 
 #[cfg(test)]
