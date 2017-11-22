@@ -131,7 +131,7 @@ mod tests {
 
     #[test]
     fn parse_ph_calibration_high_request_from_valid_str() {
-        let request = CalibrationHigh::from_str("calibration-high 1000.3324").unwrap();
+        let request = <CalibrationHigh as SocketRequest>::from_str("calibration-high 1000.3324").unwrap();
         assert_eq!(
             "calibration-high 1000.332",
             SocketRequest::to_string(&request)
@@ -140,19 +140,19 @@ mod tests {
 
     #[test]
     fn parse_ph_calibration_high_request_from_invalid_str_yields_err() {
-        let request = CalibrationHigh::from_str("calibration-high");
+        let request = <CalibrationHigh as SocketRequest>::from_str("calibration-high");
         assert!(request.is_err());
 
-        let request = CalibrationHigh::from_str("calibration-highs");
+        let request = <CalibrationHigh as SocketRequest>::from_str("calibration-highs");
         assert!(request.is_err());
 
-        let request = CalibrationHigh::from_str("calibration-high 123 2342");
+        let request = <CalibrationHigh as SocketRequest>::from_str("calibration-high 123 2342");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_ph_calibration_low_request_from_valid_str() {
-        let request = CalibrationLow::from_str("calibration-low 1000.3324").unwrap();
+        let request = <CalibrationLow as SocketRequest>::from_str("calibration-low 1000.3324").unwrap();
         assert_eq!(
             "calibration-low 1000.332",
             SocketRequest::to_string(&request)
@@ -161,19 +161,19 @@ mod tests {
 
     #[test]
     fn parse_ph_calibration_low_request_from_invalid_str_yields_err() {
-        let request = CalibrationLow::from_str("calibration-low");
+        let request = <CalibrationLow as SocketRequest>::from_str("calibration-low");
         assert!(request.is_err());
 
-        let request = CalibrationLow::from_str("calibration-lows");
+        let request = <CalibrationLow as SocketRequest>::from_str("calibration-lows");
         assert!(request.is_err());
 
-        let request = CalibrationLow::from_str("calibration-low 123 2342");
+        let request = <CalibrationLow as SocketRequest>::from_str("calibration-low 123 2342");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_ph_calibration_mid_request_from_valid_str() {
-        let request = CalibrationMid::from_str("calibration-mid 1000.3324").unwrap();
+        let request = <CalibrationMid as SocketRequest>::from_str("calibration-mid 1000.3324").unwrap();
         assert_eq!(
             "calibration-mid 1000.332",
             SocketRequest::to_string(&request)
@@ -182,52 +182,52 @@ mod tests {
 
     #[test]
     fn parse_ph_calibration_mid_request_from_invalid_str_yields_err() {
-        let request = CalibrationMid::from_str("calibration-mid");
+        let request = <CalibrationMid as SocketRequest>::from_str("calibration-mid");
         assert!(request.is_err());
 
-        let request = CalibrationMid::from_str("calibration-mids");
+        let request = <CalibrationMid as SocketRequest>::from_str("calibration-mids");
         assert!(request.is_err());
 
-        let request = CalibrationMid::from_str("calibration-mid 123 2342");
+        let request = <CalibrationMid as SocketRequest>::from_str("calibration-mid 123 2342");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_ph_calibration_status_request_from_valid_str() {
-        let request = CalibrationState::from_str("calibration-status").unwrap();
+        let request = <CalibrationState as SocketRequest>::from_str("calibration-status").unwrap();
         assert_eq!("calibration-status", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_ph_calibration_status_request_from_invalid_str_yields_err() {
-        let request = CalibrationState::from_str("calibration-statuss");
+        let request = <CalibrationState as SocketRequest>::from_str("calibration-statuss");
         assert!(request.is_err());
 
-        let request = CalibrationState::from_str("calibration-status 123");
+        let request = <CalibrationState as SocketRequest>::from_str("calibration-status 123");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_ph_compensation_get_request_from_valid_str() {
-        let request = CompensationGet::from_str("compensation-get").unwrap();
+        let request = <CompensationGet as SocketRequest>::from_str("compensation-get").unwrap();
         assert_eq!("compensation-get", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_ph_compensation_get_request_from_invalid_str_yields_err() {
-        let request = CompensationGet::from_str("ompensation-get");
+        let request = <CompensationGet as SocketRequest>::from_str("ompensation-get");
         assert!(request.is_err());
 
-        let request = CompensationGet::from_str("compensation-get 10.5829");
+        let request = <CompensationGet as SocketRequest>::from_str("compensation-get 10.5829");
         assert!(request.is_err());
 
-        let request = CompensationGet::from_str("compensation-get,10.5869");
+        let request = <CompensationGet as SocketRequest>::from_str("compensation-get,10.5869");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_ph_compensation_set_request_from_valid_str() {
-        let request = CompensationSet::from_str("compensation-set 10.5829").unwrap();
+        let request = <CompensationSet as SocketRequest>::from_str("compensation-set 10.5829").unwrap();
         assert_eq!(
             "compensation-set 10.583",
             SocketRequest::to_string(&request)
@@ -236,33 +236,33 @@ mod tests {
 
     #[test]
     fn parse_ph_compensation_set_request_from_invalid_str_yields_err() {
-        let request = CompensationSet::from_str("compensation-set");
+        let request = <CompensationSet as SocketRequest>::from_str("compensation-set");
         assert!(request.is_err());
 
-        let request = CompensationSet::from_str("compensation-set,10.5869");
+        let request = <CompensationSet as SocketRequest>::from_str("compensation-set,10.5869");
         assert!(request.is_err());
     }
 
     #[test]
     fn parse_ph_read_request_from_valid_str() {
-        let request = Reading::from_str("read").unwrap();
+        let request = <Reading as SocketRequest>::from_str("read").unwrap();
         assert_eq!("read", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_ph_read_request_from_invalid_str_yields_err() {
-        let request = Reading::from_str("reading");
+        let request = <Reading as SocketRequest>::from_str("reading");
         assert!(request.is_err());
     }
     #[test]
     fn parse_ph_slope_request_from_valid_str() {
-        let request = Slope::from_str("slope").unwrap();
+        let request = <Slope as SocketRequest>::from_str("slope").unwrap();
         assert_eq!("slope", SocketRequest::to_string(&request));
     }
 
     #[test]
     fn parse_ph_slope_request_from_invalid_str_yields_err() {
-        let request = Slope::from_str("slopeing");
+        let request = <Slope as SocketRequest>::from_str("slopeing");
         assert!(request.is_err());
     }
 }
