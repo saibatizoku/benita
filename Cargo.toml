@@ -5,7 +5,7 @@ authors = ["Joaquín R <globojorro@gmail.com>"]
 description = "Software library for connecting sensors to the network"
 
 [dependencies]
-benita-ezo = { path = "./benita-ezo" }
+benita-ezo = { path = "benita-ezo" }
 chrono = "0.4.0"
 clap = "2"
 error-chain = "~0.11.0"
