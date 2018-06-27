@@ -12,6 +12,7 @@ failure = "0.1"
 fern = "0.4"
 log = "0.3"
 neuras = { git = "https://github.com/saibatizoku/neuras.git", branch = "master" }
+zmq = { git = "https://github.com/erickt/rust-zmq.git" }
 
 [profile.release]
 lto = true

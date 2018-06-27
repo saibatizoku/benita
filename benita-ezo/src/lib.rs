@@ -12,6 +12,7 @@ extern crate neuras;
 #[macro_use]
 extern crate serde_derive;
 extern crate toml;
+extern crate zmq;
 
 #[macro_use]
 pub mod devices;
