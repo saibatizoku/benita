@@ -18,7 +18,7 @@ macro_rules! device_i2cdev {
             /// to the I2C bus, and the `u16` address location, are needed.
             pub fn new(path: &str, address: u16) -> Result<$name> {
                 let i2cdev = LinuxI2CDevice::new(path, address)
-                    .chain_err(|| ErrorKind::SensorTrouble)?;
+                    .context(ErrorKind::SensorTrouble)?;
                 let path = path.to_string();
                 Ok( $name { path, address, i2cdev: RefCell::new(i2cdev) } )
             }
@@ -27,7 +27,7 @@ macro_rules! device_i2cdev {
             pub fn from_config(config: SensorConfig) -> Result<$name> {
                 let config_path = match config.path.to_str() {
                     Some(path) => path,
-                    _ => bail!("Invalid device path"),
+                    _ => return Err(ErrorKind::InvalidDevice)?,
                 };
                 $name::new(config_path, config.address)
             }
@@ -42,10 +42,10 @@ macro_rules! device_i2cdev {
             /// until it is put into I2C mode again. Read your chipset data-sheet for proper
             /// the procedure.
             pub fn set_uart_mode(&self, bps_rate: u32) -> Result<ReplyStatus> {
-                let bps = BpsRate::parse_u32(bps_rate)?;
+                let bps = BpsRate::parse_u32(bps_rate).context(ErrorKind::IncorrectBps)?;
                 let _cmd = Baud(bps)
                     .run(&mut self.i2cdev.borrow_mut())
-                    .chain_err(|| ErrorKind::SensorTrouble)?;
+                    .context(ErrorKind::SensorTrouble)?;
                 Ok(ReplyStatus::Ok)
             }
         }
@@ -65,7 +65,7 @@ macro_rules! sensor_commands {
         fn set_calibration_clear(&self) -> Result<ReplyStatus> {
             let _cmd = CalibrationClear
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(ReplyStatus::Ok)
         }
     };
@@ -75,7 +75,7 @@ macro_rules! sensor_commands {
         fn get_calibration_status(&self) -> Result<CalibrationStatus> {
             let cal = CalibrationState
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(cal)
         }
     };
@@ -86,7 +86,7 @@ macro_rules! sensor_commands {
         fn get_export_info(&self) -> Result<ExportedInfo> {
             let info = ExportInfo
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(info)
         }
 
@@ -95,7 +95,7 @@ macro_rules! sensor_commands {
         fn get_export_line(&self) -> Result<Exported> {
             let export = Export
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(export)
         }
 
@@ -103,7 +103,7 @@ macro_rules! sensor_commands {
         fn set_import_line(&self, import: &str) -> Result<ReplyStatus> {
             let _import = Import(import.to_string())
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -111,7 +111,7 @@ macro_rules! sensor_commands {
         fn get_device_info(&self) -> Result<DeviceInfo> {
             let info = DeviceInformation
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(info)
         }
 
@@ -121,7 +121,7 @@ macro_rules! sensor_commands {
         fn get_device_status(&self) -> Result<DeviceStatus> {
             let status = Status
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(status)
         }
 
@@ -131,7 +131,7 @@ macro_rules! sensor_commands {
         fn set_factory_reset(&self) -> Result<ReplyStatus> {
             let _reset = Factory
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -139,7 +139,7 @@ macro_rules! sensor_commands {
         /// receives a new command.
         fn set_find_mode(&self) -> Result<ReplyStatus> {
             let _find = Find.run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -150,7 +150,7 @@ macro_rules! sensor_commands {
         fn set_device_address(&self, address: u16) -> Result<ReplyStatus> {
             let _set = DeviceAddress(address)
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -158,7 +158,7 @@ macro_rules! sensor_commands {
         fn set_led_off(&self) -> Result<ReplyStatus> {
             let _set = LedOff
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -166,7 +166,7 @@ macro_rules! sensor_commands {
         fn set_led_on(&self) -> Result<ReplyStatus> {
             let _set = LedOn
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -174,7 +174,7 @@ macro_rules! sensor_commands {
         fn get_led_status(&self) -> Result<LedStatus> {
             let status = LedState
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(status)
         }
 
@@ -182,7 +182,7 @@ macro_rules! sensor_commands {
         fn set_protocol_lock_off(&self) -> Result<ReplyStatus> {
             let _set = ProtocolLockDisable
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -190,7 +190,7 @@ macro_rules! sensor_commands {
         fn set_protocol_lock_on(&self) -> Result<ReplyStatus> {
             let _set = ProtocolLockEnable
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -198,7 +198,7 @@ macro_rules! sensor_commands {
         fn get_protocol_lock_status(&self) -> Result<ProtocolLockStatus> {
             let status = ProtocolLockState
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(status)
         }
 
@@ -211,7 +211,7 @@ macro_rules! sensor_commands {
         fn set_sleep(&self) -> Result<ReplyStatus> {
             let _sleep = Sleep
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(ReplyStatus::Ok)
         }
     };
@@ -221,7 +221,7 @@ macro_rules! sensor_commands {
         fn get_reading(&self) -> Result<SensorReading> {
             let reading = Reading
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(reading)
         }
     };
@@ -231,7 +231,7 @@ macro_rules! sensor_commands {
         fn set_compensation(&self, value: f64) -> Result<ReplyStatus> {
             let _cmd = CompensationSet(value)
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -239,7 +239,7 @@ macro_rules! sensor_commands {
         fn get_compensation(&self) -> Result<CompensationValue> {
             let value = CompensationGet
                 .run(&mut self.i2cdev.borrow_mut())
-                .chain_err(|| ErrorKind::SensorTrouble)?;
+                .context(ErrorKind::SensorTrouble)?;
             Ok(value)
         }
     };
@@ -252,7 +252,7 @@ macro_rules! impl_I2CCommand_for {
 
             fn from_str(s: &str) -> Result<$name> {
                 let cmd = s.parse::<$name>()
-                    .chain_err(|| ErrorKind::CommandParse)?;
+                    .context(ErrorKind::CommandParse)?;
                 Ok(cmd)
             }
 
@@ -263,7 +263,7 @@ macro_rules! impl_I2CCommand_for {
             fn write<A, T: SensorDevice<A>>(&self, device: &T) -> Result<$response> {
                 let reply = self
                     .run(&mut device.i2c_mut())
-                    .chain_err(|| ErrorKind::SensorTrouble)?;
+                    .context(ErrorKind::SensorTrouble)?;
                 Ok(reply)
             }
         }
@@ -275,7 +275,7 @@ macro_rules! impl_I2CResponse_for {
         impl I2CResponse for $name {
             fn from_str(s: &str) -> Result<$name> {
                 let response = $name::parse(s)
-                    .chain_err(|| ErrorKind::ResponseParse)?;
+                    .context(ErrorKind::ResponseParse)?;
                 Ok(response)
             }
 

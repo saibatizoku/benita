@@ -1,8 +1,4 @@
 //! Client for pH sensing.
-pub mod errors {
-    error_chain!{}
-}
-
 use super::replies::*;
 use super::requests::*;
 use super::super::PhAPI;
@@ -11,7 +7,7 @@ use common_ezo::EzoChipAPI;
 use errors::*;
 use network::{Endpoint, ReplyStatus, SocketRequest};
 
-use neuras;
+use zmq::Socket;
 
 
 // Creates a client for network requests to the `PhResponder`.

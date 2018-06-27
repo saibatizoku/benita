@@ -15,9 +15,9 @@ impl_SocketRequest_for! {
         if req_str.starts_with("baud ") {
             let resp = req_str.get(5..).unwrap();
             let bps_num = resp.parse::<u32>()
-                    .chain_err(|| ErrorKind::NumberParse)?;
+                    .context(ErrorKind::NumberParse)?;
             let bps = BpsRate::parse_u32(bps_num)
-                    .chain_err(|| ErrorKind::RequestParse)?;
+                    .context(ErrorKind::RequestParse)?;
             Ok(Baud(bps))
         } else {
             Err(ErrorKind::RequestParse.into())
@@ -47,7 +47,7 @@ impl_SocketRequest_for! {
         if req_str.starts_with("device-address ") {
             let resp = req_str.get(15..).unwrap();
             let addr = resp.parse::<u16>()
-                    .chain_err(|| ErrorKind::NumberParse)?;
+                    .context(ErrorKind::NumberParse)?;
             Ok(DeviceAddress(addr))
         } else {
             Err(ErrorKind::RequestParse.into())

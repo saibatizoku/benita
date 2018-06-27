@@ -1,10 +1,6 @@
 //! Configuration settings for sensors and network sockets, using `toml`.
 //!
 //! `benita` sets up sensors and network configurations using `toml` and `serde`.
-pub mod errors {
-    error_chain!{}
-}
-
 use std::path::PathBuf;
 
 use errors::*;
@@ -19,7 +15,7 @@ pub enum ConnectionType {
 
 impl ConnectionType {
     pub fn from_str(config_str: &str) -> Result<ConnectionType> {
-        toml::from_str(config_str).chain_err(|| ErrorKind::ConfigParse)
+        Ok(toml::from_str(config_str).context(ErrorKind::ConfigParse)?)
     }
 }
 
@@ -38,7 +34,7 @@ pub struct SocketConfig<'a> {
 
 impl<'a> SocketConfig<'a> {
     pub fn from_str(config_str: &str) -> Result<SocketConfig> {
-        toml::from_str(config_str).chain_err(|| ErrorKind::ConfigParse)
+        Ok(toml::from_str(config_str).context(ErrorKind::ConfigParse)?)
     }
 }
 
@@ -56,7 +52,7 @@ impl SensorConfig {
     }
 
     pub fn from_str(config_str: &str) -> Result<SensorConfig> {
-        toml::from_str(config_str).chain_err(|| ErrorKind::ConfigParse)
+        Ok(toml::from_str(config_str).context(ErrorKind::ConfigParse)?)
     }
 }
 
@@ -71,7 +67,7 @@ pub struct SensorServiceConfig<'a> {
 
 impl<'a> SensorServiceConfig<'a> {
     pub fn from_str(config_str: &str) -> Result<SensorServiceConfig> {
-        toml::from_str(config_str).chain_err(|| ErrorKind::ConfigParse)
+        Ok(toml::from_str(config_str).context(ErrorKind::ConfigParse)?)
     }
 }
 
@@ -86,7 +82,7 @@ pub struct ProxyConfig<'a> {
 
 impl<'a> ProxyConfig<'a> {
     pub fn from_str(config_str: &str) -> Result<ProxyConfig> {
-        toml::from_str(config_str).chain_err(|| ErrorKind::ConfigParse)
+        Ok(toml::from_str(config_str).context(ErrorKind::ConfigParse)?)
     }
 }
 

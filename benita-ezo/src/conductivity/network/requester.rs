@@ -1,8 +1,4 @@
 //! Client for Conductivity sensing.
-pub mod errors {
-    error_chain!{}
-}
-
 use super::replies::*;
 use super::requests::*;
 use super::super::ConductivityAPI;
@@ -11,7 +7,7 @@ use common_ezo::EzoChipAPI;
 use errors::*;
 use network::{Endpoint, ReplyStatus, SocketRequest};
 
-use neuras;
+use zmq::Socket;
 
 // Define the network client socket for sending requests to a
 // `ConductivityResponder`.

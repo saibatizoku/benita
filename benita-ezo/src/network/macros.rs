@@ -6,12 +6,12 @@ macro_rules! network_socket {
      $doc:tt) => {
         #[ doc = $doc ]
         pub struct $name {
-            socket: neuras::zmq::Socket,
+            socket: Socket,
         }
 
         impl $name {
             /// Create a new network socket.
-            pub fn new(socket: neuras::zmq::Socket) -> Result<$name> {
+            pub fn new(socket: Socket) -> Result<$name> {
                 Ok( $name { socket } )
             }
         }
@@ -29,13 +29,13 @@ macro_rules! network_sensor_socket {
      $doc:tt) => {
         #[ doc = $doc ]
         pub struct $name {
-            socket: neuras::zmq::Socket,
+            socket: Socket,
             pub sensor: $sensor,
         }
 
         impl $name {
             /// Create a new network socket.
-            pub fn new(socket: neuras::zmq::Socket, sensor: $sensor) -> Result<$name> {
+            pub fn new(socket: Socket, sensor: $sensor) -> Result<$name> {
                 Ok( $name { socket, sensor } )
             }
         }
@@ -51,29 +51,29 @@ macro_rules! endpoint_trait_impl {
         impl Endpoint for $name {
             /// Binds the socket to the given URL.
             fn bind(&self, url: &str) -> Result<()> {
-                let _bind = neuras::utils::bind_socket(&self.socket, url)
-                    .chain_err(|| ErrorKind::SocketBind)?;
+                let _bind = self.socket.bind(url)
+                    .context(ErrorKind::SocketBind)?;
                 Ok(())
             }
 
             /// Connects the socket to the given URL.
             fn connect(&self, url: &str) -> Result<()> {
-                let _connect = neuras::utils::connect_socket(&self.socket, url)
-                    .chain_err(|| ErrorKind::SocketConnect)?;
+                let _connect = self.socket.connect(url)
+                    .context(ErrorKind::SocketConnect)?;
                 Ok(())
             }
 
             /// Sends a message over the network socket.
             fn send(&self, msg: &[u8]) -> Result<()> {
                 let _send = self.socket.send(msg, 0)
-                    .chain_err(|| ErrorKind::SocketSend)?;
+                    .context(ErrorKind::SocketSend)?;
                 Ok(())
             }
 
             /// Receives a message from the network socket.
             fn recv(&self) -> Result<String> {
                 let received_result = self.socket.recv_string(0)
-                    .chain_err(|| ErrorKind::SocketReceive)?;
+                    .context(ErrorKind::SocketReceive)?;
                 // We match against the resulting `Resulṭ<String, Vec<u8>>`
                 let response = match received_result {
                     Ok(r) => r,
@@ -92,7 +92,7 @@ macro_rules! sensor_socket_commands {
         fn set_calibration_clear(&self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_calibration_clear()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(ReplyStatus::Ok)
         }
     };
@@ -101,7 +101,7 @@ macro_rules! sensor_socket_commands {
         fn get_calibration_status(&self) -> Result<CalibrationStatus> {
             let response = self.sensor
                 .get_calibration_status()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(response)
         }
     };
@@ -111,7 +111,7 @@ macro_rules! sensor_socket_commands {
         fn get_export_info(&self) -> Result<ExportedInfo> {
             let response = self.sensor
                 .get_export_info()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(response)
         }
 
@@ -119,7 +119,7 @@ macro_rules! sensor_socket_commands {
         fn get_export_line(&self) -> Result<Exported> {
             let response = self.sensor
                 .get_export_line()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(response)
         }
 
@@ -127,7 +127,7 @@ macro_rules! sensor_socket_commands {
         fn set_import_line(&self, import: &str) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_import_line(import)
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -135,7 +135,7 @@ macro_rules! sensor_socket_commands {
         fn get_device_info(&self) -> Result<DeviceInfo> {
             let response = self.sensor
                 .get_device_info()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(response)
         }
 
@@ -143,7 +143,7 @@ macro_rules! sensor_socket_commands {
         fn get_device_status(&self) -> Result<DeviceStatus> {
             let response = self.sensor
                 .get_device_status()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(response)
         }
 
@@ -151,7 +151,7 @@ macro_rules! sensor_socket_commands {
         fn set_factory_reset(&self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_factory_reset()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -159,7 +159,7 @@ macro_rules! sensor_socket_commands {
         fn set_find_mode(&self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_find_mode()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -167,7 +167,7 @@ macro_rules! sensor_socket_commands {
         fn set_device_address(&self, address: u16) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_device_address(address)
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -175,7 +175,7 @@ macro_rules! sensor_socket_commands {
         fn set_led_off(&self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_led_off()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -183,7 +183,7 @@ macro_rules! sensor_socket_commands {
         fn set_led_on(&self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_led_on()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -191,7 +191,7 @@ macro_rules! sensor_socket_commands {
         fn get_led_status(&self) -> Result<LedStatus> {
             let response = self.sensor
                 .get_led_status()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(response)
         }
 
@@ -199,7 +199,7 @@ macro_rules! sensor_socket_commands {
         fn set_protocol_lock_off(&self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_protocol_lock_off()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -207,7 +207,7 @@ macro_rules! sensor_socket_commands {
         fn set_protocol_lock_on(&self) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_protocol_lock_on()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(ReplyStatus::Ok)
         }
 
@@ -215,7 +215,7 @@ macro_rules! sensor_socket_commands {
         fn get_protocol_lock_status(&self) -> Result<ProtocolLockStatus> {
             let response = self.sensor
                 .get_protocol_lock_status()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(response)
         }
 
@@ -223,7 +223,7 @@ macro_rules! sensor_socket_commands {
         fn set_sleep(&self) -> Result<ReplyStatus> {
             let _sleep = self.sensor
                 .set_sleep()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(ReplyStatus::Ok)
         }
     };
@@ -233,7 +233,7 @@ macro_rules! sensor_socket_commands {
         fn get_reading(&self) -> Result<SensorReading> {
             let response = self.sensor
                 .get_reading()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(response)
         }
     };
@@ -243,7 +243,7 @@ macro_rules! sensor_socket_commands {
         fn get_compensation(&self) -> Result<CompensationValue> {
             let response = self.sensor
                 .get_compensation()
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(response)
         }
 
@@ -251,7 +251,7 @@ macro_rules! sensor_socket_commands {
         fn set_compensation(&self, t: f64) -> Result<ReplyStatus> {
             let _response = self.sensor
                 .set_compensation(t)
-                .chain_err(|| ErrorKind::CommandRequest)?;
+                .context(ErrorKind::CommandRequest)?;
             Ok(ReplyStatus::Ok)
         }
     };
@@ -282,7 +282,7 @@ macro_rules! impl_SocketRequest_for {
                 let req = <$request as SocketRequest>::to_string(&self);
                 debug!("sending socket request: {:?}", &req);
                 let _read = endpoint.send(req.as_bytes())
-                    .chain_err(|| ErrorKind::CommandRequest)?;
+                    .context(ErrorKind::CommandRequest)?;
                 let response = <$response as SocketReply>::recv(endpoint)?;
                 debug!("parsed socket reply: {:?}", &response);
                 Ok(response)
@@ -298,8 +298,7 @@ macro_rules! impl_SocketReply_for {
         impl SocketReply for $name {
 
             fn from_str(rep_str: &str) -> Result<$name> {
-                $name::parse(rep_str)
-                    .chain_err(|| ErrorKind::CommandReply)
+                Ok($name::parse(rep_str).context(ErrorKind::CommandReply)?)
             }
 
             fn to_string(&self) -> String {
@@ -315,24 +314,4 @@ macro_rules! impl_SocketReply_for {
             }
         }
     };
-}
-
-#[cfg(test)]
-mod tests {
-    use errors::*;
-    use network::Endpoint;
-
-    use neuras;
-    use neuras::utils::{create_context, zmq_req};
-
-    #[allow(unused)]
-    #[test]
-    fn macro_creates_a_device_network_socket() {
-        network_socket!(NewSocket, "NewSocket docs.");
-
-        let context = create_context();
-        let requester = zmq_req(&context).unwrap();
-        let socket = NewSocket::new(requester);
-        assert!(socket.is_ok());
-    }
 }

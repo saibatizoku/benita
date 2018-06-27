@@ -1,10 +1,4 @@
 //! EZO PH submersible pH sensor. Command-API for the EZO PH chipset.
-
-/// pH I2C device `Error`, and `ErrorKind` definitions.
-pub mod errors {
-    error_chain!{}
-}
-
 use std::cell::RefCell;
 use std::fmt;
 
@@ -54,7 +48,7 @@ impl PhAPI for PhSensor {
     fn set_calibration_high(&self, t: f64) -> Result<ReplyStatus> {
         let _cmd = CalibrationHigh(t)
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -62,7 +56,7 @@ impl PhAPI for PhSensor {
     fn set_calibration_low(&self, t: f64) -> Result<ReplyStatus> {
         let _cmd = CalibrationLow(t)
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -70,7 +64,7 @@ impl PhAPI for PhSensor {
     fn set_calibration_mid(&self, t: f64) -> Result<ReplyStatus> {
         let _cmd = CalibrationMid(t)
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -82,7 +76,7 @@ impl PhAPI for PhSensor {
     fn get_slope(&self) -> Result<ProbeSlope> {
         let slope = Slope
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(slope)
     }
 }

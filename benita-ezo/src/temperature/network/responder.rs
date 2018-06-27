@@ -1,8 +1,4 @@
 //! Server for Temperature sensing.
-pub mod errors {
-    error_chain!{}
-}
-
 use super::replies::*;
 use super::super::TemperatureAPI;
 use super::super::device::TemperatureSensor;
@@ -11,7 +7,7 @@ use common_ezo::EzoChipAPI;
 use errors::*;
 use network::{Endpoint, ReplyStatus};
 
-use neuras;
+use zmq::Socket;
 
 
 // Define the network socket for directly interacting with the
@@ -41,7 +37,7 @@ impl TemperatureAPI for TemperatureResponder {
     fn set_calibration_temperature(&self, c: f64) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_calibration_temperature(c)
-            .chain_err(|| ErrorKind::CommandRequest)?;
+            .context(ErrorKind::CommandRequest)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -49,7 +45,7 @@ impl TemperatureAPI for TemperatureResponder {
     fn set_data_logger_interval(&self, c: u32) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_data_logger_interval(c)
-            .chain_err(|| ErrorKind::CommandRequest)?;
+            .context(ErrorKind::CommandRequest)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -57,7 +53,7 @@ impl TemperatureAPI for TemperatureResponder {
     fn get_data_logger_status(&self) -> Result<DataLoggerStorageIntervalSeconds> {
         let response = self.sensor
             .get_data_logger_status()
-            .chain_err(|| ErrorKind::CommandRequest)?;
+            .context(ErrorKind::CommandRequest)?;
         Ok(response)
     }
 
@@ -65,7 +61,7 @@ impl TemperatureAPI for TemperatureResponder {
     fn set_data_logger_off(&self) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_data_logger_off()
-            .chain_err(|| ErrorKind::CommandRequest)?;
+            .context(ErrorKind::CommandRequest)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -73,7 +69,7 @@ impl TemperatureAPI for TemperatureResponder {
     fn set_memory_clear(&self) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_memory_clear()
-            .chain_err(|| ErrorKind::CommandRequest)?;
+            .context(ErrorKind::CommandRequest)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -81,7 +77,7 @@ impl TemperatureAPI for TemperatureResponder {
     fn get_memory_recall(&self) -> Result<MemoryReading> {
         let response = self.sensor
             .get_memory_recall()
-            .chain_err(|| ErrorKind::CommandRequest)?;
+            .context(ErrorKind::CommandRequest)?;
         Ok(response)
     }
 
@@ -89,7 +85,7 @@ impl TemperatureAPI for TemperatureResponder {
     fn get_memory_recall_last(&self) -> Result<MemoryReading> {
         let response = self.sensor
             .get_memory_recall_last()
-            .chain_err(|| ErrorKind::CommandRequest)?;
+            .context(ErrorKind::CommandRequest)?;
         Ok(response)
     }
 
@@ -97,7 +93,7 @@ impl TemperatureAPI for TemperatureResponder {
     fn set_scale_to_celsius(&self) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_scale_to_celsius()
-            .chain_err(|| ErrorKind::CommandRequest)?;
+            .context(ErrorKind::CommandRequest)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -105,7 +101,7 @@ impl TemperatureAPI for TemperatureResponder {
     fn set_scale_to_fahrenheit(&self) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_scale_to_fahrenheit()
-            .chain_err(|| ErrorKind::CommandRequest)?;
+            .context(ErrorKind::CommandRequest)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -113,7 +109,7 @@ impl TemperatureAPI for TemperatureResponder {
     fn set_scale_to_kelvin(&self) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_scale_to_kelvin()
-            .chain_err(|| ErrorKind::CommandRequest)?;
+            .context(ErrorKind::CommandRequest)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -121,7 +117,7 @@ impl TemperatureAPI for TemperatureResponder {
     fn get_scale(&self) -> Result<TemperatureScale> {
         let response = self.sensor
             .get_scale()
-            .chain_err(|| ErrorKind::CommandRequest)?;
+            .context(ErrorKind::CommandRequest)?;
         Ok(response)
     }
 }

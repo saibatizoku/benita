@@ -1,10 +1,4 @@
 //! EZO EC submersible electrical conductivity sensor. Command-API for the EZO EC chipset.
-
-/// Conductivity I2C device `Error`, and `ErrorKind` definitions.
-pub mod errors {
-    error_chain!{}
-}
-
 use std::cell::RefCell;
 use std::fmt;
 
@@ -57,7 +51,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn set_calibration_dry(&self) -> Result<ReplyStatus> {
         let _cmd = CalibrationDry
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -65,7 +59,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn set_calibration_high(&self, t: f64) -> Result<ReplyStatus> {
         let _cmd = CalibrationHigh(t)
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -73,7 +67,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn set_calibration_low(&self, t: f64) -> Result<ReplyStatus> {
         let _cmd = CalibrationLow(t)
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -81,7 +75,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn set_calibration_single(&self, t: f64) -> Result<ReplyStatus> {
         let _cmd = CalibrationOnePoint(t)
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -91,7 +85,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn set_output_conductivity_off(&self) -> Result<ReplyStatus> {
         let _set = OutputDisableConductivity
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -99,7 +93,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn set_output_salinity_off(&self) -> Result<ReplyStatus> {
         let _set = OutputDisableSalinity
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -107,7 +101,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn set_output_specific_gravity_off(&self) -> Result<ReplyStatus> {
         let _set = OutputDisableSpecificGravity
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -115,7 +109,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn set_output_tds_off(&self) -> Result<ReplyStatus> {
         let _set = OutputDisableTds
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -123,7 +117,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn set_output_conductivity_on(&self) -> Result<ReplyStatus> {
         let _set = OutputEnableConductivity
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -131,7 +125,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn set_output_salinity_on(&self) -> Result<ReplyStatus> {
         let _set = OutputEnableSalinity
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -139,7 +133,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn set_output_specific_gravity_on(&self) -> Result<ReplyStatus> {
         let _set = OutputEnableSpecificGravity
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -147,7 +141,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn set_output_tds_on(&self) -> Result<ReplyStatus> {
         let _set = OutputEnableTds
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -155,7 +149,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn get_output_params(&self) -> Result<OutputStringStatus> {
         let status = OutputState
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(status)
     }
 
@@ -163,7 +157,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn set_probe_type_one(&self) -> Result<ReplyStatus> {
         let _set = ProbeTypeOne
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -171,7 +165,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn set_probe_type_point_one(&self) -> Result<ReplyStatus> {
         let _set = ProbeTypePointOne
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -179,7 +173,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn set_probe_type_ten(&self) -> Result<ReplyStatus> {
         let _set = ProbeTypeTen
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -187,7 +181,7 @@ impl ConductivityAPI for ConductivitySensor {
     fn get_probe_type_status(&self) -> Result<ProbeType> {
         let status = ProbeTypeState
             .run(&mut self.i2cdev.borrow_mut())
-            .chain_err(|| ErrorKind::SensorTrouble)?;
+            .context(ErrorKind::SensorTrouble)?;
         Ok(status)
     }
 }

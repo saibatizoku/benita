@@ -1,8 +1,4 @@
 //! Requests for the temperature sensor. Requests are sent to a temperature `Endpoint`.
-pub mod errors {
-    error_chain!{}
-}
-
 use network::{Endpoint, ReplyStatus, SocketReply, SocketRequest};
 use temperature::device::responses::*;
 
@@ -73,7 +69,7 @@ impl_SocketRequest_for! {
         if req_str.starts_with("datalogger-set ") {
             let resp = req_str.get(15..).unwrap();
             let value =  resp.parse::<u32>()
-                    .chain_err(|| ErrorKind::NumberParse)?;
+                    .context(ErrorKind::NumberParse)?;
             return Ok(DataloggerPeriod(value));
         }
         Err(ErrorKind::RequestParse.into())

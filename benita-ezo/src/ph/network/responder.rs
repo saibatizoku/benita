@@ -1,8 +1,4 @@
 //! Server for pH sensing.
-pub mod errors {
-    error_chain!{}
-}
-
 use super::replies::*;
 use super::super::PhAPI;
 use super::super::device::PhSensor;
@@ -11,7 +7,7 @@ use common_ezo::EzoChipAPI;
 use errors::*;
 use network::{Endpoint, ReplyStatus};
 
-use neuras;
+use zmq::Socket;
 
 
 // Define the network socket for directly interacting with the
@@ -41,7 +37,7 @@ impl PhAPI for PhResponder {
     fn set_calibration_high(&self, c: f64) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_calibration_high(c)
-            .chain_err(|| ErrorKind::CommandRequest)?;
+            .context(ErrorKind::CommandRequest)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -49,7 +45,7 @@ impl PhAPI for PhResponder {
     fn set_calibration_low(&self, c: f64) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_calibration_low(c)
-            .chain_err(|| ErrorKind::CommandRequest)?;
+            .context(ErrorKind::CommandRequest)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -57,7 +53,7 @@ impl PhAPI for PhResponder {
     fn set_calibration_mid(&self, c: f64) -> Result<ReplyStatus> {
         let _response = self.sensor
             .set_calibration_mid(c)
-            .chain_err(|| ErrorKind::CommandRequest)?;
+            .context(ErrorKind::CommandRequest)?;
         Ok(ReplyStatus::Ok)
     }
 
@@ -67,7 +63,7 @@ impl PhAPI for PhResponder {
     fn get_slope(&self) -> Result<ProbeSlope> {
         let response = self.sensor
             .get_slope()
-            .chain_err(|| ErrorKind::CommandRequest)?;
+            .context(ErrorKind::CommandRequest)?;
         Ok(response)
     }
 }

@@ -1,8 +1,4 @@
 //! Replies from the pH sensor. `Reply`s are received after a `Request`.
-pub mod errors {
-    error_chain!{}
-}
-
 use errors::*;
 use network::{Endpoint, SocketReply};
 
