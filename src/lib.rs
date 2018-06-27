@@ -18,7 +18,7 @@ pub extern crate benita_ezo;
 extern crate chrono;
 extern crate clap;
 #[macro_use]
-extern crate error_chain;
+extern crate failure;
 extern crate neuras;
 
 pub mod cli;
