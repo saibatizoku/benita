@@ -6,7 +6,7 @@ description = "Software library for connecting sensors to the network"
 
 [dependencies]
 benita-ezo = { path = "benita-ezo" }
-chrono = "0.4.0"
+chrono = "0.4"
 clap = "2"
 error-chain = "~0.11.0"
 fern = "0.4"
