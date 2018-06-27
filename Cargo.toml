@@ -8,7 +8,7 @@ description = "Software library for connecting sensors to the network"
 benita-ezo = { path = "benita-ezo" }
 chrono = "0.4"
 clap = "2"
-error-chain = "~0.11.0"
+failure = "0.1"
 fern = "0.4"
 log = "0.3"
 neuras = { git = "https://github.com/saibatizoku/neuras.git", branch = "master" }
