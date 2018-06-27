@@ -1,10 +1,6 @@
 //! Sends remote commands to the RTD EZO chip, using the exposed a limited API.
 //!
 //! This server binds to the `REP_URL` argument, expected from the command line.
-
-// error-chain recurses deeply
-#![recursion_limit = "1024"]
-
 extern crate benita;
 extern crate clap;
 extern crate neuras;

@@ -2,10 +2,6 @@
 //! data with a UUID as the topic.
 //!
 //! This server binds to the `PUB_URL` argument, expected from the command line.
-
-// error-chain recurses deeply
-#![recursion_limit = "1024"]
-
 extern crate benita;
 extern crate chrono;
 extern crate clap;

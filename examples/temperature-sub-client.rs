@@ -1,4 +1,3 @@
-#![recursion_limit = "1024"]
 //! An example that takes readings from the RTD EZO chip in a loop.
 //!
 extern crate benita;

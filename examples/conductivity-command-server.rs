@@ -1,15 +1,11 @@
 //! Allows for remote command of the EC EZO chip, exposing a limited API.
 //!
 //! This server binds to the `REP_URL` argument, expected from the command line.
-
-// error-chain recurses deeply
-#![recursion_limit = "1024"]
-
 extern crate benita;
 extern crate chrono;
 extern crate clap;
 #[macro_use]
-extern crate error_chain;
+extern crate failure;
 extern crate fern;
 #[macro_use]
 extern crate log;

@@ -1,6 +1,4 @@
 //! Submodule that provides functionality for EZO water sensor chips.
-#![recursion_limit = "128"]
-
 extern crate ezo_common;
 extern crate ezo_ec;
 extern crate ezo_ph;

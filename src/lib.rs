@@ -10,16 +10,13 @@
 //! * pH (made by Atlas Scientific: EZO PH)
 //! * Electrical Conductivity (made by Atlas Scientific: EZO EC)
 //! * Temperature (made by Atlas Scientific: EZO RTD)
-
-#![recursion_limit = "1024"]
-
-pub extern crate benita_ezo;
-
 extern crate chrono;
 extern crate clap;
 #[macro_use]
 extern crate failure;
 extern crate neuras;
+
+pub extern crate benita_ezo;
 
 pub mod cli;
 pub mod errors;
