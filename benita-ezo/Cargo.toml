@@ -10,12 +10,13 @@ ezo_ec = { git = "https://github.com/saibatizoku/ezo-ec-rs.git", branch = "maste
 ezo_ph = { git = "https://github.com/saibatizoku/ezo-ph-rs.git", branch = "master" }
 ezo_rtd = { git = "https://github.com/saibatizoku/ezo-rtd-rs.git", branch = "master" }
 failure = "0.1"
-i2cdev = "0.3.1"
+i2cdev = "0.4"
 log = "0.3"
 neuras = { git = "https://github.com/saibatizoku/neuras.git", branch = "master" }
 serde = "1.0"
 serde_derive = "1.0"
 toml = "0.4"
+zmq = { git = "https://github.com/erickt/rust-zmq.git" }
 
 [profile.release]
 lto = true
