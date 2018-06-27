@@ -1,7 +1,7 @@
 //! Command-line interpreter items.
 use utilities::atof;
 
-use neuras::url::Url;
+use url::Url;
 
 /// Validator function for URLs.
 pub fn is_url(v: String) -> ::std::result::Result<(), String> {

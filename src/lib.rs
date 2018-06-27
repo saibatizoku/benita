@@ -15,6 +15,7 @@ extern crate clap;
 #[macro_use]
 extern crate failure;
 extern crate neuras;
+extern crate url;
 extern crate zmq;
 
 pub extern crate benita_ezo;
