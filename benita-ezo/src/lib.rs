@@ -1,12 +1,12 @@
 //! Submodule that provides functionality for EZO water sensor chips.
 #![recursion_limit = "128"]
 
-#[macro_use]
-extern crate error_chain;
 extern crate ezo_common;
 extern crate ezo_ec;
 extern crate ezo_ph;
 extern crate ezo_rtd;
+#[macro_use]
+extern crate failure;
 extern crate i2cdev;
 #[macro_use]
 extern crate log;
