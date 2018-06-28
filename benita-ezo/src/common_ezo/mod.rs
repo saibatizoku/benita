@@ -59,7 +59,7 @@ mod api {
 pub mod command;
 pub mod requests;
 
-pub mod response;
 pub mod replies;
+pub mod response;
 
 pub use self::api::*;

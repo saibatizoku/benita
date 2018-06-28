@@ -1,24 +1,22 @@
 //! Requests for the conductivity sensor. Requests are sent to a conductivity `Endpoint`.
-use conductivity::response::{CalibrationStatus, CompensationValue, OutputStringStatus, ProbeType,
-                             SensorReading};
+use conductivity::response::{
+    CalibrationStatus, CompensationValue, OutputStringStatus, ProbeType, SensorReading,
+};
 
 use errors::*;
 use network::{Endpoint, ReplyStatus, SocketReply};
 use utilities::atof;
 
-pub use conductivity::command::{Baud, CalibrationClear, CalibrationDry, CalibrationHigh,
-                                CalibrationLow, CalibrationOnePoint, CalibrationState,
-                                CompensationGet, CompensationSet, DeviceAddress,
-                                DeviceInformation, Export, ExportInfo, Factory, Find, Import,
-                                LedOff, LedOn, LedState, OutputDisableConductivity,
-                                OutputDisableSalinity, OutputDisableSpecificGravity,
-                                OutputDisableTds, OutputEnableConductivity, OutputEnableSalinity,
-                                OutputEnableSpecificGravity, OutputEnableTds, OutputState,
-                                ProbeTypeOne, ProbeTypePointOne, ProbeTypeState, ProbeTypeTen,
-                                ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState,
-                                Reading, Sleep, Status};
+pub use conductivity::command::{
+    Baud, CalibrationClear, CalibrationDry, CalibrationHigh, CalibrationLow, CalibrationOnePoint,
+    CalibrationState, CompensationGet, CompensationSet, DeviceAddress, DeviceInformation, Export,
+    ExportInfo, Factory, Find, Import, LedOff, LedOn, LedState, OutputDisableConductivity,
+    OutputDisableSalinity, OutputDisableSpecificGravity, OutputDisableTds,
+    OutputEnableConductivity, OutputEnableSalinity, OutputEnableSpecificGravity, OutputEnableTds,
+    OutputState, ProbeTypeOne, ProbeTypePointOne, ProbeTypeState, ProbeTypeTen,
+    ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState, Reading, Sleep, Status,
+};
 pub use network::SocketRequest;
-
 
 impl_SocketRequest_for! {
     CalibrationDry: ReplyStatus,
@@ -486,12 +484,10 @@ mod tests {
 
     #[test]
     fn parse_conductivity_output_sg_off_request_from_invalid_str_yields_err() {
-        let request =
-            <OutputDisableSpecificGravity as SocketRequest>::from_str("output-sg-offo");
+        let request = <OutputDisableSpecificGravity as SocketRequest>::from_str("output-sg-offo");
         assert!(request.is_err());
 
-        let request =
-            <OutputDisableSpecificGravity as SocketRequest>::from_str("output-sg-off 10");
+        let request = <OutputDisableSpecificGravity as SocketRequest>::from_str("output-sg-off 10");
         assert!(request.is_err());
     }
 
@@ -554,12 +550,10 @@ mod tests {
 
     #[test]
     fn parse_conductivity_output_sg_on_request_from_invalid_str_yields_err() {
-        let request =
-            <OutputEnableSpecificGravity as SocketRequest>::from_str("output-sg-ono");
+        let request = <OutputEnableSpecificGravity as SocketRequest>::from_str("output-sg-ono");
         assert!(request.is_err());
 
-        let request =
-            <OutputEnableSpecificGravity as SocketRequest>::from_str("output-sg-on 10");
+        let request = <OutputEnableSpecificGravity as SocketRequest>::from_str("output-sg-on 10");
         assert!(request.is_err());
     }
 

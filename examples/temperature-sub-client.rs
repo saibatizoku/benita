@@ -3,17 +3,23 @@
 extern crate benita;
 extern crate chrono;
 extern crate clap;
+extern crate failure;
 extern crate neuras;
+extern crate zmq;
 
 use std::thread;
 use std::time::Duration;
+use std::result;
 
-use benita::errors::{ErrorKind, Result};
+use benita::errors::ErrorKind;
 use chrono::{DateTime, Local};
 use clap::{App, Arg};
-use neuras::utils::{connect_socket, create_context, subscribe_client, zmq_sub};
+use failure::Error;
+use zmq::{Context, SUB};
 
 const SUB_CHANNEL: &'static str = "temperature-0123456789abcdef";
+
+type Result<T> = result::Result<T, Error>;
 
 fn atof(s: &str) -> f64 {
     s.parse().unwrap()
@@ -96,7 +102,6 @@ fn parse_sub_str(sub_str: &str) -> Result<(String, DateTime<Local>, f64, String)
         }
     };
 
-
     let scale = match split.next() {
         Some(_scale) => _scale.to_string(),
         _ => {
@@ -111,11 +116,11 @@ fn parse_sub_str(sub_str: &str) -> Result<(String, DateTime<Local>, f64, String)
 fn run_subscriber(pub_url: &str, channel: &str) -> Result<()> {
     println!("Collecting updates from weather server...");
 
-    let context = create_context();
-    let subscriber = zmq_sub(&context)?;
-    let _connect = connect_socket(&subscriber, pub_url)?;
+    let context = Context::new();
+    let subscriber = context.socket(SUB)?;
+    let _connect = subscriber.connect(pub_url)?;
 
-    let _subscribe = subscribe_client(&subscriber, channel)?;
+    let _subscribe = subscriber.set_subscribe(channel.as_bytes())?;
 
     let mut samples = 0;
     let mut total_temp = 0f64;
@@ -151,17 +156,11 @@ fn run_subscriber(pub_url: &str, channel: &str) -> Result<()> {
 
 fn main() {
     if let Err(ref e) = parse_cli_arguments() {
-        println!("error: {}", e);
-
-        for e in e.iter().skip(1) {
-            println!("caused by: {}", e);
-        }
-
+        println!("error: {:?}", e.cause());
         // The backtrace is not always generated. Try to run this example
         // with `RUST_BACKTRACE=1`.
-        if let Some(backtrace) = e.backtrace() {
-            println!("backtrace: {:?}", backtrace);
-        }
+        let backtrace = e.backtrace();
+        println!("backtrace: {:?}", backtrace);
         ::std::process::exit(1);
     }
 }

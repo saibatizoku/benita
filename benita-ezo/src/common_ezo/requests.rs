@@ -511,7 +511,6 @@ mod tests {
         assert!(request.is_err());
     }
 
-
     #[test]
     fn parse_status_request_from_valid_str() {
         let request = <Status as SocketRequest>::from_str("status").unwrap();

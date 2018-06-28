@@ -2,8 +2,9 @@
 use devices::I2CResponse;
 use errors::*;
 
-pub use ezo_common::response::{DeviceInfo, DeviceStatus, Exported, ExportedInfo, LedStatus,
-                               ProtocolLockStatus, ResponseStatus};
+pub use ezo_common::response::{
+    DeviceInfo, DeviceStatus, Exported, ExportedInfo, LedStatus, ProtocolLockStatus, ResponseStatus,
+};
 
 impl_I2CResponse_for!(DeviceInfo);
 impl_I2CResponse_for!(DeviceStatus);

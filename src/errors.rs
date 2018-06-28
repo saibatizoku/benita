@@ -1,7 +1,7 @@
 //! Library Error, and ErrorKind definitions.
-use std::result;
-use std::fmt::{self, Display};
 use failure::{Backtrace, Context, Fail};
+use std::fmt::{self, Display};
+use std::result;
 
 pub use failure::ResultExt;
 

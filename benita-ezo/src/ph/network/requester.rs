@@ -1,14 +1,13 @@
 //! Client for pH sensing.
+use super::super::PhAPI;
 use super::replies::*;
 use super::requests::*;
-use super::super::PhAPI;
 
 use common_ezo::EzoChipAPI;
 use errors::*;
 use network::{Endpoint, ReplyStatus, SocketRequest};
 
 use zmq::Socket;
-
 
 // Creates a client for network requests to the `PhResponder`.
 network_socket!(PhRequester, "Socket that communicates with the pH sensor.");

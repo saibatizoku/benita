@@ -9,8 +9,10 @@ use toml;
 /// Socket connection type. Can be `Bind` or `Connect`.
 #[derive(Clone, Debug, Deserialize, PartialEq, Eq)]
 pub enum ConnectionType {
-    #[serde(rename = "bind")] Bind,
-    #[serde(rename = "connect")] Connect,
+    #[serde(rename = "bind")]
+    Bind,
+    #[serde(rename = "connect")]
+    Connect,
 }
 
 impl ConnectionType {
@@ -29,7 +31,8 @@ impl Default for ConnectionType {
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
 pub struct SocketConfig<'a> {
     pub url: &'a str,
-    #[serde(default)] pub socket_connection: ConnectionType,
+    #[serde(default)]
+    pub socket_connection: ConnectionType,
 }
 
 impl<'a> SocketConfig<'a> {
@@ -75,9 +78,11 @@ impl<'a> SensorServiceConfig<'a> {
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Eq)]
 pub struct ProxyConfig<'a> {
     pub backend_url: &'a str,
-    #[serde(default)] pub backend_connection: ConnectionType,
+    #[serde(default)]
+    pub backend_connection: ConnectionType,
     pub frontend_url: &'a str,
-    #[serde(default)] pub frontend_connection: ConnectionType,
+    #[serde(default)]
+    pub frontend_connection: ConnectionType,
 }
 
 impl<'a> ProxyConfig<'a> {

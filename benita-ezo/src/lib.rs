@@ -19,8 +19,8 @@ pub mod devices;
 #[macro_use]
 pub mod network;
 
-pub mod errors;
 pub mod config;
+pub mod errors;
 pub mod utilities;
 
 pub mod common_ezo;

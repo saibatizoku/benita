@@ -2,7 +2,7 @@
 #[macro_export]
 macro_rules! device_i2cdev {
     // Name identifier and documentation for the new I2C sensor struct.
-    ($name:ident , $doc:tt) => {
+    ($name:ident, $doc:tt) => {
         #[ doc = $doc ]
         pub struct $name {
             path: String,
@@ -17,10 +17,13 @@ macro_rules! device_i2cdev {
             /// This device uses a file-descriptor through `i2cdev`. To use it, the path
             /// to the I2C bus, and the `u16` address location, are needed.
             pub fn new(path: &str, address: u16) -> Result<$name> {
-                let i2cdev = LinuxI2CDevice::new(path, address)
-                    .context(ErrorKind::SensorTrouble)?;
+                let i2cdev = LinuxI2CDevice::new(path, address).context(ErrorKind::SensorTrouble)?;
                 let path = path.to_string();
-                Ok( $name { path, address, i2cdev: RefCell::new(i2cdev) } )
+                Ok($name {
+                    path,
+                    address,
+                    i2cdev: RefCell::new(i2cdev),
+                })
             }
 
             /// Create a new I2C sensor instance from `SensorConfig`.
@@ -52,7 +55,13 @@ macro_rules! device_i2cdev {
 
         impl fmt::Debug for $name {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                write!(f, "{} {{ ADDRESS {} @ {}}}", stringify!($name), self.address, self.path)
+                write!(
+                    f,
+                    "{} {{ ADDRESS {} @ {}}}",
+                    stringify!($name),
+                    self.address,
+                    self.path
+                )
             }
         }
     };
@@ -246,13 +255,12 @@ macro_rules! sensor_commands {
 }
 
 macro_rules! impl_I2CCommand_for {
-    ( $name:ident , $response:ty ) => {
+    ($name:ident, $response:ty) => {
         impl I2CCommand for $name {
             type Response = $response;
 
             fn from_str(s: &str) -> Result<$name> {
-                let cmd = s.parse::<$name>()
-                    .context(ErrorKind::CommandParse)?;
+                let cmd = s.parse::<$name>().context(ErrorKind::CommandParse)?;
                 Ok(cmd)
             }
 
@@ -267,15 +275,14 @@ macro_rules! impl_I2CCommand_for {
                 Ok(reply)
             }
         }
-    }
+    };
 }
 
 macro_rules! impl_I2CResponse_for {
-    ( $name:ident ) => {
+    ($name:ident) => {
         impl I2CResponse for $name {
             fn from_str(s: &str) -> Result<$name> {
-                let response = $name::parse(s)
-                    .context(ErrorKind::ResponseParse)?;
+                let response = $name::parse(s).context(ErrorKind::ResponseParse)?;
                 Ok(response)
             }
 
@@ -283,5 +290,5 @@ macro_rules! impl_I2CResponse_for {
                 format!("{:?}", self)
             }
         }
-    }
+    };
 }

@@ -1,7 +1,7 @@
 //! Library Error, and ErrorKind definitions.
+use failure::{Backtrace, Context, Fail};
 use std::fmt::{self, Display};
 use std::result;
-use failure::{Backtrace, Context, Fail};
 
 pub use failure::ResultExt;
 
@@ -12,7 +12,7 @@ pub struct Error {
     inner: Context<ErrorKind>,
 }
 
-#[derive(Copy, Clone, Eq, Debug, Fail, PartialEq)]
+#[derive(Clone, Eq, Debug, Fail, PartialEq)]
 pub enum ErrorKind {
     #[fail(display = "could not parse address")]
     AddressParse,
@@ -50,6 +50,10 @@ pub enum ErrorKind {
     ResponseParse,
     #[fail(display = "trouble with the sensor")]
     SensorTrouble,
+    #[fail(display = "runtime error: {}", _0)]
+    RunTime(String),
+    #[fail(display = "unable to setup proxy")]
+    ProxyCreate,
 }
 
 impl Fail for Error {
@@ -70,7 +74,7 @@ impl Display for Error {
 
 impl Error {
     pub fn kind(&self) -> ErrorKind {
-        *self.inner.get_context()
+        self.inner.get_context().clone()
     }
 }
 

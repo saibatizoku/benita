@@ -1,13 +1,15 @@
 //! Responses from EZO RTD chipset.
 use errors::*;
 
-pub use common_ezo::response::{DeviceInfo, DeviceStatus, Exported, ExportedInfo, LedStatus,
-                               ProtocolLockStatus, ResponseStatus};
-pub use ezo_rtd::response::{CalibrationStatus, DataLoggerStorageIntervalSeconds, MemoryReading,
-                            SensorReading, TemperatureScale};
+pub use common_ezo::response::{
+    DeviceInfo, DeviceStatus, Exported, ExportedInfo, LedStatus, ProtocolLockStatus, ResponseStatus,
+};
+pub use ezo_rtd::response::{
+    CalibrationStatus, DataLoggerStorageIntervalSeconds, MemoryReading, SensorReading,
+    TemperatureScale,
+};
 
 pub use devices::I2CResponse;
-
 
 impl_I2CResponse_for!(CalibrationStatus);
 impl_I2CResponse_for!(DataLoggerStorageIntervalSeconds);
@@ -41,8 +43,8 @@ mod tests {
     fn parse_data_logger_storage_interval_reply_from_valid_str() {
         let reply = <DataLoggerStorageIntervalSeconds as I2CResponse>::from_str("?D,0").unwrap();
         assert_eq!("?D,0", I2CResponse::to_string(&reply));
-        let reply = <DataLoggerStorageIntervalSeconds as I2CResponse>::from_str(
-            "?D,320000").unwrap();
+        let reply =
+            <DataLoggerStorageIntervalSeconds as I2CResponse>::from_str("?D,320000").unwrap();
         assert_eq!("?D,320000", I2CResponse::to_string(&reply));
     }
 

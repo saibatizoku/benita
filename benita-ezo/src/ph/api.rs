@@ -1,6 +1,6 @@
 //! API for pH sensor functionality.
-use common_ezo::EzoChipAPI;
 use super::response::*;
+use common_ezo::EzoChipAPI;
 
 /// API for pH commands and replies
 pub trait PhAPI: EzoChipAPI {

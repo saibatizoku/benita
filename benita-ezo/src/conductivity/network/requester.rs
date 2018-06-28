@@ -1,7 +1,7 @@
 //! Client for Conductivity sensing.
+use super::super::ConductivityAPI;
 use super::replies::*;
 use super::requests::*;
-use super::super::ConductivityAPI;
 
 use common_ezo::EzoChipAPI;
 use errors::*;

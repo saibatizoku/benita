@@ -3,15 +3,21 @@
 //! This server binds to the `REP_URL` argument, expected from the command line.
 extern crate benita;
 extern crate clap;
+extern crate failure;
 extern crate neuras;
+extern crate zmq;
 
 use benita::ezo::common_ezo::EzoChipAPI;
-use benita::ezo::conductivity::ConductivityAPI;
 use benita::ezo::conductivity::network::ConductivityRequester;
-use benita::ezo::errors::{ErrorKind, Result};
+use benita::ezo::conductivity::ConductivityAPI;
+use benita::ezo::errors::ErrorKind;
 
+use std::result;
 use clap::{App, Arg};
-use neuras::utils::{connect_socket, create_context, zmq_req};
+use failure::Error;
+use zmq::{Context, REQ};
+
+type Result<T> = result::Result<T, Error>;
 
 fn parse_cli_arguments() -> Result<()> {
     let matches = App::new("benita-subscriber")
@@ -38,7 +44,7 @@ fn parse_cli_arguments() -> Result<()> {
 
     let rep_url = match matches.value_of("rep-url") {
         Some(repurl) => repurl,
-        _ => return Err(ErrorKind::ConfigParse.into()),
+        _ => return Err(ErrorKind::ConfigParse)?,
     };
 
     let _run = run_client(&rep_url)?;
@@ -48,9 +54,9 @@ fn parse_cli_arguments() -> Result<()> {
 }
 
 fn run_client(rep_url: &str) -> Result<()> {
-    let context = create_context();
-    let req_socket = zmq_req(&context)?;
-    let _connect = connect_socket(&req_socket, rep_url)?;
+    let context = Context::new();
+    let req_socket = context.socket(REQ)?;
+    let _connect = req_socket.connect(rep_url)?;
 
     let ec_client = ConductivityRequester::new(req_socket)?;
 
@@ -72,17 +78,11 @@ fn run_client(rep_url: &str) -> Result<()> {
 
 fn main() {
     if let Err(ref e) = parse_cli_arguments() {
-        println!("error: {}", e);
-
-        for e in e.iter().skip(1) {
-            println!("caused by: {}", e);
-        }
-
+        println!("error: {:?}", e.cause());
         // The backtrace is not always generated. Try to run this example
         // with `RUST_BACKTRACE=1`.
-        if let Some(backtrace) = e.backtrace() {
-            println!("backtrace: {:?}", backtrace);
-        }
+        let backtrace = e.backtrace();
+        println!("backtrace: {:?}", backtrace);
         ::std::process::exit(1);
     }
 }

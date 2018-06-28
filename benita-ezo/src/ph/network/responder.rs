@@ -1,14 +1,13 @@
 //! Server for pH sensing.
-use super::replies::*;
-use super::super::PhAPI;
 use super::super::device::PhSensor;
+use super::super::PhAPI;
+use super::replies::*;
 
 use common_ezo::EzoChipAPI;
 use errors::*;
 use network::{Endpoint, ReplyStatus};
 
 use zmq::Socket;
-
 
 // Define the network socket for directly interacting with the
 // pH sensor via I2C.
@@ -35,7 +34,8 @@ impl PhAPI for PhResponder {
 
     /// Set the calibration high-point for the sensor.
     fn set_calibration_high(&self, c: f64) -> Result<ReplyStatus> {
-        let _response = self.sensor
+        let _response = self
+            .sensor
             .set_calibration_high(c)
             .context(ErrorKind::CommandRequest)?;
         Ok(ReplyStatus::Ok)
@@ -43,7 +43,8 @@ impl PhAPI for PhResponder {
 
     /// Set the calibration low-point for the sensor.
     fn set_calibration_low(&self, c: f64) -> Result<ReplyStatus> {
-        let _response = self.sensor
+        let _response = self
+            .sensor
             .set_calibration_low(c)
             .context(ErrorKind::CommandRequest)?;
         Ok(ReplyStatus::Ok)
@@ -51,7 +52,8 @@ impl PhAPI for PhResponder {
 
     /// Set the calibration mid-point for the sensor.
     fn set_calibration_mid(&self, c: f64) -> Result<ReplyStatus> {
-        let _response = self.sensor
+        let _response = self
+            .sensor
             .set_calibration_mid(c)
             .context(ErrorKind::CommandRequest)?;
         Ok(ReplyStatus::Ok)
@@ -61,9 +63,7 @@ impl PhAPI for PhResponder {
 
     /// Get the current slope for the pH sensor.
     fn get_slope(&self) -> Result<ProbeSlope> {
-        let response = self.sensor
-            .get_slope()
-            .context(ErrorKind::CommandRequest)?;
+        let response = self.sensor.get_slope().context(ErrorKind::CommandRequest)?;
         Ok(response)
     }
 }

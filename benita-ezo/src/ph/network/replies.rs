@@ -2,9 +2,10 @@
 use errors::*;
 use network::{Endpoint, SocketReply};
 
-pub use ph::response::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus, Exported,
-                       ExportedInfo, LedStatus, ProbeSlope, ProtocolLockStatus, SensorReading};
-
+pub use ph::response::{
+    CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus, Exported, ExportedInfo,
+    LedStatus, ProbeSlope, ProtocolLockStatus, SensorReading,
+};
 
 // Basically, wrap existing responses from the original sensor crate.
 impl_SocketReply_for!(CalibrationStatus);

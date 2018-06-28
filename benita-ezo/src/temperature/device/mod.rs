@@ -2,12 +2,12 @@
 use std::cell::RefCell;
 use std::fmt;
 
-use super::TemperatureAPI;
 use super::command::*;
 use super::response::*;
+use super::TemperatureAPI;
 
-use config::SensorConfig;
 use common_ezo::EzoChipAPI;
+use config::SensorConfig;
 use devices::SensorDevice;
 use errors::*;
 use network::ReplyStatus;

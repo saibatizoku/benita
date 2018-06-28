@@ -1,13 +1,12 @@
 //! Requests for the pH sensor. Requests are sent to a pH `Endpoint`.
-use network::{Endpoint, ReplyStatus, SocketReply, SocketRequest};
 use errors::*;
+use network::{Endpoint, ReplyStatus, SocketReply, SocketRequest};
 use ph::response::*;
 use utilities::atof;
 
 pub use common_ezo::command::*;
 pub use common_ezo::response::*;
 pub use ph::device::commands::*;
-
 
 impl_SocketRequest_for! {
     CalibrationHigh: ReplyStatus,

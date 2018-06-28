@@ -4,27 +4,32 @@
 extern crate benita;
 extern crate chrono;
 extern crate clap;
-#[macro_use]
 extern crate failure;
 extern crate fern;
 #[macro_use]
 extern crate log;
 extern crate neuras;
+extern crate zmq;
 
 use std::path::PathBuf;
+use std::result;
 
 use benita::cli::is_url;
 use benita::ezo::common_ezo::EzoChipAPI;
 use benita::ezo::config::{ConnectionType, SensorConfig, SocketConfig};
-use benita::ezo::errors::*;
+use benita::ezo::errors::{Error as EzoError};
 use benita::ezo::network::{Endpoint, ReplyStatus};
-use benita::ezo::ph::PhAPI;
+use benita::ezo::ph::command::*;
 use benita::ezo::ph::device::PhSensor;
 use benita::ezo::ph::network::PhResponder;
-use benita::ezo::ph::command::*;
+use benita::ezo::ph::PhAPI;
 use benita::ezo::utilities::*;
 
 use clap::{App, Arg};
+use failure::{Error, ResultExt};
+use zmq::Socket;
+
+type Result<T> = result::Result<T, Error>;
 
 // Configure and start logger.
 fn start_logger() -> Result<()> {
@@ -40,15 +45,14 @@ fn start_logger() -> Result<()> {
         })
         .level(log::LogLevelFilter::Debug)
         .chain(std::io::stdout())
-        .chain(fern::log_file("ph-responder.log")
-            .chain_err(|| "failed to open log file")?)
+        .chain(fern::log_file("ph-responder.log").context("failed to open log file")?)
         .apply()
-        .chain_err(|| "Could not setup logging")?;
+        .context("Could not setup logging")?;
     Ok(())
 }
 
 // Return a `Socket` from a `SocketConfig`
-fn socket_from_config(cfg: &SocketConfig) -> Result<neuras::zmq::Socket> {
+fn socket_from_config(cfg: &SocketConfig) -> Result<Socket> {
     let socket = match cfg.socket_connection {
         ConnectionType::Bind => create_and_bind_responder(cfg.url)?,
         ConnectionType::Connect => create_and_connect_responder(cfg.url)?,
@@ -57,7 +61,7 @@ fn socket_from_config(cfg: &SocketConfig) -> Result<neuras::zmq::Socket> {
 }
 
 // Return 'err' string, and log it
-fn return_error(e: Error) -> String {
+fn return_error(e: EzoError) -> String {
     error!("ph sensor error: {}", e);
     format!("{:?}", ReplyStatus::Err)
 }
@@ -69,7 +73,7 @@ fn match_and_eval(s: &str, e: &PhResponder) -> Result<String> {
             let _req = <CalibrationState as I2CCommand>::from_str(s)?;
             let reply = match e.get_calibration_status() {
                 Ok(rep) => format!("{:?}", rep),
-                Err(e) => return_error(e),
+                Err(e) => return_error(e.into()),
             };
             Ok(reply)
         }
@@ -158,8 +162,8 @@ fn evaluate_command_line() -> Result<()> {
         address: matches
             .value_of("ADDRESS")
             .unwrap()
-            .parse()
-            .chain_err(|| "Bad Address")?,
+            .parse::<u16>()
+            .context("Bad Address")?,
         path: PathBuf::from(matches.value_of("I2C").unwrap()),
     };
 
@@ -193,5 +197,13 @@ fn run_code() -> Result<()> {
     evaluate_command_line()
 }
 
-// fn main() wrapped to handle error chains
-quick_main!(run_code);
+fn main() {
+    if let Err(ref e) = run_code() {
+        println!("error: {:?}", e.cause());
+        // The backtrace is not always generated. Try to run this example
+        // with `RUST_BACKTRACE=1`.
+        let backtrace = e.backtrace();
+        println!("backtrace: {:?}", backtrace);
+        ::std::process::exit(1);
+    }
+}

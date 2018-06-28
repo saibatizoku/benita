@@ -2,8 +2,7 @@
 #[macro_export]
 macro_rules! network_socket {
     // Name identifier and documentation for the new network socket struct.
-    ($name:ident ,
-     $doc:tt) => {
+    ($name:ident, $doc:tt) => {
         #[ doc = $doc ]
         pub struct $name {
             socket: Socket,
@@ -12,7 +11,7 @@ macro_rules! network_socket {
         impl $name {
             /// Create a new network socket.
             pub fn new(socket: Socket) -> Result<$name> {
-                Ok( $name { socket } )
+                Ok($name { socket })
             }
         }
 
@@ -24,9 +23,7 @@ macro_rules! network_socket {
 #[macro_export]
 macro_rules! network_sensor_socket {
     // Simple sensor socket.
-    ($name:ident ,
-     $sensor:ident ,
-     $doc:tt) => {
+    ($name:ident, $sensor:ident, $doc:tt) => {
         #[ doc = $doc ]
         pub struct $name {
             socket: Socket,
@@ -36,7 +33,7 @@ macro_rules! network_sensor_socket {
         impl $name {
             /// Create a new network socket.
             pub fn new(socket: Socket, sensor: $sensor) -> Result<$name> {
-                Ok( $name { socket, sensor } )
+                Ok($name { socket, sensor })
             }
         }
 
@@ -51,28 +48,27 @@ macro_rules! endpoint_trait_impl {
         impl Endpoint for $name {
             /// Binds the socket to the given URL.
             fn bind(&self, url: &str) -> Result<()> {
-                let _bind = self.socket.bind(url)
-                    .context(ErrorKind::SocketBind)?;
+                let _bind = self.socket.bind(url).context(ErrorKind::SocketBind)?;
                 Ok(())
             }
 
             /// Connects the socket to the given URL.
             fn connect(&self, url: &str) -> Result<()> {
-                let _connect = self.socket.connect(url)
-                    .context(ErrorKind::SocketConnect)?;
+                let _connect = self.socket.connect(url).context(ErrorKind::SocketConnect)?;
                 Ok(())
             }
 
             /// Sends a message over the network socket.
             fn send(&self, msg: &[u8]) -> Result<()> {
-                let _send = self.socket.send(msg, 0)
-                    .context(ErrorKind::SocketSend)?;
+                let _send = self.socket.send(msg, 0).context(ErrorKind::SocketSend)?;
                 Ok(())
             }
 
             /// Receives a message from the network socket.
             fn recv(&self) -> Result<String> {
-                let received_result = self.socket.recv_string(0)
+                let received_result = self
+                    .socket
+                    .recv_string(0)
                     .context(ErrorKind::SocketReceive)?;
                 // We match against the resulting `Resulṭ<String, Vec<u8>>`
                 let response = match received_result {
@@ -261,9 +257,12 @@ macro_rules! sensor_socket_commands {
 #[macro_export]
 macro_rules! impl_SocketRequest_for {
     (
-        $request:ident : $response: ident ,
-        $reqvalue:ident : $fromstr:block ,
-        $self:ident : $tostring:block
+        $request:ident :
+        $response:ident,
+        $reqvalue:ident :
+        $fromstr:block,
+        $self:ident :
+        $tostring:block
     ) => {
         impl SocketRequest for $request {
             type Response = $response;
@@ -281,7 +280,8 @@ macro_rules! impl_SocketRequest_for {
             fn send<T: Endpoint>(&self, endpoint: &T) -> Result<$response> {
                 let req = <$request as SocketRequest>::to_string(&self);
                 debug!("sending socket request: {:?}", &req);
-                let _read = endpoint.send(req.as_bytes())
+                let _read = endpoint
+                    .send(req.as_bytes())
                     .context(ErrorKind::CommandRequest)?;
                 let response = <$response as SocketReply>::recv(endpoint)?;
                 debug!("parsed socket reply: {:?}", &response);
@@ -294,9 +294,8 @@ macro_rules! impl_SocketRequest_for {
 // Macro for implementing the `SocketReply` trait on a type.
 #[macro_export]
 macro_rules! impl_SocketReply_for {
-    ( $name:ident ) => {
+    ($name:ident) => {
         impl SocketReply for $name {
-
             fn from_str(rep_str: &str) -> Result<$name> {
                 Ok($name::parse(rep_str).context(ErrorKind::CommandReply)?)
             }

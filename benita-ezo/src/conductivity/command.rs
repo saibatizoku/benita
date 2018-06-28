@@ -4,17 +4,23 @@ use errors::*;
 pub use ezo_ec::command::Command;
 
 pub use ezo_ec::command::Baud;
-pub use ezo_ec::command::{CalibrationClear, CalibrationDry, CalibrationHigh, CalibrationLow,
-                          CalibrationOnePoint, CalibrationState};
-pub use ezo_ec::command::{CompensatedTemperatureValue as CompensationGet,
-                          TemperatureCompensation as CompensationSet};
-pub use ezo_ec::command::{DeviceAddress, DeviceInformation, Factory, Find, Reading, Sleep, Status};
+pub use ezo_ec::command::{
+    CalibrationClear, CalibrationDry, CalibrationHigh, CalibrationLow, CalibrationOnePoint,
+    CalibrationState,
+};
+pub use ezo_ec::command::{
+    CompensatedTemperatureValue as CompensationGet, TemperatureCompensation as CompensationSet,
+};
+pub use ezo_ec::command::{
+    DeviceAddress, DeviceInformation, Factory, Find, Reading, Sleep, Status,
+};
 pub use ezo_ec::command::{Export, ExportInfo, Import};
 pub use ezo_ec::command::{LedOff, LedOn, LedState};
-pub use ezo_ec::command::{OutputDisableConductivity, OutputDisableSalinity,
-                          OutputDisableSpecificGravity, OutputDisableTds,
-                          OutputEnableConductivity, OutputEnableSalinity,
-                          OutputEnableSpecificGravity, OutputEnableTds, OutputState};
+pub use ezo_ec::command::{
+    OutputDisableConductivity, OutputDisableSalinity, OutputDisableSpecificGravity,
+    OutputDisableTds, OutputEnableConductivity, OutputEnableSalinity, OutputEnableSpecificGravity,
+    OutputEnableTds, OutputState,
+};
 pub use ezo_ec::command::{ProbeTypeOne, ProbeTypePointOne, ProbeTypeState, ProbeTypeTen};
 pub use ezo_ec::command::{ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState};
 
@@ -216,22 +222,18 @@ mod tests {
 
     #[test]
     fn parse_conductivity_output_sg_off_request_from_valid_str() {
-        let request =
-            <OutputDisableSpecificGravity as I2CCommand>::from_str("o,sg,0").unwrap();
+        let request = <OutputDisableSpecificGravity as I2CCommand>::from_str("o,sg,0").unwrap();
         assert_eq!("O,SG,0", I2CCommand::to_string(&request));
-        let request =
-            <OutputDisableSpecificGravity as I2CCommand>::from_str("O,SG,0").unwrap();
+        let request = <OutputDisableSpecificGravity as I2CCommand>::from_str("O,SG,0").unwrap();
         assert_eq!("O,SG,0", I2CCommand::to_string(&request));
     }
 
     #[test]
     fn parse_conductivity_output_sg_off_request_from_invalid_str_yields_err() {
-        let request =
-            <OutputDisableSpecificGravity as I2CCommand>::from_str("o,sg,");
+        let request = <OutputDisableSpecificGravity as I2CCommand>::from_str("o,sg,");
         assert!(request.is_err());
 
-        let request =
-            <OutputDisableSpecificGravity as I2CCommand>::from_str("o,sg,0,");
+        let request = <OutputDisableSpecificGravity as I2CCommand>::from_str("o,sg,0,");
         assert!(request.is_err());
     }
 

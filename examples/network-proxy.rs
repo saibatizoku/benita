@@ -3,20 +3,21 @@
 extern crate benita;
 extern crate chrono;
 extern crate clap;
-#[macro_use]
 extern crate failure;
 extern crate fern;
 #[macro_use]
 extern crate log;
 extern crate neuras;
+extern crate zmq;
 
 use std::fs::File;
 use std::io::Read;
 
-use benita::ezo::errors::*;
 use benita::ezo::config::ProxyConfig;
+use benita::ezo::errors::*;
 use clap::{App, Arg};
-use neuras::utils::{create_context, zmq_xpub_xsub_proxy};
+use failure::{Fail, ResultExt};
+use zmq::{Context, XPUB, XSUB, proxy};
 
 // Configure and start logger.
 fn start_logger() -> Result<()> {
@@ -32,10 +33,9 @@ fn start_logger() -> Result<()> {
         })
         .level(log::LogLevelFilter::Debug)
         .chain(std::io::stdout())
-        .chain(fern::log_file("proxy.log")
-            .chain_err(|| "failed to open log file")?)
+        .chain(fern::log_file("proxy.log").context(ErrorKind::RunTime("failed to open log file".to_string()))?)
         .apply()
-        .chain_err(|| "Could not setup logging")?;
+        .context(ErrorKind::RunTime("Could not setup logging".to_string()))?;
     Ok(())
 }
 
@@ -108,9 +108,14 @@ fn parse_cli_arguments() -> Result<()> {
 }
 
 fn run_proxy(backend: &str, frontend: &str) -> Result<()> {
-    let context = create_context();
+    let context = Context::new();
     info!("Proxied PUB service now serving at: {}", &frontend);
-    let _proxy = zmq_xpub_xsub_proxy(&context, backend, frontend)?;
+    let mut back = context.socket(XPUB).context(ErrorKind::SocketCreate)?;
+    back.bind(backend).context(ErrorKind::SocketBind)?;
+
+    let mut front = context.socket(XSUB).context(ErrorKind::SocketCreate)?;
+    front.bind(frontend).context(ErrorKind::SocketConnect)?;
+    proxy(&mut front, &mut back).context(ErrorKind::ProxyCreate)?;
     Ok(())
 }
 
@@ -121,4 +126,12 @@ fn run_code() -> Result<()> {
     parse_cli_arguments()
 }
 
-quick_main!(run_code);
+fn main() {
+    if let Err(ref e) = run_code() {
+        println!("error: {:?}", e.cause());
+        // The backtrace is not always generated. Try to run this example
+        // with `RUST_BACKTRACE=1`.
+        println!("backtrace: {:?}", e.backtrace());
+        ::std::process::exit(1);
+    }
+}

@@ -2,9 +2,10 @@
 use errors::*;
 use network::Endpoint;
 
-pub use conductivity::response::{CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus,
-                                 Exported, ExportedInfo, LedStatus, OutputStringStatus, ProbeType,
-                                 ProtocolLockStatus, SensorReading};
+pub use conductivity::response::{
+    CalibrationStatus, CompensationValue, DeviceInfo, DeviceStatus, Exported, ExportedInfo,
+    LedStatus, OutputStringStatus, ProbeType, ProtocolLockStatus, SensorReading,
+};
 pub use network::SocketReply;
 
 // Basically, wrap existing responses from the original sensor crate.

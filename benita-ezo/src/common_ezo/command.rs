@@ -4,11 +4,12 @@ use super::response::*;
 use devices::{I2CCommand, SensorDevice};
 use errors::*;
 
+pub use ezo_common::command::{
+    Baud, CalibrationClear, DeviceAddress, DeviceInformation, Export, ExportInfo, Factory, Find,
+    Import, LedOff, LedOn, LedState, ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState,
+    Sleep, Status,
+};
 pub use ezo_common::Command;
-pub use ezo_common::command::{Baud, CalibrationClear, DeviceAddress, DeviceInformation, Export,
-                              ExportInfo, Factory, Find, Import, LedOff, LedOn, LedState,
-                              ProtocolLockDisable, ProtocolLockEnable, ProtocolLockState, Sleep,
-                              Status};
 
 impl_I2CCommand_for!(Baud, ResponseStatus);
 impl_I2CCommand_for!(CalibrationClear, ResponseStatus);
@@ -27,7 +28,6 @@ impl_I2CCommand_for!(ProtocolLockEnable, ResponseStatus);
 impl_I2CCommand_for!(ProtocolLockState, ProtocolLockStatus);
 impl_I2CCommand_for!(Sleep, ResponseStatus);
 impl_I2CCommand_for!(Status, DeviceStatus);
-
 
 #[cfg(test)]
 mod tests {
@@ -326,7 +326,6 @@ mod tests {
         let request = <Sleep as I2CCommand>::from_str("sleepy");
         assert!(request.is_err());
     }
-
 
     #[test]
     fn parse_status_request_from_valid_str() {

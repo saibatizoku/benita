@@ -5,23 +5,28 @@
 extern crate benita;
 extern crate chrono;
 extern crate clap;
+extern crate failure;
 extern crate neuras;
+extern crate zmq;
 
 use std::thread;
 use std::time::Duration;
+use std::result;
 
 use benita::ezo::common_ezo::EzoChipAPI;
-use benita::ezo::temperature::TemperatureAPI;
 use benita::ezo::temperature::device::TemperatureSensor;
-use benita::ezo::errors::{Result, ResultExt};
+use benita::ezo::temperature::TemperatureAPI;
 
 use chrono::{DateTime, Utc};
 use clap::{App, Arg};
-use neuras::utils::{bind_socket, create_context, zmq_pub};
+use failure::{Error, ResultExt};
+use zmq::{Context, PUB};
 
 const I2C_BUS_ID: u8 = 1;
 const EZO_SENSOR_ADDR: u16 = 101; // could be specified as 0x65
 const PUB_CHANNEL: &'static str = "temperature-0123456789abcdef";
+
+type Result<T> = result::Result<T, Error>;
 
 fn parse_cli_arguments() -> Result<()> {
     let matches = App::new("benita-temperature-pub")
@@ -55,11 +60,11 @@ fn parse_cli_arguments() -> Result<()> {
 fn run(pub_url: &str) -> Result<()> {
     let device_path = format!("/dev/i2c-{}", I2C_BUS_ID);
     let rtd_sensor = TemperatureSensor::new(&device_path, EZO_SENSOR_ADDR)
-        .chain_err(|| "Could not open I2C device")?;
-    let context = create_context();
-    let publisher = zmq_pub(&context)?;
+        .context("Could not open I2C device")?;
+    let context = Context::new();
+    let publisher = context.socket(PUB)?;
 
-    let _bind = bind_socket(&publisher, pub_url).chain_err(|| "Publisher could not be started")?;
+    let _bind = publisher.bind(pub_url).context("Publisher could not be started")?;
 
     loop {
         // We query the current temperature state of the sensor chip.
@@ -85,17 +90,11 @@ fn run(pub_url: &str) -> Result<()> {
 
 fn main() {
     if let Err(ref e) = parse_cli_arguments() {
-        println!("error: {}", e);
-
-        for e in e.iter().skip(1) {
-            println!("caused by: {}", e);
-        }
-
+        println!("error: {:?}", e.cause());
         // The backtrace is not always generated. Try to run this example
         // with `RUST_BACKTRACE=1`.
-        if let Some(backtrace) = e.backtrace() {
-            println!("backtrace: {:?}", backtrace);
-        }
+        let backtrace = e.backtrace();
+        println!("backtrace: {:?}", backtrace);
         ::std::process::exit(1);
     }
 }
